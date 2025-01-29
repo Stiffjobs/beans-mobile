@@ -88,6 +88,7 @@ export function Provider({
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange((event, session) => {
+			console.log('auth event', event);
 			if (
 				session &&
 				(event === 'SIGNED_IN' ||
@@ -153,7 +154,7 @@ export const useSession = () => {
 		throw new Error(`useSession must be used within a SessionContextProvider.`);
 	}
 
-	return context.session;
+	return context;
 };
 
 export const useUser = () => {
