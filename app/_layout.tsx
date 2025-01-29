@@ -13,6 +13,7 @@ import React, { useEffect } from 'react';
 import 'react-native-reanimated';
 import '../global.css';
 import { useColorScheme } from '~/lib/useColorScheme';
+import { Text } from 'react-native';
 
 import { Provider as ModalProvider } from '@/state/modals';
 import { Provider as SessionProvider } from '@/state/session';
@@ -22,7 +23,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ModalsContainer } from '~/view/com/modals/Modal';
 import { Platform } from 'react-native';
 import { verifyInstallation } from 'nativewind';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { PortalHost } from '@rn-primitives/portal';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
+
+import { I18nProvider, TransRenderProps } from '@lingui/react';
+import { i18n } from '@lingui/core';
+import { Drawer } from 'expo-router/drawer';
 
 export {
 	// Catch any errors thrown by the Layout component.
@@ -32,6 +38,10 @@ export {
 export const unstable_settings = {
 	// Ensure that reloading on `/modal` keeps a back button present.
 	initialRouteName: '(tabs)',
+};
+
+const DefaultComponent = (props: TransRenderProps) => {
+	return <Text>{props.children}</Text>;
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -72,7 +82,7 @@ const useIsomorphicLayoutEffect =
 		: React.useLayoutEffect;
 function RootLayoutNav() {
 	const hasMounted = React.useRef(false);
-	const { colorScheme, isDarkColorScheme } = useColorScheme();
+	const { isDarkColorScheme } = useColorScheme();
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 
 	useIsomorphicLayoutEffect(() => {
@@ -94,18 +104,21 @@ function RootLayoutNav() {
 
 	return (
 		<SessionProvider>
+			{/* <I18nProvider i18n={i18n} defaultComponent={DefaultComponent}> */}
 			<QueryProvider>
 				<GestureHandlerRootView style={{ flex: 1 }}>
-					<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-						<ModalProvider>
-							{/* <BottomSheetModalProvider> */}
-							<Slot />
-							<ModalsContainer />
-							{/* </BottomSheetModalProvider> */}
-						</ModalProvider>
-					</ThemeProvider>
+					<KeyboardProvider>
+						<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+							<ModalProvider>
+								<Slot />
+								<ModalsContainer />
+								<PortalHost />
+							</ModalProvider>
+						</ThemeProvider>
+					</KeyboardProvider>
 				</GestureHandlerRootView>
 			</QueryProvider>
+			{/* </I18nProvider> */}
 		</SessionProvider>
 	);
 }
