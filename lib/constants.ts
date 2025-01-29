@@ -16,3 +16,14 @@ export const NAV_THEME = {
 		text: 'hsl(0 0% 98%)', // foreground
 	},
 };
+
+export enum RoastLevelEnum {
+	Light = 'light',
+	Medium = 'medium',
+	Dark = 'dark',
+}
+
+export interface RoastLevel {
+	label: string;
+	value: RoastLevelEnum;
+}
