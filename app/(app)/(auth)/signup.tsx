@@ -32,7 +32,7 @@ export default () => {
 	const signUpMutation = useSignUp();
 
 	const onSubmit = async (data: SignUpSchema) => {
-		// await signUpMutation.mutateAsync(data);
+		await signUpMutation.mutateAsync(data);
 		router.push({
 			pathname: '/(app)/(auth)/pending',
 			params: { email: data.email },

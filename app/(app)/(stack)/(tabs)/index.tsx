@@ -1,12 +1,10 @@
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useModalControls } from '~/state/modals';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Calendar } from 'react-native-calendars';
-import { Plus, Settings } from 'lucide-react-native';
 import { StyledIcon } from '~/view/com/icons/StyledIcons';
-import { Link, router, Stack } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 import { Button } from '~/components/ui/button';
-import { Loader } from '~/components/Loader';
 
 export default function TabOneScreen() {
 	const { openModal } = useModalControls();
