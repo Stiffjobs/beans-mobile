@@ -34,6 +34,21 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "824333a1-64fe-40d9-882f-280bf5cba1ec"
+      }
+    },
+    "owner": "dykoo",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/824333a1-64fe-40d9-882f-280bf5cba1ec"
     }
   }
 }
