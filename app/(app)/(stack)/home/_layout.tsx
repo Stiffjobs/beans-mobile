@@ -10,6 +10,12 @@ export default () => {
 			}}
 		>
 			<Stack.Screen name="settings" />
+			<Stack.Screen
+				name="[id]"
+				options={{
+					headerTitle: 'Details',
+				}}
+			/>
 		</Stack>
 	);
 };

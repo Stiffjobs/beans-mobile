@@ -1,142 +1,124 @@
-import { SafeAreaView, View } from 'react-native';
-import { useForm, Controller } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { signUpSchema } from '~/lib/schemas';
+import * as React from 'react';
+import { Alert, Pressable, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Text } from '~/components/ui/text';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
-import { Text } from '~/components/ui/text';
-import { router } from 'expo-router';
-import { useSignUp } from '~/state/queries/auth';
+import { Controller, useForm } from 'react-hook-form';
+import { signUpSchema } from '~/lib/schemas';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ErrorMessage } from '~/components/ErrorMessage';
-import { Loader } from '~/components/Loader';
+import { H3 } from '~/components/ui/typography';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-type SignUpSchema = z.infer<typeof signUpSchema>;
+import { useSignUp, useVerifyEmail } from '~/state/queries/auth';
 
-export default () => {
-	const {
-		control,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<SignUpSchema>({
+export default function SignUpScreen() {
+	const router = useRouter();
+	const form = useForm<z.infer<typeof signUpSchema>>({
 		resolver: zodResolver(signUpSchema),
 		defaultValues: {
 			email: '',
 			password: '',
-			confirmPassword: '',
 			username: '',
 		},
 	});
 
-	const signUpMutation = useSignUp();
+	const [pendingVerification, setPendingVerification] = React.useState(false);
+	const [code, setCode] = React.useState('');
 
-	const onSubmit = async (data: SignUpSchema) => {
-		await signUpMutation.mutateAsync(data);
-		router.push({
-			pathname: '/(app)/(auth)/pending',
-			params: { email: data.email },
-		});
+	// Handle submission of sign-up form
+	const useSignUpMutation = useSignUp({
+		onSuccess: () => setPendingVerification(true),
+	});
+	const useVerifyMutation = useVerifyEmail();
+	const onVerifyPress = async () => {
+		await useVerifyMutation.mutateAsync(code);
 	};
-	const { top } = useSafeAreaInsets();
+	const onSignUpPress = async (data: z.infer<typeof signUpSchema>) => {
+		await useSignUpMutation.mutateAsync(data);
+	};
+
+	if (pendingVerification) {
+		return (
+			<KeyboardAwareScrollView contentContainerClassName="flex-1 justify-center px-6">
+				<View className="gap-6">
+					<Text>Verify your email</Text>
+					<Input
+						value={code}
+						placeholder="Enter your verification code"
+						onChangeText={code => setCode(code)}
+					/>
+					<Button onPress={onVerifyPress}>
+						<Text>Verify</Text>
+					</Button>
+				</View>
+			</KeyboardAwareScrollView>
+		);
+	}
 
 	return (
-		<KeyboardAwareScrollView>
-			<View className="flex-1 justify-center px-6" style={{ paddingTop: top }}>
-				<Text className="text-3xl font-bold mb-8 text-center">
-					Create Account
-				</Text>
-
-				<View className="gap-4">
-					<View>
-						<Text className="text-sm mb-1">Email</Text>
-						<Controller
-							control={control}
-							name="email"
-							render={({ field: { onChange, value } }) => (
-								<Input
-									className="border border-gray-300 rounded-lg p-3"
-									placeholder="Enter your email"
-									keyboardType="email-address"
-									autoCapitalize="none"
-									onChangeText={onChange}
-								/>
+		<KeyboardAwareScrollView contentContainerClassName="flex-1 justify-center px-6">
+			<View className="gap-6">
+				<H3>Sign up</H3>
+				<Controller
+					name="email"
+					control={form.control}
+					render={({ field: { onChange } }) => (
+						<View className="gap-2">
+							<Input
+								autoCapitalize="none"
+								placeholder="Enter email"
+								onChangeText={onChange}
+							/>
+							{form.formState.errors.email && (
+								<ErrorMessage message={form.formState.errors.email?.message} />
 							)}
-						/>
-						{errors.email && <ErrorMessage message={errors.email.message} />}
-					</View>
-
-					<View>
-						<Text className="text-sm mb-1">Password</Text>
-						<Controller
-							control={control}
-							name="password"
-							render={({ field: { onChange, value } }) => (
-								<Input
-									className="border border-gray-300 rounded-lg p-3"
-									placeholder="Enter your password"
-									secureTextEntry
-									onChangeText={onChange}
-								/>
-							)}
-						/>
-						{errors.password && (
-							<ErrorMessage message={errors.password.message} />
-						)}
-					</View>
-
-					<View>
-						<Text className="text-sm mb-1">Confirm Password</Text>
-						<Controller
-							control={control}
-							name="confirmPassword"
-							render={({ field: { onChange, value } }) => (
-								<Input
-									className="border border-gray-300 rounded-lg p-3"
-									placeholder="Confirm your password"
-									secureTextEntry
-									onChangeText={onChange}
-								/>
-							)}
-						/>
-						{errors.confirmPassword && (
-							<ErrorMessage message={errors.confirmPassword.message} />
-						)}
-					</View>
-
-					<View>
-						<Text className="text-sm mb-1">Username</Text>
-						<Controller
-							control={control}
-							name="username"
-							render={({ field: { onChange } }) => (
-								<Input
-									className="border border-gray-300 rounded-lg p-3"
-									onChangeText={onChange}
-									placeholder="Enter your username"
-								/>
-							)}
-						/>
-					</View>
-
-					{signUpMutation.isPending ? (
-						<Loader />
-					) : (
-						<Button onPress={handleSubmit(onSubmit)}>
-							<Text className=" text-center font-semibold">Sign Up</Text>
-						</Button>
+						</View>
 					)}
-					<Button
-						onPress={() => router.replace('/(app)/(auth)/signin')}
-						variant={'link'}
-					>
-						<Text>
-							Already have an account?{' '}
-							<Text className="font-bold">Sign in</Text>
-						</Text>
-					</Button>
+				/>
+				<Controller
+					name="password"
+					control={form.control}
+					render={({ field: { onChange } }) => (
+						<View className="gap-2">
+							<Input
+								placeholder="Enter password"
+								secureTextEntry={true}
+								onChangeText={onChange}
+							/>
+							{form.formState.errors.password && (
+								<ErrorMessage
+									message={form.formState.errors.password?.message}
+								/>
+							)}
+						</View>
+					)}
+				/>
+				<Controller
+					name="username"
+					control={form.control}
+					render={({ field: { onChange } }) => (
+						<View className="gap-2">
+							<Input placeholder="Enter username" onChangeText={onChange} />
+							{form.formState.errors.username && (
+								<ErrorMessage
+									message={form.formState.errors.username?.message}
+								/>
+							)}
+						</View>
+					)}
+				/>
+				<Button onPress={form.handleSubmit(onSignUpPress)}>
+					<Text>Continue</Text>
+				</Button>
+				<View className="flex-row justify-center items-center gap-2">
+					<Text>Already have an account?</Text>
+					<Pressable onPress={() => router.replace('/signin')}>
+						<Text className="text-blue-600 font-semibold">Sign in</Text>
+					</Pressable>
 				</View>
 			</View>
 		</KeyboardAwareScrollView>
 	);
-};
+}

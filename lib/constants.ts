@@ -27,3 +27,8 @@ export interface RoastLevel {
 	label: string;
 	value: RoastLevelEnum;
 }
+export const POST_IMG_MAX = {
+	width: 2000,
+	height: 2000,
+	size: 1000000,
+};

@@ -1,30 +1,24 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
+import { Authenticated, Unauthenticated } from 'convex/react';
+import { Link } from 'expo-router';
+import { Button } from '~/components/ui/button';
+import { Text } from '~/components/ui/text';
 
 export default function TabTwoScreen() {
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Tab Two</Text>
-			<View style={styles.separator} />
-			<EditScreenInfo path="app/(tabs)/two.tsx" />
+		<View className="flex-1 items-center justify-center">
+			<Authenticated>
+				<EditScreenInfo path="app/(tabs)/two.tsx" />
+			</Authenticated>
+			<Unauthenticated>
+				<Link asChild href={'/signin'}>
+					<Button>
+						<Text>Sign In</Text>
+					</Button>
+				</Link>
+			</Unauthenticated>
 		</View>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: 'bold',
-	},
-	separator: {
-		marginVertical: 30,
-		height: 1,
-		width: '80%',
-	},
-});

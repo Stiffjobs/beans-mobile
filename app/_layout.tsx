@@ -16,8 +16,6 @@ import { useColorScheme } from '~/lib/useColorScheme';
 import { Text } from 'react-native';
 
 import { Provider as ModalProvider } from '@/state/modals';
-import { Provider as SessionProvider } from '@/state/session';
-import QueryProvider from '@/providers/QueryProvider';
 import { NAV_THEME } from '~/lib/constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ModalsContainer } from '~/view/com/modals/Modal';
@@ -25,11 +23,38 @@ import { Platform } from 'react-native';
 import { verifyInstallation } from 'nativewind';
 import { PortalHost } from '@rn-primitives/portal';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
+import { ClerkProvider, ClerkLoaded, useAuth } from '@clerk/clerk-expo';
+import { ConvexReactClient } from 'convex/react';
+import { ConvexProviderWithClerk } from 'convex/react-clerk';
+import { ConvexQueryClient } from '@convex-dev/react-query';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 import { I18nProvider, TransRenderProps } from '@lingui/react';
 import { i18n } from '@lingui/core';
 import { Drawer } from 'expo-router/drawer';
+import { tokenCache } from '~/utils/cache';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+const convex = new ConvexReactClient(
+	process.env.EXPO_PUBLIC_CONVEX_URL as string
+);
+const convexQueryClient = new ConvexQueryClient(convex);
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			queryKeyHashFn: convexQueryClient.hashFn(),
+			queryFn: convexQueryClient.queryFn(),
+		},
+	},
+});
 
+convexQueryClient.connect(queryClient);
+
+if (!publishableKey) {
+	throw new Error(
+		'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env'
+	);
+}
 export {
 	// Catch any errors thrown by the Layout component.
 	ErrorBoundary,
@@ -103,22 +128,28 @@ function RootLayoutNav() {
 	verifyInstallation();
 
 	return (
-		<SessionProvider>
-			{/* <I18nProvider i18n={i18n} defaultComponent={DefaultComponent}> */}
-			<QueryProvider>
-				<GestureHandlerRootView style={{ flex: 1 }}>
-					<KeyboardProvider>
-						<ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-							<ModalProvider>
-								<Slot />
-								<ModalsContainer />
-								<PortalHost />
-							</ModalProvider>
-						</ThemeProvider>
-					</KeyboardProvider>
-				</GestureHandlerRootView>
-			</QueryProvider>
-			{/* </I18nProvider> */}
-		</SessionProvider>
+		<ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+			<ClerkLoaded>
+				<RootSiblingParent>
+					<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+						<QueryClientProvider client={queryClient}>
+							<GestureHandlerRootView style={{ flex: 1 }}>
+								<KeyboardProvider>
+									<ThemeProvider
+										value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
+									>
+										<ModalProvider>
+											<Slot />
+											<ModalsContainer />
+											<PortalHost />
+										</ModalProvider>
+									</ThemeProvider>
+								</KeyboardProvider>
+							</GestureHandlerRootView>
+						</QueryClientProvider>
+					</ConvexProviderWithClerk>
+				</RootSiblingParent>
+			</ClerkLoaded>
+		</ClerkProvider>
 	);
 }
