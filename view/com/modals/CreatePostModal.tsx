@@ -39,7 +39,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 type FormFields = z.infer<typeof createPostSchema>;
 
-export const snapPoints = ['90%'];
+export const snapPoints = ['fullscreen'];
 export function Component() {
 	const form = useForm<FormFields>({
 		resolver: zodResolver(createPostSchema),
@@ -110,382 +110,368 @@ export function Component() {
 				}}
 				initialPage={activePage}
 			>
-				<BottomSheetScrollView
-					key={1}
-					style={{ flex: 1 }}
-					className={'bg-background'}
-				>
-					<KeyboardAwareScrollView contentContainerClassName="flex-1 ">
-						<View className="flex-1 px-10 mt-6 mb-12 gap-2">
-							<Controller
-								control={form.control}
-								name="bean"
-								render={({ field: { onChange } }) => {
-									return (
-										<>
-											<Label>Bean</Label>
-											<Input onChangeText={onChange} />
-											{form.formState.errors?.bean && (
-												<ErrorMessage
-													message={form.formState?.errors?.bean.message}
-												/>
-											)}
-										</>
-									);
-								}}
-							/>
-							<Controller
-								control={form.control}
-								name="flavor"
-								render={({ field: { onChange } }) => {
-									return (
-										<>
-											<Label>Flavor profile</Label>
-											<Input onChangeText={onChange} />
-										</>
-									);
-								}}
-							/>
-							{form.formState.errors?.flavor && (
-								<ErrorMessage
-									message={form.formState?.errors?.flavor.message}
-								/>
-							)}
-							<Controller
-								control={form.control}
-								name="roastLevel"
-								render={({ field: { onChange } }) => (
+				<KeyboardAwareScrollView key={1} contentContainerClassName="flex-1 ">
+					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
+						<Controller
+							control={form.control}
+							name="bean"
+							render={({ field: { onChange } }) => {
+								return (
 									<>
-										<Label>Roast level</Label>
-										<SelectComponent
-											placeholder="Select a roast level"
-											options={[
-												{
-													label: RoastLevelEnum.Light,
-													value: RoastLevelEnum.Light,
-												},
-												{
-													label: RoastLevelEnum.Medium,
-													value: RoastLevelEnum.Medium,
-												},
-												{
-													label: RoastLevelEnum.Dark,
-													value: RoastLevelEnum.Dark,
-												},
-											]}
-											onChange={onChange}
-										/>
-										{form.formState.errors.roastLevel && (
-											<ErrorMessage
-												message={form.formState.errors.roastLevel.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="coffeeIn"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Coffee in (g)</Label>
+										<Label>Bean</Label>
 										<Input onChangeText={onChange} />
-										{form.formState.errors.coffeeIn && (
+										{form.formState.errors?.bean && (
 											<ErrorMessage
-												message={form.formState.errors.coffeeIn.message}
+												message={form.formState?.errors?.bean.message}
 											/>
 										)}
 									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="ratio"
-								render={({ field: { onChange } }) => (
+								);
+							}}
+						/>
+						<Controller
+							control={form.control}
+							name="flavor"
+							render={({ field: { onChange } }) => {
+								return (
 									<>
-										<Label>Ratio</Label>
+										<Label>Flavor profile</Label>
 										<Input onChangeText={onChange} />
-										{form.formState.errors.ratio && (
-											<ErrorMessage
-												message={form.formState.errors.coffeeIn?.message}
-											/>
-										)}
 									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="beverageWeight"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Beverage weight(g)</Label>
-										<Input onChangeText={onChange} />
-										{form.formState.errors.beverageWeight && (
-											<ErrorMessage
-												message={form.formState.errors.beverageWeight.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="tds"
-								render={({ field: { onChange, value } }) => (
-									<>
-										<Label>TDS</Label>
-										<Slider
-											minimumValue={1.0}
-											maximumValue={2.0}
-											step={0.01}
-											onValueChange={newValue => {
-												onChange(newValue);
-												// Calculate and set EY when TDS changes
-												const beverageWeight = parseFloat(
-													form.getValues('beverageWeight') || '0'
-												);
-												const coffeeIn = parseFloat(
-													form.getValues('coffeeIn') || '0'
-												);
-												if (beverageWeight && coffeeIn) {
-													const ey = (newValue * beverageWeight) / coffeeIn;
-													form.setValue('ey', ey);
-												}
-											}}
-										/>
-										<Text>{value?.toFixed(2)}</Text>
-										{form.formState.errors.tds && (
-											<ErrorMessage
-												message={form.formState.errors.tds.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="ey"
-								render={({ field: { value } }) => (
-									<>
-										<Label>Extraction Yield (%)</Label>
-										<H4>{value?.toFixed(2)}%</H4>
-									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="brewTemperature"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Brew temperature (°C)</Label>
-										<Input onChangeText={onChange} keyboardType="numeric" />
-										{form.formState.errors.brewTemperature && (
-											<ErrorMessage
-												message={form.formState.errors.brewTemperature.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="preparationMethod"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Preparation method</Label>
-										<Input onChangeText={onChange} />
-										{form.formState.errors.preparationMethod && (
-											<ErrorMessage
-												message={
-													form.formState.errors.preparationMethod.message
-												}
-											/>
-										)}
-									</>
-								)}
-							/>
-							{/* TODO: this should look like a dropdown with options */}
-							<Controller
-								control={form.control}
-								name="others"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Others</Label>
-										<Input onChangeText={onChange} />
-										{form.formState.errors.others && (
-											<ErrorMessage
-												message={form.formState.errors.others.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							{/* TODO: this should look like a dropdown with options */}
-							<Controller
-								name="filterPaper"
-								control={form.control}
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Filter paper</Label>
-										<Input onChangeText={onChange} />
-										{form.formState.errors.filterPaper && (
-											<ErrorMessage
-												message={form.formState.errors.filterPaper.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="water"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Water</Label>
-										<Input onChangeText={onChange} />
-										{form.formState.errors.water && (
-											<ErrorMessage
-												message={form.formState.errors.water.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							{/* TODO: this should look like a dropdown with options */}
-							<Controller
-								control={form.control}
-								name="grinder"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Grinder</Label>
-										<Input onChangeText={onChange} />
-										{form.formState.errors.grinder && (
-											<ErrorMessage
-												message={form.formState.errors.grinder.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							{/* TODO: this should look like  */}
-							<Controller
-								control={form.control}
-								name="grindSetting"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Grind setting</Label>
-										<Input onChangeText={onChange} />
-										{form.formState.errors.grindSetting && (
-											<ErrorMessage
-												message={form.formState.errors.grindSetting.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="profile"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Profile</Label>
-										<Input onChangeText={onChange} />
-										{form.formState.errors.profile && (
-											<ErrorMessage
-												message={form.formState.errors.profile.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							<Controller
-								control={form.control}
-								name="time"
-								render={({ field: { onChange, value } }) => {
-									return (
-										<>
-											<Label>Time</Label>
-											<TimeMaskInput value={value} onChange={onChange} />
-											{form.formState.errors.time && (
-												<ErrorMessage
-													message={form.formState.errors.time.message}
-												/>
-											)}
-										</>
-									);
-								}}
-							/>
-							{/* TODO: this should look like time picker  */}
-							<Controller
-								control={form.control}
-								name="bloomTime"
-								render={({ field: { onChange, value } }) => {
-									return (
-										<>
-											<Label>Bloom time</Label>
-											<TimeMaskInput value={value} onChange={onChange} />
-											{form.formState.errors.bloomTime && (
-												<ErrorMessage
-													message={form.formState.errors.bloomTime.message}
-												/>
-											)}
-										</>
-									);
-								}}
-							/>
-							{/* TODO: this should look like a list of badges to toggle selection */}
-							<Controller
-								control={form.control}
-								name="preparationTools"
-								render={({ field: { onChange } }) => (
-									<>
-										<Label>Preparation tools</Label>
-										<Textarea onChangeText={onChange} />
-										{form.formState.errors.preparationTools && (
-											<ErrorMessage
-												message={form.formState.errors.preparationTools.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-						</View>
-					</KeyboardAwareScrollView>
-				</BottomSheetScrollView>
-				<BottomSheetScrollView key={2} className="flex-1 bg-background">
-					<KeyboardAwareScrollView contentContainerClassName="flex-1">
-						<View className="flex-1 px-10 mt-6 mb-12 gap-2">
-							<Controller
-								control={form.control}
-								name="steps"
-								render={({ field: { onChange, value } }) => (
-									<>
-										<RecipeStepsEditor steps={value} setSteps={onChange} />
-										{form.formState.errors.steps && (
-											<ErrorMessage
-												message={form.formState.errors.steps.message}
-											/>
-										)}
-									</>
-								)}
-							/>
-							<Label>Images</Label>
-							<Gallery
-								dispatch={dispatch}
-								images={state.embed?.media?.images ?? []}
-							/>
-							<Button size={'sm'} variant={'outline'} onPress={onOpenLibrary}>
-								<View className="flex-row items-center gap-2">
-									<StyledIcon
-										name="ImagePlus"
-										className="w-6 aspect-square color-gray-600"
+								);
+							}}
+						/>
+						{form.formState.errors?.flavor && (
+							<ErrorMessage message={form.formState?.errors?.flavor.message} />
+						)}
+						<Controller
+							control={form.control}
+							name="roastLevel"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Roast level</Label>
+									<SelectComponent
+										placeholder="Select a roast level"
+										options={[
+											{
+												label: RoastLevelEnum.Light,
+												value: RoastLevelEnum.Light,
+											},
+											{
+												label: RoastLevelEnum.Medium,
+												value: RoastLevelEnum.Medium,
+											},
+											{
+												label: RoastLevelEnum.Dark,
+												value: RoastLevelEnum.Dark,
+											},
+										]}
+										onChange={onChange}
 									/>
-									<Text>Select Images</Text>
-								</View>
-							</Button>
-						</View>
-					</KeyboardAwareScrollView>
-				</BottomSheetScrollView>
+									{form.formState.errors.roastLevel && (
+										<ErrorMessage
+											message={form.formState.errors.roastLevel.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="coffeeIn"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Coffee in (g)</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.coffeeIn && (
+										<ErrorMessage
+											message={form.formState.errors.coffeeIn.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="ratio"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Ratio</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.ratio && (
+										<ErrorMessage
+											message={form.formState.errors.coffeeIn?.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="beverageWeight"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Beverage weight(g)</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.beverageWeight && (
+										<ErrorMessage
+											message={form.formState.errors.beverageWeight.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="tds"
+							render={({ field: { onChange, value } }) => (
+								<>
+									<Label>TDS</Label>
+									<Slider
+										minimumValue={1.0}
+										maximumValue={2.0}
+										step={0.01}
+										onValueChange={newValue => {
+											onChange(newValue);
+											// Calculate and set EY when TDS changes
+											const beverageWeight = parseFloat(
+												form.getValues('beverageWeight') || '0'
+											);
+											const coffeeIn = parseFloat(
+												form.getValues('coffeeIn') || '0'
+											);
+											if (beverageWeight && coffeeIn) {
+												const ey = (newValue * beverageWeight) / coffeeIn;
+												form.setValue('ey', ey);
+											}
+										}}
+									/>
+									<Text>{value?.toFixed(2)}</Text>
+									{form.formState.errors.tds && (
+										<ErrorMessage message={form.formState.errors.tds.message} />
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="ey"
+							render={({ field: { value } }) => (
+								<>
+									<Label>Extraction Yield (%)</Label>
+									<H4>{value?.toFixed(2)}%</H4>
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="brewTemperature"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Brew temperature (°C)</Label>
+									<Input onChangeText={onChange} keyboardType="numeric" />
+									{form.formState.errors.brewTemperature && (
+										<ErrorMessage
+											message={form.formState.errors.brewTemperature.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="preparationMethod"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Preparation method</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.preparationMethod && (
+										<ErrorMessage
+											message={form.formState.errors.preparationMethod.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						{/* TODO: this should look like a dropdown with options */}
+						<Controller
+							control={form.control}
+							name="others"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Others</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.others && (
+										<ErrorMessage
+											message={form.formState.errors.others.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						{/* TODO: this should look like a dropdown with options */}
+						<Controller
+							name="filterPaper"
+							control={form.control}
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Filter paper</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.filterPaper && (
+										<ErrorMessage
+											message={form.formState.errors.filterPaper.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="water"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Water</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.water && (
+										<ErrorMessage
+											message={form.formState.errors.water.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						{/* TODO: this should look like a dropdown with options */}
+						<Controller
+							control={form.control}
+							name="grinder"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Grinder</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.grinder && (
+										<ErrorMessage
+											message={form.formState.errors.grinder.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						{/* TODO: this should look like  */}
+						<Controller
+							control={form.control}
+							name="grindSetting"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Grind setting</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.grindSetting && (
+										<ErrorMessage
+											message={form.formState.errors.grindSetting.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="profile"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Profile</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.profile && (
+										<ErrorMessage
+											message={form.formState.errors.profile.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="time"
+							render={({ field: { onChange, value } }) => {
+								return (
+									<>
+										<Label>Time</Label>
+										<TimeMaskInput value={value} onChange={onChange} />
+										{form.formState.errors.time && (
+											<ErrorMessage
+												message={form.formState.errors.time.message}
+											/>
+										)}
+									</>
+								);
+							}}
+						/>
+						{/* TODO: this should look like time picker  */}
+						<Controller
+							control={form.control}
+							name="bloomTime"
+							render={({ field: { onChange, value } }) => {
+								return (
+									<>
+										<Label>Bloom time</Label>
+										<TimeMaskInput value={value} onChange={onChange} />
+										{form.formState.errors.bloomTime && (
+											<ErrorMessage
+												message={form.formState.errors.bloomTime.message}
+											/>
+										)}
+									</>
+								);
+							}}
+						/>
+						{/* TODO: this should look like a list of badges to toggle selection */}
+						<Controller
+							control={form.control}
+							name="preparationTools"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Preparation tools</Label>
+									<Textarea onChangeText={onChange} />
+									{form.formState.errors.preparationTools && (
+										<ErrorMessage
+											message={form.formState.errors.preparationTools.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+					</View>
+				</KeyboardAwareScrollView>
+				<KeyboardAwareScrollView key={2} contentContainerClassName="flex-1">
+					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
+						<Controller
+							control={form.control}
+							name="steps"
+							render={({ field: { onChange, value } }) => (
+								<>
+									<RecipeStepsEditor steps={value} setSteps={onChange} />
+									{form.formState.errors.steps && (
+										<ErrorMessage
+											message={form.formState.errors.steps.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Label>Images</Label>
+						<Gallery
+							dispatch={dispatch}
+							images={state.embed?.media?.images ?? []}
+						/>
+						<Button size={'sm'} variant={'outline'} onPress={onOpenLibrary}>
+							<View className="flex-row items-center gap-2">
+								<StyledIcon
+									name="ImagePlus"
+									className="w-6 aspect-square color-gray-600"
+								/>
+								<Text>Select Images</Text>
+							</View>
+						</Button>
+					</View>
+				</KeyboardAwareScrollView>
 			</Pager>
 		</>
 	);

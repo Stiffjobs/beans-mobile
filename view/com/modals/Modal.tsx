@@ -6,12 +6,10 @@ import BottomSheet, {
 import { useEffect, useRef } from 'react';
 import * as CreatePostModal from './CreatePostModal';
 import * as EditProfileModal from './EditProfileModal';
-import { SafeAreaView, View, Text, ViewStyle } from 'react-native';
+import { SafeAreaView, View, Text, ViewStyle, Modal } from 'react-native';
 import { createCustomBackdrop } from '../util/BottomSheetCustomBackdrop';
 import { useReducedMotion } from 'react-native-reanimated';
 import React from 'react';
-import { cssInterop, remapProps } from 'nativewind';
-import { cva } from 'class-variance-authority';
 
 const DEFAULT_SNAPPOINTS = ['90%'];
 
@@ -55,7 +53,13 @@ export function ModalsContainer() {
 	}
 
 	if (snapPoints[0] === 'fullscreen') {
-		return <SafeAreaView className="flex-1">{element}</SafeAreaView>;
+		return (
+			<Modal visible={isModalActive} animationType="slide" className="">
+				<SafeAreaView className="bg-background flex-1 top-0 right-0 left-0 bottom-0  absolute z-50">
+					{element}
+				</SafeAreaView>
+			</Modal>
+		);
 	}
 
 	return (
