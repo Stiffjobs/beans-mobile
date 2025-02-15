@@ -58,7 +58,7 @@ export function DrawerContent() {
 				paddingTop: top + 20,
 				paddingBottom: bottom,
 			}}
-			contentContainerClassName="flex-1 bg-primary-foreground"
+			contentContainerClassName="flex-1 bg-background"
 		>
 			<View className="flex-1 flex px-2 flex-col justify-between">
 				<View className="gap-2">

@@ -1,6 +1,5 @@
-import { Pressable, ScrollView, useColorScheme, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { useModalControls } from '~/state/modals';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Calendar, DateData } from 'react-native-calendars';
 import { StyledIcon } from '~/view/com/icons/StyledIcons';
 import { Link, router, Stack } from 'expo-router';
@@ -9,11 +8,10 @@ import { Text } from '~/components/ui/text';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Loader } from '~/components/Loader';
 import { useListPosts } from '~/state/queries/post';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { formatDate } from '~/lib/utils';
-import * as Toast from '~/view/com/util/Toast';
 import { useCalendarTheme } from '~/hooks/useCalendarTheme';
-import { useSetDrawerOpen } from '~/state/shell/drawer-open';
+import { Hamburger } from '~/view/com/util/Hamburger';
 
 export default function TabOneScreen() {
 	const { openModal } = useModalControls();
@@ -36,7 +34,6 @@ export default function TabOneScreen() {
 		});
 	};
 	const { key, theme } = useCalendarTheme();
-	const setIsDrawerOpen = useSetDrawerOpen();
 	if (fetchListPosts.isLoading) {
 		return (
 			<View className="flex-1 items-center justify-center">
@@ -50,15 +47,7 @@ export default function TabOneScreen() {
 				<ScrollView className="flex-1">
 					<Stack.Screen
 						options={{
-							headerLeft: () => (
-								<Button
-									variant={'ghost'}
-									size={'icon'}
-									onPress={() => setIsDrawerOpen(true)}
-								>
-									<StyledIcon name="Menu" className="text-primary" />
-								</Button>
-							),
+							headerLeft: () => <Hamburger />,
 						}}
 					/>
 					<View className="flex-1">

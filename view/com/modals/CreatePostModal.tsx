@@ -91,7 +91,7 @@ export function Component() {
 
 	return (
 		<>
-			<View className="flex flex-row justify-between px-4 py-2 items-center border-b-hairline border-b-gray-500 bg-primary-foreground">
+			<View className="flex flex-row justify-between px-4 py-2 items-center border-b-hairline bg-background">
 				<Button onPress={closeModal} variant={'ghost'} size="sm">
 					<Text className="text-red-600">Cancel</Text>
 				</Button>
@@ -113,7 +113,7 @@ export function Component() {
 				<BottomSheetScrollView
 					key={1}
 					style={{ flex: 1 }}
-					className={'bg-primary-foreground'}
+					className={'bg-background'}
 				>
 					<KeyboardAwareScrollView contentContainerClassName="flex-1 ">
 						<View className="flex-1 px-10 mt-6 mb-12 gap-2">
@@ -452,7 +452,7 @@ export function Component() {
 						</View>
 					</KeyboardAwareScrollView>
 				</BottomSheetScrollView>
-				<BottomSheetScrollView key={2} className="flex-1 bg-primary-foreground">
+				<BottomSheetScrollView key={2} className="flex-1 bg-background">
 					<KeyboardAwareScrollView contentContainerClassName="flex-1">
 						<View className="flex-1 px-10 mt-6 mb-12 gap-2">
 							<Controller
