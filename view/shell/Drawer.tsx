@@ -18,7 +18,7 @@ let DrawerProfileCard = ({}): React.ReactNode => {
 			<Avatar className="w-12 h-12" alt="Avatar">
 				<AvatarImage className="w-12 h-12" src="" />
 				<AvatarFallback>
-					<Text className="text-lg font-semibold">
+					<Text className="text-lg font-semibold text-primary">
 						{currentUser?.data?.name.slice(0, 2)}
 					</Text>
 				</AvatarFallback>
@@ -58,7 +58,7 @@ export function DrawerContent() {
 				paddingTop: top + 20,
 				paddingBottom: bottom,
 			}}
-			contentContainerClassName="flex-1"
+			contentContainerClassName="flex-1 bg-primary-foreground"
 		>
 			<View className="flex-1 flex px-2 flex-col justify-between">
 				<View className="gap-2">
