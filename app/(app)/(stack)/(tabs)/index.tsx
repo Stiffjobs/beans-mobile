@@ -51,9 +51,13 @@ export default function TabOneScreen() {
 					<Stack.Screen
 						options={{
 							headerLeft: () => (
-								<Pressable onPress={() => setIsDrawerOpen(true)}>
+								<Button
+									variant={'ghost'}
+									size={'icon'}
+									onPress={() => setIsDrawerOpen(true)}
+								>
 									<StyledIcon name="Menu" className="text-primary" />
-								</Pressable>
+								</Button>
 							),
 						}}
 					/>
