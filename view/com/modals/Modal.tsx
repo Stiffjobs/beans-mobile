@@ -1,15 +1,17 @@
 import { useModalControls, useModals } from '~/state/modals';
 import BottomSheet, {
-	BottomSheetModal,
-	BottomSheetView,
+	BottomSheetProps,
+	WINDOW_WIDTH,
 } from '@gorhom/bottom-sheet';
 import { useEffect, useRef } from 'react';
 import * as CreatePostModal from './CreatePostModal';
 import * as EditProfileModal from './EditProfileModal';
-import { SafeAreaView, StyleSheet, View, Text } from 'react-native';
+import { SafeAreaView, View, Text, ViewStyle } from 'react-native';
 import { createCustomBackdrop } from '../util/BottomSheetCustomBackdrop';
 import { useReducedMotion } from 'react-native-reanimated';
 import React from 'react';
+import { cssInterop, remapProps } from 'nativewind';
+import { cva } from 'class-variance-authority';
 
 const DEFAULT_SNAPPOINTS = ['90%'];
 
@@ -64,6 +66,7 @@ export function ModalsContainer() {
 			onChange={onBottomSheetChange}
 			enablePanDownToClose
 			keyboardBlurBehavior="restore"
+			handleComponent={HandleComponent}
 			backdropComponent={
 				isModalActive ? createCustomBackdrop(onClose) : undefined
 			}
@@ -74,5 +77,18 @@ export function ModalsContainer() {
 		>
 			{element}
 		</BottomSheet>
+	);
+}
+
+function HandleComponent() {
+	return (
+		<View className="h-8 p-4 rounded-t-lg bg-primary-foreground">
+			<View
+				className="h-1 w-10 self-center rounded-lg bg-primary/75"
+				style={{
+					width: (7.5 * WINDOW_WIDTH) / 100,
+				}}
+			/>
+		</View>
 	);
 }

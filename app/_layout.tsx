@@ -9,11 +9,12 @@ import {
 import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import '../global.css';
 import { useColorScheme } from '~/lib/useColorScheme';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
+import * as Updates from 'expo-updates';
 
 import { Provider as ModalProvider } from '@/state/modals';
 import { NAV_THEME } from '~/lib/constants';
@@ -80,10 +81,26 @@ const DARK_THEME: Theme = {
 	colors: NAV_THEME.dark,
 };
 export default function RootLayout() {
+	const [appIsReady, setAppIsReady] = useState(false);
 	const [loaded, error] = useFonts({
 		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
 		...FontAwesome.font,
 	});
+
+	async function onFetchUpdateAsync() {
+		try {
+			if (process.env.NODE_ENV !== 'development') {
+				const update = await Updates.checkForUpdateAsync();
+				if (update.isAvailable) {
+					await Updates.fetchUpdateAsync();
+				}
+			}
+		} catch (error) {
+			alert(`Error fetching update: ${error}`);
+		} finally {
+			setAppIsReady(true);
+		}
+	}
 
 	// Expo Router uses Error Boundaries to catch errors in the navigation tree.
 	useEffect(() => {
@@ -92,20 +109,30 @@ export default function RootLayout() {
 
 	useEffect(() => {
 		if (loaded) {
-			SplashScreen.hideAsync();
+			onFetchUpdateAsync();
 		}
 	}, [loaded]);
 
-	if (!loaded) {
+	const onLayoutRootView = useCallback(async () => {
+		if (appIsReady) {
+			await SplashScreen.hideAsync();
+		}
+	}, [appIsReady]);
+
+	if (!loaded || !appIsReady) {
 		return null;
 	}
-	return <RootLayoutNav />;
+	return <RootLayoutNav onLayoutRootView={onLayoutRootView} />;
 }
 const useIsomorphicLayoutEffect =
 	Platform.OS === 'web' && typeof window === 'undefined'
 		? React.useEffect
 		: React.useLayoutEffect;
-function RootLayoutNav() {
+function RootLayoutNav({
+	onLayoutRootView,
+}: {
+	onLayoutRootView: () => Promise<void>;
+}) {
 	const hasMounted = React.useRef(false);
 	const { isDarkColorScheme } = useColorScheme();
 	const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
@@ -139,9 +166,11 @@ function RootLayoutNav() {
 										value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
 									>
 										<ModalProvider>
-											<Slot />
-											<ModalsContainer />
-											<PortalHost />
+											<View onLayout={onLayoutRootView} className="flex-1">
+												<Slot />
+												<ModalsContainer />
+												<PortalHost />
+											</View>
 										</ModalProvider>
 									</ThemeProvider>
 								</KeyboardProvider>

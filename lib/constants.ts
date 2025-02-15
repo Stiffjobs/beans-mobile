@@ -18,9 +18,9 @@ export const NAV_THEME = {
 };
 
 export enum RoastLevelEnum {
-	Light = 'light',
-	Medium = 'medium',
-	Dark = 'dark',
+	Light = 'Light',
+	Medium = 'Medium',
+	Dark = 'Dark',
 }
 
 export interface RoastLevel {

@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, useColorScheme, View } from 'react-native';
 import { useModalControls } from '~/state/modals';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Calendar, DateData } from 'react-native-calendars';
@@ -9,9 +9,10 @@ import { Text } from '~/components/ui/text';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Loader } from '~/components/Loader';
 import { useListPosts } from '~/state/queries/post';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDate } from '~/lib/utils';
 import * as Toast from '~/view/com/util/Toast';
+import { useCalendarTheme } from '~/hooks/useCalendarTheme';
 
 export default function TabOneScreen() {
 	const { openModal } = useModalControls();
@@ -28,10 +29,12 @@ export default function TabOneScreen() {
 			};
 		}, {}) || {};
 	const openCreatePostModal = () => {
+		console.log('opencreate modal');
 		openModal({
 			name: 'create-post',
 		});
 	};
+	const { key, theme } = useCalendarTheme();
 	const insets = useSafeAreaInsets();
 	if (fetchListPosts.isLoading) {
 		return (
@@ -57,13 +60,15 @@ export default function TabOneScreen() {
 					/>
 					<View className="flex-1">
 						<Calendar
+							key={key}
+							theme={theme}
 							enableSwipeMonths
+							reservationsBackgroundColor
 							markedDates={markedDates}
 							onDayPress={(day: DateData) => {
 								setSelectedDate(day.dateString);
 							}}
 						/>
-
 						{fetchListPosts.data?.map(
 							post =>
 								formatDate(post._creationTime) === selectedDate && (
@@ -72,14 +77,15 @@ export default function TabOneScreen() {
 						)}
 					</View>
 				</ScrollView>
-				{/* <Button onPress={() => Toast.show('Helloworld', 'CheckCheck', 'error')}>
-					<Text>Test toast</Text>
-				</Button> */}
 				<View className="absolute bottom-4  right-4 ">
-					<Pressable onPress={openCreatePostModal}>
-						<View className="h-16 aspect-square bg-primary rounded-full items-center justify-center">
-							<StyledIcon name="Plus" className="w-8 h-8 text-white" />
-						</View>
+					<Pressable
+						className="h-16 aspect-square bg-primary active:opacity-90 rounded-full items-center justify-center"
+						onPress={openCreatePostModal}
+					>
+						<StyledIcon
+							name="Plus"
+							className="w-8 h-8 text-primary-foreground"
+						/>
 					</Pressable>
 				</View>
 			</Authenticated>
@@ -103,21 +109,25 @@ function BrewingCard({ data }: { data: BrewingData }) {
 				<View className="flex-row justify-between items-center mb-2">
 					<View className="flex-1">
 						<Text className="text-lg font-semibold">{data.bean}</Text>
-						<Text className="text-gray-600 text-sm">{data.profile}</Text>
+						<Text className="text-gray-600 dark:text-gray-400 text-sm">
+							{data.profile}
+						</Text>
 					</View>
-					<Text className="text-gray-500">{data.time}</Text>
+					<Text className="text-gray-500 dark:text-gray-400">{data.time}</Text>
 				</View>
 
 				{/* Key Metrics */}
 				<View className="flex-row justify-between mb-2">
-					<Text className="text-gray-600">
+					<Text className="text-gray-600 dark:text-gray-400">
 						{data.coffeeIn}g / {data.beverageWeight}g
 					</Text>
-					<Text className="text-gray-600">{data.brewTemperature}°C</Text>
+					<Text className="text-gray-600 dark:text-gray-400">
+						{data.brewTemperature}°C
+					</Text>
 				</View>
 
 				{/* Equipment (single line) */}
-				<Text className="text-gray-600 text-sm">
+				<Text className="text-gray-600 dark:text-gray-400 text-sm">
 					{data.preparationMethod} · {data.grinder} ({data.grindSetting})
 				</Text>
 			</View>

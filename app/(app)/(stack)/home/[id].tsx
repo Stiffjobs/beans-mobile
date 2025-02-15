@@ -34,7 +34,7 @@ export default function PostDetailsPage() {
 	}
 	const urls = data?.images.filter(e => e !== null) ?? [];
 	return (
-		<ScrollView className="flex-1 bg-white p-4 gap-4">
+		<ScrollView className="flex-1  p-4 gap-4">
 			<Stack.Screen
 				options={{
 					headerRight: () => (
@@ -86,7 +86,7 @@ export default function PostDetailsPage() {
 				)}
 			/>
 			{/* Basic Info Section */}
-			<View className="bg-gray-50 rounded-lg p-4 ">
+			<View className="rounded-lg p-4 ">
 				<Text className="text-lg font-semibold mb-2">Basic Information</Text>
 				<DetailItem label="Bean" value={data?.bean} />
 				<DetailItem label="Flavor" value={data?.flavor} />
@@ -94,17 +94,17 @@ export default function PostDetailsPage() {
 			</View>
 
 			{/* Brewing Parameters */}
-			<View className="bg-gray-50 rounded-lg p-4 ">
+			<View className="rounded-lg p-4 ">
 				<Text className="text-lg font-semibold mb-2">Brewing Parameters</Text>
-				<DetailItem label="Coffee In" value={data?.coffeeIn} />
-				<DetailItem label="Ratio" value={data?.ratio} />
-				<DetailItem label="Beverage Weight" value={data?.beverageWeight} />
-				<DetailItem label="Temperature" value={data?.brewTemperature} />
+				<DetailItem label="Coffee In (g)" value={data?.coffeeIn} />
+				<DetailItem label="Ratio" value={data?.ratio?.replace('/', ':')} />
+				<DetailItem label="Beverage Weight (g)" value={data?.beverageWeight} />
+				<DetailItem label="Temperature (°C)" value={data?.brewTemperature} />
 				<DetailItem label="Method" value={data?.preparationMethod} />
 			</View>
 
 			{/* Equipment */}
-			<View className="bg-gray-50 rounded-lg p-4 ">
+			<View className="rounded-lg p-4 ">
 				<Text className="text-lg font-semibold mb-2">Equipment</Text>
 				<DetailItem label="Filter Paper" value={data?.filterPaper} />
 				<DetailItem label="Water" value={data?.water} />
@@ -113,7 +113,7 @@ export default function PostDetailsPage() {
 			</View>
 
 			{/* Technical Details */}
-			<View className="bg-gray-50 rounded-lg p-4 ">
+			<View className="rounded-lg p-4 ">
 				<Text className="text-lg font-semibold mb-2">Technical Details</Text>
 				<DetailItem label="TDS" value={data?.tds} />
 				<DetailItem label="Extraction Yield" value={data?.ey} />
@@ -123,14 +123,18 @@ export default function PostDetailsPage() {
 
 			{/* Brewing Steps */}
 			{data?.steps && data.steps.length > 0 && (
-				<View className="bg-gray-50 rounded-lg p-4 ">
+				<View className="rounded-lg p-4 ">
 					<Text className="text-lg font-semibold mb-2">Brewing Steps</Text>
 					{data.steps.map((step, index) => (
 						<View key={index} className="py-2 border-b border-gray-200">
 							<Text className="font-medium">{step.timestamp}</Text>
 							<View className="flex-row justify-between">
-								<Text className="text-gray-600">{step.action}</Text>
-								<Text className="text-gray-900">{step.value}</Text>
+								<Text className="text-gray-600 dark:text-gray-400">
+									{step.action}
+								</Text>
+								<Text className="text-gray-900 dark:text-gray-100">
+									{step.value}(s)
+								</Text>
 							</View>
 						</View>
 					))}
@@ -138,7 +142,7 @@ export default function PostDetailsPage() {
 			)}
 
 			{/* Additional Information */}
-			<View className="bg-gray-50 rounded-lg p-4 ">
+			<View className="rounded-lg p-4 ">
 				<Text className="text-lg font-semibold mb-2">
 					Additional Information
 				</Text>
@@ -165,7 +169,7 @@ const DetailItem = ({
 	value: string | number | undefined;
 }) => (
 	<View className="flex-row justify-between py-2 border-b border-gray-200">
-		<Text className="text-gray-600 font-medium">{label}</Text>
-		<Text className="text-gray-900">{value}</Text>
+		<Text className=" font-medium">{label}</Text>
+		<Text className="">{value}</Text>
 	</View>
 );
