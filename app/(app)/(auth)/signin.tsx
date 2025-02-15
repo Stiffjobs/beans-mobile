@@ -40,6 +40,7 @@ export default function Page() {
 						<View className="gap-2">
 							<Input
 								autoCapitalize="none"
+								keyboardType="email-address"
 								placeholder="Enter email"
 								onChangeText={onChange}
 							/>

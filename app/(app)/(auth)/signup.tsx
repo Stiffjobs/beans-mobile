@@ -48,6 +48,7 @@ export default function SignUpScreen() {
 						value={code}
 						placeholder="Enter your verification code"
 						onChangeText={code => setCode(code)}
+						keyboardType="numeric"
 					/>
 					<Button onPress={onVerifyPress}>
 						<Text>Verify</Text>
@@ -70,6 +71,7 @@ export default function SignUpScreen() {
 								autoCapitalize="none"
 								placeholder="Enter email"
 								onChangeText={onChange}
+								keyboardType="email-address"
 							/>
 							{form.formState.errors.email && (
 								<ErrorMessage message={form.formState.errors.email?.message} />
