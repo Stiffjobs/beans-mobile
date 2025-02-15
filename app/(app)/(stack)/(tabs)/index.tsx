@@ -52,7 +52,7 @@ export default function TabOneScreen() {
 							headerLeft: () => (
 								<Link asChild href={'/home/settings'}>
 									<Button variant={'ghost'}>
-										<StyledIcon name="Settings" className="text-black" />
+										<StyledIcon name="Settings" className="text-primary" />
 									</Button>
 								</Link>
 							),

@@ -86,7 +86,13 @@ export default function RootLayout() {
 		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
 		...FontAwesome.font,
 	});
+	const { isUpdatePending } = Updates.useUpdates();
 
+	useEffect(() => {
+		if (isUpdatePending) {
+			Updates.reloadAsync();
+		}
+	}, [isUpdatePending]);
 	async function onFetchUpdateAsync() {
 		try {
 			if (process.env.NODE_ENV !== 'development') {
