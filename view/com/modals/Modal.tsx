@@ -54,7 +54,11 @@ export function ModalsContainer() {
 
 	if (snapPoints[0] === 'fullscreen') {
 		return (
-			<Modal visible={isModalActive} animationType="slide" className="">
+			<Modal
+				visible={isModalActive}
+				animationType="slide"
+				presentationStyle="formSheet"
+			>
 				<SafeAreaView className="bg-background flex-1 top-0 right-0 left-0 bottom-0  absolute z-50">
 					{element}
 				</SafeAreaView>

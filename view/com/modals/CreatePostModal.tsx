@@ -91,7 +91,7 @@ export function Component() {
 
 	return (
 		<>
-			<View className="flex flex-row justify-between px-4 py-2 items-center border-b-hairline bg-background">
+			<View className="flex flex-row justify-between px-4 py-4 items-center border-b-hairline bg-background">
 				<Button onPress={closeModal} variant={'ghost'} size="sm">
 					<Text className="text-red-600">Cancel</Text>
 				</Button>
@@ -110,7 +110,7 @@ export function Component() {
 				}}
 				initialPage={activePage}
 			>
-				<KeyboardAwareScrollView key={1} contentContainerClassName="flex-1 ">
+				<KeyboardAwareScrollView key={1}>
 					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
 						<Controller
 							control={form.control}
@@ -440,7 +440,7 @@ export function Component() {
 						/>
 					</View>
 				</KeyboardAwareScrollView>
-				<KeyboardAwareScrollView key={2} contentContainerClassName="flex-1">
+				<KeyboardAwareScrollView key={2}>
 					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
 						<Controller
 							control={form.control}
