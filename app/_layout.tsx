@@ -17,6 +17,7 @@ import { Text, View } from 'react-native';
 import * as Updates from 'expo-updates';
 
 import { Provider as ModalProvider } from '@/state/modals';
+import { Provider as ShellStateProvider } from '@/state/shell';
 import { NAV_THEME } from '~/lib/constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ModalsContainer } from '~/view/com/modals/Modal';
@@ -35,6 +36,7 @@ import { i18n } from '@lingui/core';
 import { Drawer } from 'expo-router/drawer';
 import { tokenCache } from '~/utils/cache';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Shell } from '~/view/shell';
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 const convex = new ConvexReactClient(
 	process.env.EXPO_PUBLIC_CONVEX_URL as string
@@ -171,13 +173,16 @@ function RootLayoutNav({
 									<ThemeProvider
 										value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
 									>
-										<ModalProvider>
-											<View onLayout={onLayoutRootView} className="flex-1">
-												<Slot />
-												<ModalsContainer />
-												<PortalHost />
-											</View>
-										</ModalProvider>
+										<ShellStateProvider>
+											<ModalProvider>
+												<View onLayout={onLayoutRootView} className="flex-1">
+													<Shell>
+														<Slot />
+													</Shell>
+													<PortalHost />
+												</View>
+											</ModalProvider>
+										</ShellStateProvider>
 									</ThemeProvider>
 								</KeyboardProvider>
 							</GestureHandlerRootView>

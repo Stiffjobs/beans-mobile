@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import { formatDate } from '~/lib/utils';
 import * as Toast from '~/view/com/util/Toast';
 import { useCalendarTheme } from '~/hooks/useCalendarTheme';
+import { useSetDrawerOpen } from '~/state/shell/drawer-open';
 
 export default function TabOneScreen() {
 	const { openModal } = useModalControls();
@@ -35,7 +36,7 @@ export default function TabOneScreen() {
 		});
 	};
 	const { key, theme } = useCalendarTheme();
-	const insets = useSafeAreaInsets();
+	const setIsDrawerOpen = useSetDrawerOpen();
 	if (fetchListPosts.isLoading) {
 		return (
 			<View className="flex-1 items-center justify-center">
@@ -50,11 +51,9 @@ export default function TabOneScreen() {
 					<Stack.Screen
 						options={{
 							headerLeft: () => (
-								<Link asChild href={'/home/settings'}>
-									<Button variant={'ghost'}>
-										<StyledIcon name="Settings" className="text-primary" />
-									</Button>
-								</Link>
+								<Pressable onPress={() => setIsDrawerOpen(true)}>
+									<StyledIcon name="Menu" className="text-primary" />
+								</Pressable>
 							),
 						}}
 					/>
