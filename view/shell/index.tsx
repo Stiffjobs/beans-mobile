@@ -41,9 +41,6 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 				drawerStyle={{ width: Math.min(400, winDim.width * 0.8) }}
 				configureGestureHandler={handler => {
 					handler = handler.requireExternalGestureToFail(trendingScrollGesture);
-					console.log('swipeEnabled', swipeEnabled);
-					console.log('cangoback', isOnTab);
-					console.log('isSwipedisabled', isDrawerSwipeDisabled);
 					if (swipeEnabled) {
 						if (isDrawerOpen) {
 							return handler.activeOffsetX([-1, 1]);
