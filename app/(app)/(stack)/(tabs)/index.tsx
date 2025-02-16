@@ -12,25 +12,34 @@ import { useState } from 'react';
 import { formatDate } from '~/lib/utils';
 import { useCalendarTheme } from '~/hooks/useCalendarTheme';
 import { Hamburger } from '~/view/com/util/Hamburger';
+import {
+	Card,
+	CardHeader,
+	CardTitle,
+	CardDescription,
+	CardContent,
+	CardFooter,
+} from '~/components/ui/card';
 
-export default function TabOneScreen() {
+export default function HomeScreen() {
 	const { openModal } = useModalControls();
 	const fetchListPosts = useListPosts();
 	const [selectedDate, setSelectedDate] = useState<string>(
 		formatDate(new Date().getTime())
 	);
-	const markedDates =
-		fetchListPosts.data?.reduce((acc, post) => {
-			const date = formatDate(post._creationTime);
-			return {
-				...acc,
-				[date]: { marked: true },
-			};
-		}, {}) || {};
+	const markedDates = fetchListPosts.data?.reduce((acc, post) => {
+		const date = post.createdDate;
+		return {
+			...acc,
+			[date]: { marked: true },
+			[selectedDate]: { marked: date === selectedDate, selected: true },
+		};
+	}, {}) || { [selectedDate]: { selected: true } };
 	const openCreatePostModal = () => {
 		console.log('opencreate modal');
 		openModal({
 			name: 'create-post',
+			selectedDate: selectedDate,
 		});
 	};
 	const { key, theme } = useCalendarTheme();
@@ -95,33 +104,36 @@ export default function TabOneScreen() {
 function BrewingCard({ data }: { data: BrewingData }) {
 	return (
 		<Pressable onPress={() => router.navigate(`/home/${data._id}`)}>
-			<View className="mx-4 my-2 rounded-lg p-3 border border-gray-200">
-				{/* Header */}
-				<View className="flex-row justify-between items-center mb-2">
-					<View className="flex-1">
-						<Text className="text-lg font-semibold">{data.bean}</Text>
-						<Text className="text-gray-600 dark:text-gray-400 text-sm">
-							{data.profile}
+			<Card className="mx-4 my-2">
+				<CardHeader className="pb-2">
+					<View className="flex-row justify-between items-center">
+						<View className="flex-1">
+							<CardTitle className="text-primary">{data.bean}</CardTitle>
+							<CardDescription>{data.profile}</CardDescription>
+						</View>
+						<Text className="text-gray-500 dark:text-gray-400">
+							{data.time}
 						</Text>
 					</View>
-					<Text className="text-gray-500 dark:text-gray-400">{data.time}</Text>
-				</View>
+				</CardHeader>
 
-				{/* Key Metrics */}
-				<View className="flex-row justify-between mb-2">
-					<Text className="text-gray-600 dark:text-gray-400">
-						{data.coffeeIn}g / {data.beverageWeight}g
-					</Text>
-					<Text className="text-gray-600 dark:text-gray-400">
-						{data.brewTemperature}°C
-					</Text>
-				</View>
+				<CardContent className="py-2">
+					<View className="flex-row justify-between mb-2">
+						<Text className="text-gray-600 dark:text-gray-400">
+							{data.coffeeIn}g / {data.beverageWeight}g
+						</Text>
+						<Text className="text-gray-600 dark:text-gray-400">
+							{data.brewTemperature}°C
+						</Text>
+					</View>
+				</CardContent>
 
-				{/* Equipment (single line) */}
-				<Text className="text-gray-600 dark:text-gray-400 text-sm">
-					{data.preparationMethod} · {data.grinder} ({data.grindSetting})
-				</Text>
-			</View>
+				<CardFooter className="pt-0">
+					<Text className=" text-secondary-foreground  text-sm">
+						{data.preparationMethod} · {data.grinder} ({data.grindSetting})
+					</Text>
+				</CardFooter>
+			</Card>
 		</Pressable>
 	);
 }
