@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 export interface CreatePostModal {
 	name: 'create-post';
+	selectedDate: string;
 }
 export interface EditProfileModal {
 	name: 'edit-profile';

@@ -42,10 +42,11 @@ import { PortalHost } from '@rn-primitives/portal';
 type FormFields = z.infer<typeof createPostSchema>;
 
 export const snapPoints = ['fullscreen'];
-export function Component() {
+export function Component({ selectedDate }: { selectedDate: string }) {
 	const form = useForm<FormFields>({
 		resolver: zodResolver(createPostSchema),
 		defaultValues: {
+			createdDate: selectedDate,
 			steps: [],
 			images: [],
 		},
@@ -95,7 +96,7 @@ export function Component() {
 		<>
 			<View className="flex flex-row justify-between px-4 py-4 items-center border-b-hairline bg-background">
 				<Button onPress={closeModal} variant={'ghost'} size="sm">
-					<Text className="text-red-600">Cancel</Text>
+					<Text className="text-destructive">Cancel</Text>
 				</Button>
 				<Text>{activePage + 1} / 2</Text>
 				<Button
@@ -114,6 +115,8 @@ export function Component() {
 			>
 				<KeyboardAwareScrollView key={1}>
 					<View className="flex-1 px-10 mt-6 mb-20 gap-2">
+						<Label>Created on</Label>
+						<H4>{selectedDate}</H4>
 						<Controller
 							control={form.control}
 							name="bean"

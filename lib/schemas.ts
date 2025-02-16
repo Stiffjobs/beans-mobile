@@ -22,6 +22,7 @@ export const signUpSchema = z.object({
 export const createPostSchema = z.object({
 	bean: z.string().max(256),
 	flavor: z.string().max(256),
+	createdDate: z.string().date(),
 	roastLevel: z.string().max(256),
 	coffeeIn: z.string().refine(e => !isNaN(Number(e)), 'Invalid coffee in'),
 	ratio: z.string(),
