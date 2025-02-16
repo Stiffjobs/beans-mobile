@@ -11,9 +11,8 @@ import { useCallback, useState } from 'react';
 import { Drawer } from 'react-native-drawer-layout';
 import { isIOS } from '~/platform/detection';
 import { DrawerContent } from './Drawer';
-import { router } from 'expo-router';
+import { useSegments } from 'expo-router';
 import { useAuth } from '@clerk/clerk-expo';
-
 function ShellInner({ children }: React.PropsWithChildren<{}>) {
 	const isDrawerOpen = useIsDrawerOpen();
 	const { sessionId } = useAuth();
@@ -27,12 +26,13 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 		setIsDrawerOpen(false);
 	}, [setIsDrawerOpen]);
 	const winDim = useWindowDimensions();
+	const segments = useSegments();
+	const isOnTab = segments.find(s => s === '(tabs)') !== undefined;
 	const renderDrawerContent = useCallback(() => {
 		return <DrawerContent />;
 	}, []);
 	const [trendingScrollGesture] = useState(() => Gesture.Native());
-	const swipeEnabled =
-		!router.canGoBack() && sessionId && !isDrawerSwipeDisabled;
+	const swipeEnabled = isOnTab && sessionId && !isDrawerSwipeDisabled;
 
 	return (
 		<>
@@ -41,6 +41,9 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 				drawerStyle={{ width: Math.min(400, winDim.width * 0.8) }}
 				configureGestureHandler={handler => {
 					handler = handler.requireExternalGestureToFail(trendingScrollGesture);
+					console.log('swipeEnabled', swipeEnabled);
+					console.log('cangoback', isOnTab);
+					console.log('isSwipedisabled', isDrawerSwipeDisabled);
 					if (swipeEnabled) {
 						if (isDrawerOpen) {
 							return handler.activeOffsetX([-1, 1]);
