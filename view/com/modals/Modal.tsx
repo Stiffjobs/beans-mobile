@@ -57,7 +57,7 @@ export function ModalsContainer() {
 			<Modal
 				visible={isModalActive}
 				animationType="slide"
-				presentationStyle="fullScreen"
+				presentationStyle="formSheet"
 			>
 				<SafeAreaView className="bg-background flex-1">{element}</SafeAreaView>
 			</Modal>
