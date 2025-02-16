@@ -10,6 +10,7 @@ export default () => {
 			}}
 		>
 			<Stack.Screen name="settings" />
+			<Stack.Screen name="modal" />
 			<Stack.Screen
 				name="[id]"
 				options={{

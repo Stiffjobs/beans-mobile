@@ -67,6 +67,11 @@ export default function TabOneScreen() {
 									<BrewingCard key={post._id} data={post} />
 								)
 						)}
+						<Link asChild href={'/home/modal'}>
+							<Button>
+								<Text>Open Modal</Text>
+							</Button>
+						</Link>
 					</View>
 				</ScrollView>
 				<View className="absolute bottom-4  right-4 ">

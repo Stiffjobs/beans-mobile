@@ -36,6 +36,8 @@ import { Pager } from '../pager/Pager';
 import { TimeMaskInput } from '../time/TimeMaskInput';
 import { H4 } from '~/components/ui/typography';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { WindowOverlay } from '../util/WindowOverlay';
+import { PortalHost } from '@rn-primitives/portal';
 
 type FormFields = z.infer<typeof createPostSchema>;
 
@@ -473,10 +475,14 @@ export function Component() {
 					</View>
 				</KeyboardAwareScrollView>
 			</Pager>
+			<WindowOverlay>
+				<PortalHost name={CUSTOM_PORTAL_HOST_NAME} />
+			</WindowOverlay>
 		</>
 	);
 }
 
+const CUSTOM_PORTAL_HOST_NAME = 'modal-select';
 function SelectComponent({
 	placeholder,
 	options,
@@ -494,29 +500,36 @@ function SelectComponent({
 		right: 12,
 	};
 	return (
-		<>
-			<Select onValueChange={val => onChange(val?.value)}>
-				<SelectTrigger className="w-[250px]">
-					<SelectValue
-						className="text-foreground text-sm native:text-lg"
-						placeholder={placeholder ?? ''}
-					/>
-				</SelectTrigger>
-				<SelectContent insets={contentInsets} className="w-[250px]">
-					<SelectGroup>
-						{options.map(option => (
-							<SelectItem
-								key={option.value}
-								label={option.label}
-								value={option.value}
-							>
-								{option.label}
-							</SelectItem>
-						))}
-					</SelectGroup>
-				</SelectContent>
-			</Select>
-		</>
+		<Select onValueChange={val => onChange(val?.value)}>
+			<SelectTrigger
+				onPress={() => {
+					console.log('pressed');
+				}}
+				className="w-[250px]"
+			>
+				<SelectValue
+					className="text-foreground text-sm native:text-lg"
+					placeholder={placeholder ?? ''}
+				/>
+			</SelectTrigger>
+			<SelectContent
+				portalHost={CUSTOM_PORTAL_HOST_NAME}
+				insets={contentInsets}
+				className="w-[250px]"
+			>
+				<SelectGroup>
+					{options.map(option => (
+						<SelectItem
+							key={option.value}
+							label={option.label}
+							value={option.value}
+						>
+							{option.label}
+						</SelectItem>
+					))}
+				</SelectGroup>
+			</SelectContent>
+		</Select>
 	);
 }
 
