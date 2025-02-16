@@ -54,6 +54,7 @@ export function DrawerContent() {
 
 	return (
 		<ScrollView
+			className="bg-background"
 			contentContainerStyle={{
 				paddingTop: top + 20,
 				paddingBottom: bottom,
