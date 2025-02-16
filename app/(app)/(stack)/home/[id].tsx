@@ -115,8 +115,8 @@ export default function PostDetailsPage() {
 			{/* Technical Details */}
 			<View className="rounded-lg p-4 ">
 				<Text className="text-lg font-semibold mb-2">Technical Details</Text>
-				<DetailItem label="TDS" value={data?.tds} />
-				<DetailItem label="Extraction Yield" value={data?.ey} />
+				<DetailItem label="TDS" value={data?.tds?.toFixed(2)} />
+				<DetailItem label="Extraction Yield" value={data?.ey?.toFixed(2)} />
 				<DetailItem label="Bloom Time" value={data?.bloomTime} />
 				<DetailItem label="Total Time" value={data?.time} />
 			</View>
