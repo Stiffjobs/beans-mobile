@@ -9,9 +9,8 @@ import {
 } from '~/state/shell';
 import { useCallback, useState } from 'react';
 import { Drawer } from 'react-native-drawer-layout';
-import { isAndroid, isIOS } from '~/platform/detection';
+import { isIOS } from '~/platform/detection';
 import { DrawerContent } from './Drawer';
-import { useColorScheme } from '~/lib/useColorScheme';
 import { router } from 'expo-router';
 import { useAuth } from '@clerk/clerk-expo';
 
