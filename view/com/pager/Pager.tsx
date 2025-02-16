@@ -15,6 +15,8 @@ import Animated, {
 	useHandler,
 	useSharedValue,
 } from 'react-native-reanimated';
+import { useFocusEffect } from '@react-navigation/native';
+import { useSetDrawerSwipeDisabled } from '~/state/shell';
 
 export type PageSelectedEvent = PagerViewOnPageSelectedEvent;
 
@@ -59,7 +61,16 @@ export const Pager = forwardRef<PagerRef, React.PropsWithChildren<Props>>(
 		const pagerView = React.useRef<PagerView>(null);
 
 		const [isIdle, setIsIdle] = React.useState(true);
-
+		const setDrawerSwipeDisabled = useSetDrawerSwipeDisabled();
+		useFocusEffect(
+			useCallback(() => {
+				const canSwipeDrawer = selectedPage === 0 && isIdle;
+				setDrawerSwipeDisabled(!canSwipeDrawer);
+				return () => {
+					setDrawerSwipeDisabled(false);
+				};
+			}, [setDrawerSwipeDisabled, selectedPage, isIdle])
+		);
 		React.useImperativeHandle(ref, () => ({
 			setPage: (index: number) => {
 				pagerView.current?.setPage(index);

@@ -1,10 +1,6 @@
 import { ConvexError, v } from 'convex/values';
 import { mutation, query, QueryCtx } from './_generated/server';
-import { Triggers } from 'convex-helpers/server/triggers';
 import { getCurrentUserOrThrow } from './users';
-import { asyncMap } from 'convex-helpers';
-
-const triggers = new Triggers();
 
 export const createPost = mutation({
 	args: {
@@ -24,6 +20,7 @@ export const createPost = mutation({
 		profile: v.string(),
 		tds: v.number(),
 		ey: v.number(),
+		createdDate: v.string(),
 		bloomTime: v.string(),
 		preparationTools: v.string(),
 		time: v.string(),

@@ -113,7 +113,7 @@ export function Component() {
 				initialPage={activePage}
 			>
 				<KeyboardAwareScrollView key={1}>
-					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
+					<View className="flex-1 px-10 mt-6 mb-20 gap-2">
 						<Controller
 							control={form.control}
 							name="bean"

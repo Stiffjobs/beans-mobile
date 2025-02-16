@@ -1,16 +1,26 @@
 import { useWindowDimensions, View } from 'react-native';
 import { ModalsContainer } from '../com/modals/Modal';
 import { Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useIsDrawerOpen, useSetDrawerOpen } from '~/state/shell/drawer-open';
+import {
+	useIsDrawerOpen,
+	useSetDrawerOpen,
+	useIsDrawerSwipeDisabled,
+	useSetDrawerSwipeDisabled,
+} from '~/state/shell';
 import { useCallback, useState } from 'react';
 import { Drawer } from 'react-native-drawer-layout';
 import { isAndroid, isIOS } from '~/platform/detection';
 import { DrawerContent } from './Drawer';
 import { useColorScheme } from '~/lib/useColorScheme';
+import { router } from 'expo-router';
+import { useAuth } from '@clerk/clerk-expo';
 
 function ShellInner({ children }: React.PropsWithChildren<{}>) {
 	const isDrawerOpen = useIsDrawerOpen();
+	const { sessionId } = useAuth();
 	const setIsDrawerOpen = useSetDrawerOpen();
+	const isDrawerSwipeDisabled = useIsDrawerSwipeDisabled();
+
 	const onOpenDrawer = useCallback(() => {
 		setIsDrawerOpen(true);
 	}, [setIsDrawerOpen]);
@@ -22,7 +32,8 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 		return <DrawerContent />;
 	}, []);
 	const [trendingScrollGesture] = useState(() => Gesture.Native());
-	const { isDarkColorScheme } = useColorScheme();
+	const swipeEnabled =
+		!router.canGoBack() && sessionId && !isDrawerSwipeDisabled;
 
 	return (
 		<>
@@ -31,7 +42,7 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 				drawerStyle={{ width: Math.min(400, winDim.width * 0.8) }}
 				configureGestureHandler={handler => {
 					handler = handler.requireExternalGestureToFail(trendingScrollGesture);
-					if (true) {
+					if (swipeEnabled) {
 						if (isDrawerOpen) {
 							return handler.activeOffsetX([-1, 1]);
 						} else {
@@ -46,6 +57,7 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 							);
 						}
 					} else {
+						return handler.failOffsetX([0, 0]).failOffsetY([0, 0]);
 					}
 				}}
 				open={isDrawerOpen}
