@@ -109,10 +109,10 @@ function BrewingCard({ data }: { data: BrewingData }) {
 					<View className="flex-row justify-between items-center">
 						<View className="flex-1">
 							<CardTitle className="text-primary">{data.bean}</CardTitle>
-							<CardDescription>{data.profile}</CardDescription>
+							<CardDescription>{data.brewer}</CardDescription>
 						</View>
 						<Text className="text-gray-500 dark:text-gray-400">
-							{data.time}
+							{data.totalDrawdownTime}
 						</Text>
 					</View>
 				</CardHeader>
@@ -130,7 +130,7 @@ function BrewingCard({ data }: { data: BrewingData }) {
 
 				<CardFooter className="pt-0">
 					<Text className=" text-secondary-foreground  text-sm">
-						{data.preparationMethod} · {data.grinder} ({data.grindSetting})
+						{data.methodName} · {data.grinder} ({data.grindSetting})
 					</Text>
 				</CardFooter>
 			</Card>
@@ -141,23 +141,28 @@ interface BrewingData {
 	_creationTime: number;
 	_id: string;
 	author: string;
+	createdDate: string;
 	bean: string;
-	beverageWeight: string;
-	bloomTime: string;
-	brewTemperature: string;
-	coffeeIn: string;
-	ey: number;
-	filterPaper: string;
-	flavor: string;
-	grindSetting: string;
-	grinder: string;
-	others: string;
-	preparationMethod: string;
-	preparationTools: string;
-	profile: string;
-	ratio: string;
 	roastLevel: string;
-	tds: number;
-	time: string;
-	water: string;
+	coffeeIn: string;
+	ratio: string;
+	beverageWeight: string;
+	brewTemperature: string;
+	filterPaper: string;
+	grinder: string;
+	grindSetting: string;
+	bloomTime: string;
+	totalDrawdownTime?: string;
+	brewingWater?: string;
+	recipeSteps?: {
+		timestamp: string;
+		action: string;
+		value: number;
+	}[];
+	methodName?: string;
+	brewer?: string;
+	otherTools?: string;
+	flavor?: string;
+	tds?: number;
+	ey?: number;
 }

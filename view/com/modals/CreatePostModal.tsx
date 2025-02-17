@@ -47,7 +47,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 		resolver: zodResolver(createPostSchema),
 		defaultValues: {
 			createdDate: selectedDate,
-			steps: [],
+			recipeSteps: [],
 			images: [],
 		},
 	});
@@ -136,21 +136,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						/>
 						<Controller
 							control={form.control}
-							name="flavor"
-							render={({ field: { onChange } }) => {
-								return (
-									<>
-										<Label>Flavor profile</Label>
-										<Input onChangeText={onChange} />
-									</>
-								);
-							}}
-						/>
-						{form.formState.errors?.flavor && (
-							<ErrorMessage message={form.formState?.errors?.flavor.message} />
-						)}
-						<Controller
-							control={form.control}
 							name="roastLevel"
 							render={({ field: { onChange } }) => (
 								<>
@@ -228,48 +213,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						/>
 						<Controller
 							control={form.control}
-							name="tds"
-							render={({ field: { onChange, value } }) => (
-								<>
-									<Label>TDS</Label>
-									<Slider
-										minimumValue={1.0}
-										maximumValue={2.0}
-										step={0.01}
-										onValueChange={newValue => {
-											onChange(newValue);
-											// Calculate and set EY when TDS changes
-											const beverageWeight = parseFloat(
-												form.getValues('beverageWeight') || '0'
-											);
-											const coffeeIn = parseFloat(
-												form.getValues('coffeeIn') || '0'
-											);
-											if (beverageWeight && coffeeIn) {
-												const ey = (newValue * beverageWeight) / coffeeIn;
-												form.setValue('ey', ey);
-											}
-										}}
-									/>
-									<Text>{value?.toFixed(2)}</Text>
-									{form.formState.errors.tds && (
-										<ErrorMessage message={form.formState.errors.tds.message} />
-									)}
-								</>
-							)}
-						/>
-						<Controller
-							control={form.control}
-							name="ey"
-							render={({ field: { value } }) => (
-								<>
-									<Label>Extraction Yield (%)</Label>
-									<H4>{value?.toFixed(2)}%</H4>
-								</>
-							)}
-						/>
-						<Controller
-							control={form.control}
 							name="brewTemperature"
 							render={({ field: { onChange } }) => (
 								<>
@@ -278,37 +221,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									{form.formState.errors.brewTemperature && (
 										<ErrorMessage
 											message={form.formState.errors.brewTemperature.message}
-										/>
-									)}
-								</>
-							)}
-						/>
-						<Controller
-							control={form.control}
-							name="preparationMethod"
-							render={({ field: { onChange } }) => (
-								<>
-									<Label>Preparation method</Label>
-									<Input onChangeText={onChange} />
-									{form.formState.errors.preparationMethod && (
-										<ErrorMessage
-											message={form.formState.errors.preparationMethod.message}
-										/>
-									)}
-								</>
-							)}
-						/>
-						{/* TODO: this should look like a dropdown with options */}
-						<Controller
-							control={form.control}
-							name="others"
-							render={({ field: { onChange } }) => (
-								<>
-									<Label>Others</Label>
-									<Input onChangeText={onChange} />
-									{form.formState.errors.others && (
-										<ErrorMessage
-											message={form.formState.errors.others.message}
 										/>
 									)}
 								</>
@@ -332,14 +244,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						/>
 						<Controller
 							control={form.control}
-							name="water"
+							name="brewingWater"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Water</Label>
+									<Label>Brewing water (ppm)</Label>
 									<Input onChangeText={onChange} />
-									{form.formState.errors.water && (
+									{form.formState.errors.brewingWater && (
 										<ErrorMessage
-											message={form.formState.errors.water.message}
+											message={form.formState.errors.brewingWater.message}
 										/>
 									)}
 								</>
@@ -379,39 +291,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						/>
 						<Controller
 							control={form.control}
-							name="profile"
-							render={({ field: { onChange } }) => (
-								<>
-									<Label>Profile</Label>
-									<Input onChangeText={onChange} />
-									{form.formState.errors.profile && (
-										<ErrorMessage
-											message={form.formState.errors.profile.message}
-										/>
-									)}
-								</>
-							)}
-						/>
-						<Controller
-							control={form.control}
-							name="time"
-							render={({ field: { onChange, value } }) => {
-								return (
-									<>
-										<Label>Time</Label>
-										<TimeMaskInput value={value} onChange={onChange} />
-										{form.formState.errors.time && (
-											<ErrorMessage
-												message={form.formState.errors.time.message}
-											/>
-										)}
-									</>
-								);
-							}}
-						/>
-						{/* TODO: this should look like time picker  */}
-						<Controller
-							control={form.control}
 							name="bloomTime"
 							render={({ field: { onChange, value } }) => {
 								return (
@@ -427,18 +306,127 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								);
 							}}
 						/>
-						{/* TODO: this should look like a list of badges to toggle selection */}
 						<Controller
 							control={form.control}
-							name="preparationTools"
+							name="totalDrawdownTime"
+							render={({ field: { onChange, value } }) => {
+								return (
+									<>
+										<Label>Total drawdown time</Label>
+										<TimeMaskInput value={value} onChange={onChange} />
+										{form.formState.errors.totalDrawdownTime && (
+											<ErrorMessage
+												message={
+													form.formState.errors.totalDrawdownTime.message
+												}
+											/>
+										)}
+									</>
+								);
+							}}
+						/>
+						{/* INFO: under is for optional fields */}
+						<Controller
+							control={form.control}
+							name="methodName"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Preparation tools</Label>
-									<Textarea onChangeText={onChange} />
-									{form.formState.errors.preparationTools && (
+									<Label>Preparation method</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.methodName && (
 										<ErrorMessage
-											message={form.formState.errors.preparationTools.message}
+											message={form.formState.errors.methodName.message}
 										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="brewer"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Brewer</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.brewer && (
+										<ErrorMessage
+											message={form.formState.errors.brewer.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="otherTools"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Other tools</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.otherTools && (
+										<ErrorMessage
+											message={form.formState.errors.otherTools.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="flavor"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Flavor</Label>
+									<Input onChangeText={onChange} />
+									{form.formState.errors.flavor && (
+										<ErrorMessage
+											message={form.formState.errors.flavor?.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="tds"
+							render={({ field: { onChange, value } }) => (
+								<>
+									<Label>TDS</Label>
+									<Slider
+										minimumValue={1.0}
+										maximumValue={2.0}
+										step={0.01}
+										onValueChange={newValue => {
+											onChange(newValue);
+											// Calculate and set EY when TDS changes
+											const beverageWeight = parseFloat(
+												form.getValues('beverageWeight') || '0'
+											);
+											const coffeeIn = parseFloat(
+												form.getValues('coffeeIn') || '0'
+											);
+											if (beverageWeight && coffeeIn) {
+												const ey = (newValue * beverageWeight) / coffeeIn;
+												form.setValue('ey', ey);
+											}
+										}}
+									/>
+									<Text>{value?.toFixed(2)}</Text>
+									{form.formState.errors.tds && (
+										<ErrorMessage message={form.formState.errors.tds.message} />
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="ey"
+							render={({ field: { value } }) => (
+								<>
+									<Label>Extraction Yield (%)</Label>
+									<H4>{value?.toFixed(2)}%</H4>
+									{form.formState.errors.ey && (
+										<ErrorMessage message={form.formState.errors.ey.message} />
 									)}
 								</>
 							)}
@@ -449,13 +437,13 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
 						<Controller
 							control={form.control}
-							name="steps"
+							name="recipeSteps"
 							render={({ field: { onChange, value } }) => (
 								<>
 									<RecipeStepsEditor steps={value} setSteps={onChange} />
-									{form.formState.errors.steps && (
+									{form.formState.errors.recipeSteps && (
 										<ErrorMessage
-											message={form.formState.errors.steps.message}
+											message={form.formState.errors.recipeSteps.message}
 										/>
 									)}
 								</>

@@ -20,34 +20,31 @@ export const signUpSchema = z.object({
 });
 
 export const createPostSchema = z.object({
-	bean: z.string().max(256),
-	flavor: z.string().max(256),
-	createdDate: z.string().date(),
-	roastLevel: z.string().max(256),
-	coffeeIn: z.string().refine(e => !isNaN(Number(e)), 'Invalid coffee in'),
+	createdDate: z.string(),
+	bean: z.string(),
+	roastLevel: z.string(),
+	coffeeIn: z.string(),
 	ratio: z.string(),
-	beverageWeight: z
-		.string()
-		.refine(e => !isNaN(Number(e)), 'Invalid beverage weight'),
-	brewTemperature: z.string().max(256),
-	preparationMethod: z.string().max(256),
-	others: z.string().max(256),
-	filterPaper: z.string().max(256),
-	water: z.string().max(256),
-	grinder: z.string().max(256),
-	grindSetting: z.string().max(256),
-	profile: z.string().max(256),
-	tds: z.number().min(0),
-	ey: z.number().min(0),
+	beverageWeight: z.string(),
+	brewTemperature: z.string(),
+	filterPaper: z.string(),
+	brewingWater: z.string(),
+	grinder: z.string(),
+	grindSetting: z.string(),
 	bloomTime: z.string(),
-	time: z.string(),
-	preparationTools: z.string().max(256),
-	images: z.custom<ComposerImage>().array(),
-	steps: z.array(
+	totalDrawdownTime: z.string(),
+	recipeSteps: z.array(
 		z.object({
 			timestamp: z.string(),
-			action: z.string().max(256),
-			value: z.number().min(0),
+			action: z.string(),
+			value: z.number(),
 		})
 	),
+	methodName: z.string().optional(),
+	brewer: z.string().optional(),
+	otherTools: z.string().optional(),
+	flavor: z.string().optional(),
+	tds: z.number().min(0).optional(),
+	ey: z.number().min(0).optional(),
+	images: z.custom<ComposerImage>().array(),
 });

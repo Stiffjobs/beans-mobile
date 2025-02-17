@@ -100,14 +100,14 @@ export default function PostDetailsPage() {
 				<DetailItem label="Ratio" value={data?.ratio?.replace('/', ':')} />
 				<DetailItem label="Beverage Weight (g)" value={data?.beverageWeight} />
 				<DetailItem label="Temperature (°C)" value={data?.brewTemperature} />
-				<DetailItem label="Method" value={data?.preparationMethod} />
+				<DetailItem label="Method" value={data?.methodName} />
 			</View>
 
 			{/* Equipment */}
 			<View className="rounded-lg p-4 ">
 				<Text className="text-lg font-semibold mb-2">Equipment</Text>
 				<DetailItem label="Filter Paper" value={data?.filterPaper} />
-				<DetailItem label="Water" value={data?.water} />
+				<DetailItem label="Water" value={data?.brewingWater} />
 				<DetailItem label="Grinder" value={data?.grinder} />
 				<DetailItem label="Grind Setting" value={data?.grindSetting} />
 			</View>
@@ -118,14 +118,14 @@ export default function PostDetailsPage() {
 				<DetailItem label="TDS" value={data?.tds?.toFixed(2)} />
 				<DetailItem label="Extraction Yield" value={data?.ey?.toFixed(2)} />
 				<DetailItem label="Bloom Time" value={data?.bloomTime} />
-				<DetailItem label="Total Time" value={data?.time} />
+				<DetailItem label="Total Time" value={data?.totalDrawdownTime} />
 			</View>
 
 			{/* Brewing Steps */}
-			{data?.steps && data.steps.length > 0 && (
+			{data?.recipeSteps && data.recipeSteps.length > 0 && (
 				<View className="rounded-lg p-4 ">
 					<Text className="text-lg font-semibold mb-2">Brewing Steps</Text>
-					{data.steps.map((step, index) => (
+					{data.recipeSteps.map((step, index) => (
 						<View key={index} className="py-2 border-b border-gray-200">
 							<Text className="font-medium">{step.timestamp}</Text>
 							<View className="flex-row justify-between">
@@ -146,9 +146,8 @@ export default function PostDetailsPage() {
 				<Text className="text-lg font-semibold mb-2">
 					Additional Information
 				</Text>
-				<DetailItem label="Profile" value={data?.profile} />
-				<DetailItem label="Preparation Tools" value={data?.preparationTools} />
-				<DetailItem label="Other Notes" value={data?.others} />
+				<DetailItem label="Brewer" value={data?.brewer} />
+				<DetailItem label="Other Tools" value={data?.otherTools} />
 			</View>
 			<View className="h-8" />
 			<ImageView

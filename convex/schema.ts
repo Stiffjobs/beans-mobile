@@ -7,34 +7,35 @@ export default defineSchema({
 		tokenIdentifier: v.string(),
 	}).index('by_token', ['tokenIdentifier']),
 	posts: defineTable({
+		author: v.id('users'),
+		createdDate: v.string(),
 		bean: v.string(),
-		flavor: v.string(),
 		roastLevel: v.string(),
 		coffeeIn: v.string(),
 		ratio: v.string(),
-		createdDate: v.string(),
 		beverageWeight: v.string(),
 		brewTemperature: v.string(),
-		preparationMethod: v.string(),
-		others: v.string(),
 		filterPaper: v.string(),
-		water: v.string(),
 		grinder: v.string(),
 		grindSetting: v.string(),
-		profile: v.string(),
-		tds: v.number(),
-		ey: v.number(),
 		bloomTime: v.string(),
-		preparationTools: v.string(),
-		time: v.string(),
-		steps: v.array(
-			v.object({
-				timestamp: v.string(),
-				action: v.string(),
-				value: v.number(),
-			})
+		totalDrawdownTime: v.optional(v.string()),
+		brewingWater: v.optional(v.string()),
+		recipeSteps: v.optional(
+			v.array(
+				v.object({
+					timestamp: v.string(),
+					action: v.string(),
+					value: v.number(),
+				})
+			)
 		),
-		author: v.id('users'),
+		methodName: v.optional(v.string()),
+		brewer: v.optional(v.string()),
+		otherTools: v.optional(v.string()),
+		flavor: v.optional(v.string()),
+		tds: v.optional(v.number()),
+		ey: v.optional(v.number()),
 	}).index('by_author', ['author']),
 	post_images: defineTable({
 		postId: v.id('posts'),
