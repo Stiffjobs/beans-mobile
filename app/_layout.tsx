@@ -30,6 +30,7 @@ import { ConvexReactClient } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
 import { ConvexQueryClient } from '@convex-dev/react-query';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 import { I18nProvider, TransRenderProps } from '@lingui/react';
 import { i18n } from '@lingui/core';
@@ -173,16 +174,18 @@ function RootLayoutNav({
 									<ThemeProvider
 										value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
 									>
-										<ShellStateProvider>
-											<ModalProvider>
-												<View onLayout={onLayoutRootView} className="flex-1">
-													<Shell>
-														<Slot />
-													</Shell>
-													<PortalHost />
-												</View>
-											</ModalProvider>
-										</ShellStateProvider>
+										<ActionSheetProvider>
+											<ShellStateProvider>
+												<ModalProvider>
+													<View onLayout={onLayoutRootView} className="flex-1">
+														<Shell>
+															<Slot />
+														</Shell>
+														<PortalHost />
+													</View>
+												</ModalProvider>
+											</ShellStateProvider>
+										</ActionSheetProvider>
 									</ThemeProvider>
 								</KeyboardProvider>
 							</GestureHandlerRootView>
