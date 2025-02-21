@@ -1,0 +1,14 @@
+diff --git a/ios/src/ImageCropPicker.m b/ios/src/ImageCropPicker.m
+index 9f20973f1d641a8c3b96e825c1a4888eb80b55f9..d935777f92ca74f54832d13735474d849a069e58 100644
+--- a/ios/src/ImageCropPicker.m
++++ b/ios/src/ImageCropPicker.m
+@@ -126,7 +126,8 @@ - (void) setConfiguration:(NSDictionary *)options
+ 
+ - (UIViewController*) getRootVC {
+     UIViewController *root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+-    while (root.presentedViewController != nil) {
++    while (root.presentedViewController != nil &&
+++           !root.presentedViewController.isBeingDismissed) {
+         root = root.presentedViewController;
+     }
+     

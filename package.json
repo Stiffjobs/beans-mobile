@@ -22,6 +22,7 @@
 		"@clerk/types": "^4.45.0",
 		"@convex-dev/migrations": "^0.2.5",
 		"@convex-dev/react-query": "0.0.0-alpha.8",
+		"@expo/react-native-action-sheet": "^4.1.0",
 		"@expo/vector-icons": "^14.0.2",
 		"@gorhom/bottom-sheet": "^5.0.6",
 		"@hookform/resolvers": "^3.10.0",
@@ -34,6 +35,7 @@
 		"@rn-primitives/avatar": "^1.1.0",
 		"@rn-primitives/context-menu": "^1.1.0",
 		"@rn-primitives/dialog": "^1.1.0",
+		"@rn-primitives/dropdown-menu": "^1.1.0",
 		"@rn-primitives/label": "^1.1.0",
 		"@rn-primitives/portal": "^1.1.0",
 		"@rn-primitives/select": "^1.1.0",
@@ -114,5 +116,10 @@
 		"react-test-renderer": "18.3.1",
 		"typescript": "~5.3.3"
 	},
-	"private": true
+	"private": true,
+	"pnpm": {
+		"patchedDependencies": {
+			"react-native-image-crop-picker@0.42.0": "patches/react-native-image-crop-picker@0.42.0.patch"
+		}
+	}
 }
