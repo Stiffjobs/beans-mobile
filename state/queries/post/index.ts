@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { createPostSchema } from '~/lib/schemas';
 import { z } from 'zod';
-import { Alert } from 'react-native';
 import {
 	useMutation as useConvexMutation,
 	useQuery as useConvexQuery,
@@ -12,7 +11,7 @@ import { useModalControls } from '~/state/modals';
 import { convexQuery } from '@convex-dev/react-query';
 import { Id } from '~/convex/_generated/dataModel';
 import { router } from 'expo-router';
-// import { useQueryWithStatus } from '~/lib/utils';
+import { uploadToStorage } from '~/utils/images';
 type CreatePostFormFields = z.infer<typeof createPostSchema>;
 
 export const useCreatePost = () => {
@@ -23,22 +22,12 @@ export const useCreatePost = () => {
 		mutationFn: async (values: CreatePostFormFields) => {
 			const storageIds = await Promise.all(
 				values.images.map(async e => {
-					const response = await fetch(e.path);
-					const blob = await response.blob();
-					const url = await getUploadUrl();
-					const result = await fetch(url, {
-						method: 'POST',
-						headers: {
-							'Content-Type': e.mime,
-						},
-						body: blob,
+					const ids = await uploadToStorage({
+						path: e.path,
+						uploadUrl: await getUploadUrl(),
+						mime: e.mime,
 					});
-					const json = await result.json();
-					if (!result.ok) {
-						throw new Error(`Upload failed: ${JSON.stringify(json)}`);
-					}
-					const { storageId } = json;
-					return { storageId, contentType: e.mime };
+					return ids;
 				})
 			);
 

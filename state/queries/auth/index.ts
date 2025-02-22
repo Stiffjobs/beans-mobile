@@ -94,3 +94,7 @@ export const useSignIn = () => {
 export const useGetCurrentUser = () => {
 	return useQuery(convexQuery(api.users.current, {}));
 };
+
+export const useGetAvatarUrl = () => {
+	return useQuery(convexQuery(api.users.getAvatarUrl, {}));
+};
