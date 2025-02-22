@@ -1,4 +1,3 @@
-import { Image as RNImage, Share as RNShare } from 'react-native';
 import { Image } from 'react-native-image-crop-picker';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { isAndroid } from '~/platform/detection';

@@ -18,7 +18,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RoastLevel, RoastLevelEnum } from '~/lib/constants';
 import { ErrorMessage } from '~/components/ErrorMessage';
-import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { createPostSchema } from '~/lib/schemas';
 import { useCreatePost } from '~/state/queries/post';
 import { openPicker } from '~/lib/media/picker';
