@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { User } from '~/lib/auth/types';
 
 export interface CreatePostModal {
 	name: 'create-post';
@@ -6,6 +7,7 @@ export interface CreatePostModal {
 }
 export interface EditProfileModal {
 	name: 'edit-profile';
+	user: User;
 }
 
 export type Modal = CreatePostModal | EditProfileModal;

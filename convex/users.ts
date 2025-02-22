@@ -1,11 +1,24 @@
-import { internalMutation, query, QueryCtx } from './_generated/server';
+import {
+	internalMutation,
+	mutation,
+	query,
+	QueryCtx,
+} from './_generated/server';
 import { UserJSON } from '@clerk/backend';
 import { v, Validator } from 'convex/values';
+import { DataModel } from './_generated/dataModel';
 
 export const current = query({
 	args: {},
 	handler: async ctx => {
-		return await getCurrentUser(ctx);
+		const user = await getCurrentUser(ctx);
+		if (user?.avatar) {
+			return {
+				...user,
+				avatar: await ctx.storage.getUrl(user.avatar),
+			};
+		}
+		return user;
 	},
 });
 
@@ -61,3 +74,53 @@ async function userByExternalId(ctx: QueryCtx, externalId: string) {
 		.withIndex('by_token', q => q.eq('tokenIdentifier', externalId))
 		.unique();
 }
+
+export const updateProfile = mutation({
+	args: {
+		avatar: v.optional(
+			v.object({
+				storageId: v.id('_storage'),
+				contentType: v.string(),
+			})
+		),
+		name: v.optional(v.string()),
+		isRemoveAvatar: v.boolean(),
+		description: v.optional(v.string()),
+	},
+	handler: async (ctx, args) => {
+		const user = await getCurrentUserOrThrow(ctx);
+		const { avatar, name, description, isRemoveAvatar } = args;
+		const attributes: Partial<DataModel['users']['document']> = {};
+		if (avatar) {
+			attributes.avatar = avatar.storageId;
+			//INFO: if there is a new avatar, remove the old one
+			if (user.avatar) {
+				await ctx.storage.delete(user.avatar);
+			}
+		}
+		if (isRemoveAvatar) {
+			attributes.avatar = undefined;
+			if (user.avatar) {
+				await ctx.storage.delete(user.avatar);
+			}
+		}
+		if (name) {
+			attributes.name = name;
+		}
+		if (description) {
+			attributes.description = description;
+		}
+		await ctx.db.patch(user._id, attributes);
+	},
+});
+
+export const getAvatarUrl = query({
+	args: {},
+	handler: async ctx => {
+		const user = await getCurrentUserOrThrow(ctx);
+		if (user.avatar) {
+			return await ctx.storage.getUrl(user.avatar);
+		}
+		return null;
+	},
+});

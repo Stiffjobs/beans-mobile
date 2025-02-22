@@ -5,7 +5,7 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import { useEffect, useRef } from 'react';
 import * as CreatePostModal from './CreatePostModal';
-import * as EditProfileModal from './EditProfileModal';
+import * as EditProfileModal from './EditProfile';
 import { SafeAreaView, View, Text, ViewStyle, Modal } from 'react-native';
 import { createCustomBackdrop } from '../util/BottomSheetCustomBackdrop';
 import { useReducedMotion } from 'react-native-reanimated';
@@ -47,7 +47,7 @@ export function ModalsContainer() {
 		element = <CreatePostModal.Component {...activeModal} />;
 	} else if (activeModal?.name === 'edit-profile') {
 		snapPoints = EditProfileModal.snapPoints;
-		element = <EditProfileModal.Component />;
+		element = <EditProfileModal.Component {...activeModal} />;
 	} else {
 		return null;
 	}
@@ -55,6 +55,18 @@ export function ModalsContainer() {
 	if (snapPoints[0] === 'fullscreen') {
 		return (
 			<Modal visible={isModalActive} animationType="slide">
+				<SafeAreaView className="bg-background flex-1">{element}</SafeAreaView>
+			</Modal>
+		);
+	}
+
+	if (snapPoints[0] === 'form') {
+		return (
+			<Modal
+				presentationStyle="formSheet"
+				visible={isModalActive}
+				animationType="slide"
+			>
 				<SafeAreaView className="bg-background flex-1">{element}</SafeAreaView>
 			</Modal>
 		);
