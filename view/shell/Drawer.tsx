@@ -1,13 +1,10 @@
-import { Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
-import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { useGetCurrentUser, useSignOut } from '~/state/queries/auth';
 import { Text } from '~/components/ui/text';
-import React, { ComponentProps, useCallback } from 'react';
-import { Authenticated } from 'convex/react';
+import React, { useCallback } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { H3, H4 } from '~/components/ui/typography';
 import { Separator } from '~/components/ui/separator';
-import { Button } from '~/components/ui/button';
 import { StyledIcon } from '../com/icons/StyledIcons';
 import { Link } from 'expo-router';
 import { useSetDrawerOpen } from '~/state/shell/drawer-open';
