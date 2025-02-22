@@ -1,14 +1,17 @@
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
+import ProfileInfo from '~/components/ProfileInfo';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Link, Stack } from 'expo-router';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
-import React from 'react';
+import React, { useState } from 'react';
 import { Hamburger } from '~/view/com/util/Hamburger';
-
-export default function TabTwoScreen() {
+import { Image } from 'expo-image';
+import { usePhotoLibraryPermission } from '~/lib/hooks/usePermissions';
+import { openCropper, openPicker } from '~/lib/media/picker';
+export default function ProfileScreen() {
 	return (
 		<View className="flex-1 items-center justify-center">
 			<Authenticated>
@@ -17,7 +20,7 @@ export default function TabTwoScreen() {
 						headerLeft: () => <Hamburger />,
 					}}
 				/>
-				<EditScreenInfo path="app/(tabs)/two.tsx" />
+				<ProfileInfo path="app/(tabs)/two.tsx" />
 			</Authenticated>
 			<Unauthenticated>
 				<Link asChild href={'/signin'}>
