@@ -11,18 +11,12 @@ import { Button } from '~/components/ui/button';
 import { StyledIcon } from '../com/icons/StyledIcons';
 import { Link } from 'expo-router';
 import { useSetDrawerOpen } from '~/state/shell/drawer-open';
+import { UserAvatar } from '../com/util/UserAvatar';
 let DrawerProfileCard = ({}): React.ReactNode => {
 	const currentUser = useGetCurrentUser();
 	return (
 		<View className="gap-4">
-			<Avatar className="w-12 h-12" alt="Avatar">
-				<AvatarImage className="w-12 h-12" src="" />
-				<AvatarFallback>
-					<Text className="text-lg font-semibold text-primary">
-						{currentUser?.data?.name.slice(0, 2)}
-					</Text>
-				</AvatarFallback>
-			</Avatar>
+			<UserAvatar avatar={currentUser?.data?.avatar} />
 			<View>
 				<H4>{currentUser?.data?.name}</H4>
 			</View>
