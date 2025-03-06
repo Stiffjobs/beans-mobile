@@ -118,13 +118,17 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 					<View className="flex-1 px-10 mt-6 mb-20 gap-2">
 						<Label>Created on</Label>
 						<H4>{selectedDate}</H4>
+						<Text className="text-sm text-muted-foreground mb-2">
+							Fields marked with <Text className="text-destructive">*</Text> are
+							required
+						</Text>
 						<Controller
 							control={form.control}
 							name="bean"
 							render={({ field: { onChange } }) => {
 								return (
 									<>
-										<Label>Bean</Label>
+										<RequiredLabel>Bean</RequiredLabel>
 										<Input onChangeText={onChange} />
 										{form.formState.errors?.bean && (
 											<ErrorMessage
@@ -140,7 +144,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="roastLevel"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Roast level</Label>
+									<RequiredLabel>Roast level</RequiredLabel>
 									<SelectComponent
 										placeholder="Select a roast level"
 										options={Object.values(RoastLevelEnum).map(value => ({
@@ -162,7 +166,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="coffeeIn"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Coffee in (g)</Label>
+									<RequiredLabel>Coffee in (g)</RequiredLabel>
 									<Input onChangeText={onChange} />
 									{form.formState.errors.coffeeIn && (
 										<ErrorMessage
@@ -192,7 +196,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="beverageWeight"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Beverage weight(g)</Label>
+									<RequiredLabel>Beverage weight(g)</RequiredLabel>
 									<Input onChangeText={onChange} />
 									{form.formState.errors.beverageWeight && (
 										<ErrorMessage
@@ -207,7 +211,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="brewTemperature"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Brew temperature (°C)</Label>
+									<RequiredLabel>Brew temperature (°C)</RequiredLabel>
 									<Input onChangeText={onChange} keyboardType="numeric" />
 									{form.formState.errors.brewTemperature && (
 										<ErrorMessage
@@ -223,7 +227,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							control={form.control}
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Filter paper</Label>
+									<RequiredLabel>Filter paper</RequiredLabel>
 									<Input onChangeText={onChange} />
 									{form.formState.errors.filterPaper && (
 										<ErrorMessage
@@ -238,7 +242,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="brewingWater"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Brewing water (ppm)</Label>
+									<RequiredLabel>Brewing water (ppm)</RequiredLabel>
 									<Input onChangeText={onChange} />
 									{form.formState.errors.brewingWater && (
 										<ErrorMessage
@@ -254,7 +258,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="grinder"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Grinder</Label>
+									<RequiredLabel>Grinder</RequiredLabel>
 									<Input onChangeText={onChange} />
 									{form.formState.errors.grinder && (
 										<ErrorMessage
@@ -270,7 +274,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="grindSetting"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Grind setting</Label>
+									<RequiredLabel>Grind setting</RequiredLabel>
 									<Input onChangeText={onChange} />
 									{form.formState.errors.grindSetting && (
 										<ErrorMessage
@@ -286,7 +290,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							render={({ field: { onChange, value } }) => {
 								return (
 									<>
-										<Label>Bloom time</Label>
+										<RequiredLabel>Bloom time</RequiredLabel>
 										<TimeMaskInput value={value} onChange={onChange} />
 										{form.formState.errors.bloomTime && (
 											<ErrorMessage
@@ -303,7 +307,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							render={({ field: { onChange, value } }) => {
 								return (
 									<>
-										<Label>Total drawdown time</Label>
+										<RequiredLabel>Total drawdown time</RequiredLabel>
 										<TimeMaskInput value={value} onChange={onChange} />
 										{form.formState.errors.totalDrawdownTime && (
 											<ErrorMessage
@@ -603,5 +607,13 @@ function RecipeStepsEditor({ steps, setSteps }: RecipeStepsEditorProps) {
 				)}
 			/>
 		</>
+	);
+}
+
+function RequiredLabel({ children }: { children: React.ReactNode }) {
+	return (
+		<Label>
+			{children} <Text className="text-destructive">*</Text>
+		</Label>
 	);
 }
