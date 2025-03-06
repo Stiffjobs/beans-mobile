@@ -37,6 +37,7 @@ import { H4 } from '~/components/ui/typography';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { WindowOverlay } from '../util/WindowOverlay';
 import { PortalHost } from '@rn-primitives/portal';
+import { Separator } from '~/components/ui/separator';
 
 type FormFields = z.infer<typeof createPostSchema>;
 
@@ -93,7 +94,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 
 	return (
 		<>
-			<View className="flex flex-row justify-between px-4 py-4 items-center border-b-hairline bg-background">
+			<View className="flex flex-row justify-between px-4 py-4 items-center  bg-background">
 				<Button onPress={closeModal} variant={'ghost'} size="sm">
 					<Text className="text-destructive">Cancel</Text>
 				</Button>
@@ -106,6 +107,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 					<Text>Post</Text>
 				</Button>
 			</View>
+			<Separator />
 			<Pager
 				onPageSelected={index => {
 					setActivePage(index);
@@ -141,20 +143,10 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									<Label>Roast level</Label>
 									<SelectComponent
 										placeholder="Select a roast level"
-										options={[
-											{
-												label: RoastLevelEnum.Light,
-												value: RoastLevelEnum.Light,
-											},
-											{
-												label: RoastLevelEnum.Medium,
-												value: RoastLevelEnum.Medium,
-											},
-											{
-												label: RoastLevelEnum.Dark,
-												value: RoastLevelEnum.Dark,
-											},
-										]}
+										options={Object.values(RoastLevelEnum).map(value => ({
+											label: value,
+											value: value,
+										}))}
 										onChange={onChange}
 									/>
 									{form.formState.errors.roastLevel && (
