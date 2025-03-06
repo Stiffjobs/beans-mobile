@@ -1,6 +1,5 @@
 import { router, Slot, useSegments } from 'expo-router';
 import { useEffect } from 'react';
-import { useSession } from '~/state/session';
 export default () => {
 	const segments = useSegments();
 	// useEffect(() => {
