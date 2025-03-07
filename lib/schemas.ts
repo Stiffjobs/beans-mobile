@@ -48,6 +48,7 @@ export const createPostSchema = z.object({
 	ey: z.number().min(0).optional(),
 	images: z.custom<ComposerImage>().array(),
 });
+export const editPostSchema = createPostSchema;
 
 export const updateProfileSchema = z.object({
 	name: z.string().min(3, 'Name must be at least 3 characters').optional(),
