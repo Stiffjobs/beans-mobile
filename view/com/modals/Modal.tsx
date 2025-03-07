@@ -6,6 +6,7 @@ import BottomSheet, {
 import { useEffect, useRef } from 'react';
 import * as CreatePostModal from './CreatePostModal';
 import * as EditProfileModal from './EditProfile';
+import * as EditPostModal from './EditPostModal';
 import { SafeAreaView, View, Text, ViewStyle, Modal } from 'react-native';
 import { createCustomBackdrop } from '../util/BottomSheetCustomBackdrop';
 import { useReducedMotion } from 'react-native-reanimated';
@@ -45,6 +46,9 @@ export function ModalsContainer() {
 	if (activeModal?.name === 'create-post') {
 		snapPoints = CreatePostModal.snapPoints;
 		element = <CreatePostModal.Component {...activeModal} />;
+	} else if (activeModal?.name === 'edit-post') {
+		snapPoints = EditPostModal.snapPoints;
+		element = <EditPostModal.Component />;
 	} else if (activeModal?.name === 'edit-profile') {
 		snapPoints = EditProfileModal.snapPoints;
 		element = <EditProfileModal.Component {...activeModal} />;
