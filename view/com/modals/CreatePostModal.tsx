@@ -7,16 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { Input } from "~/components/ui/input";
 import Slider from "@react-native-community/slider";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { RoastLevel, RoastLevelEnum } from "~/lib/constants";
+import { RoastLevelEnum } from "~/lib/constants";
 import { ErrorMessage } from "~/components/ErrorMessage";
 import { createPostSchema } from "~/lib/schemas";
 import { useCreatePost } from "~/state/queries/post";
@@ -49,6 +40,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
+import { RequiredLabel } from "~/components/RequiredLabel";
+import { SelectRoastLevel } from "~/components/SelectRoastLevel";
 
 type FormFields = z.infer<typeof createPostSchema>;
 
@@ -115,7 +108,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 
   return (
     <>
-      <View className="flex flex-row justify-between px-4 py-4 items-center  bg-background">
+      <View className="flex flex-row justify-between p-4 items-center  bg-background">
         {isSecondPage ? (
           <Button onPress={() => handleScrollPage(0)} size="sm" variant="ghost">
             <Text>Prev</Text>
@@ -167,7 +160,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
                 return (
                   <>
                     <RequiredLabel>Bean</RequiredLabel>
-                    <Input onChangeText={onChange} />
+                    <Input
+                      multiline={false}
+                      numberOfLines={1}
+                      onChangeText={onChange}
+                    />
                     {form.formState.errors?.bean && (
                       <ErrorMessage
                         message={form.formState?.errors?.bean.message}
@@ -183,7 +180,8 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <RequiredLabel>Roast level</RequiredLabel>
-                  <SelectComponent
+                  <SelectRoastLevel
+                    portalHost={CUSTOM_PORTAL_HOST_NAME}
                     placeholder="Select a roast level"
                     options={Object.values(RoastLevelEnum).map((value) => ({
                       label: value,
@@ -205,7 +203,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <RequiredLabel>Coffee in (g)</RequiredLabel>
-                  <Input onChangeText={onChange} />
+                  <Input numberOfLines={1} onChangeText={onChange} />
                   {form.formState.errors.coffeeIn && (
                     <ErrorMessage
                       message={form.formState.errors.coffeeIn.message}
@@ -220,7 +218,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <Label>Ratio</Label>
-                  <Input onChangeText={onChange} />
+                  <Input numberOfLines={1} onChangeText={onChange} />
                   {form.formState.errors.ratio && (
                     <ErrorMessage
                       message={form.formState.errors.coffeeIn?.message}
@@ -235,7 +233,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <RequiredLabel>Beverage weight(g)</RequiredLabel>
-                  <Input onChangeText={onChange} />
+                  <Input numberOfLines={1} onChangeText={onChange} />
                   {form.formState.errors.beverageWeight && (
                     <ErrorMessage
                       message={form.formState.errors.beverageWeight.message}
@@ -250,7 +248,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <RequiredLabel>Brew temperature (°C)</RequiredLabel>
-                  <Input onChangeText={onChange} keyboardType="numeric" />
+                  <Input
+                    numberOfLines={1}
+                    onChangeText={onChange}
+                    keyboardType="numeric"
+                  />
                   {form.formState.errors.brewTemperature && (
                     <ErrorMessage
                       message={form.formState.errors.brewTemperature.message}
@@ -266,7 +268,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <RequiredLabel>Filter paper</RequiredLabel>
-                  <Input onChangeText={onChange} />
+                  <Input numberOfLines={1} onChangeText={onChange} />
                   {form.formState.errors.filterPaper && (
                     <ErrorMessage
                       message={form.formState.errors.filterPaper.message}
@@ -281,7 +283,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <RequiredLabel>Brewing water (ppm)</RequiredLabel>
-                  <Input onChangeText={onChange} />
+                  <Input numberOfLines={1} onChangeText={onChange} />
                   {form.formState.errors.brewingWater && (
                     <ErrorMessage
                       message={form.formState.errors.brewingWater.message}
@@ -297,7 +299,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <RequiredLabel>Grinder</RequiredLabel>
-                  <Input onChangeText={onChange} />
+                  <Input numberOfLines={1} onChangeText={onChange} />
                   {form.formState.errors.grinder && (
                     <ErrorMessage
                       message={form.formState.errors.grinder.message}
@@ -313,7 +315,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
               render={({ field: { onChange } }) => (
                 <>
                   <RequiredLabel>Grind setting</RequiredLabel>
-                  <Input onChangeText={onChange} />
+                  <Input numberOfLines={1} onChangeText={onChange} />
                   {form.formState.errors.grindSetting && (
                     <ErrorMessage
                       message={form.formState.errors.grindSetting.message}
@@ -538,56 +540,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 
 const CUSTOM_PORTAL_HOST_NAME = "modal-select";
 const CUSTOM_PORTAL_DIALOG = "dialog";
-function SelectComponent({
-  placeholder,
-  options,
-  onChange,
-}: {
-  onChange: (...event: any[]) => void;
-  placeholder?: string;
-  options: RoastLevel[];
-}) {
-  const insets = useSafeAreaInsets();
-  const contentInsets = {
-    top: insets.top,
-    bottom: insets.bottom,
-    left: 12,
-    right: 12,
-  };
-  return (
-    <Select onValueChange={(val) => onChange(val?.value)}>
-      <SelectTrigger
-        onPress={() => {
-          console.log("pressed");
-        }}
-        className="w-[250px]"
-      >
-        <SelectValue
-          className="text-foreground text-sm native:text-lg"
-          placeholder={placeholder ?? ""}
-        />
-      </SelectTrigger>
-      <SelectContent
-        portalHost={CUSTOM_PORTAL_HOST_NAME}
-        insets={contentInsets}
-        className="w-[250px]"
-      >
-        <SelectGroup>
-          {options.map((option) => (
-            <SelectItem
-              key={option.value}
-              label={option.label}
-              value={option.value}
-            >
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  );
-}
-
 type RecipeStep = {
   timestamp: string;
   action: string;
@@ -676,13 +628,5 @@ function RecipeStepsEditor({ steps, setSteps }: RecipeStepsEditorProps) {
         )}
       />
     </>
-  );
-}
-
-function RequiredLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <Label>
-      {children} <Text className="text-destructive">*</Text>
-    </Label>
   );
 }
