@@ -176,9 +176,9 @@ function RootLayoutNav({
                     value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
                   >
                     <ActionSheetProvider>
-                      <BottomSheetModalProvider>
-                        <ShellStateProvider>
-                          <ModalProvider>
+                      <ShellStateProvider>
+                        <ModalProvider>
+                          <BottomSheetModalProvider>
                             <DialogStateProvider>
                               <View
                                 onLayout={onLayoutRootView}
@@ -190,9 +190,9 @@ function RootLayoutNav({
                                 <PortalHost />
                               </View>
                             </DialogStateProvider>
-                          </ModalProvider>
-                        </ShellStateProvider>
-                      </BottomSheetModalProvider>
+                          </BottomSheetModalProvider>
+                        </ModalProvider>
+                      </ShellStateProvider>
                     </ActionSheetProvider>
                   </ThemeProvider>
                 </KeyboardProvider>
