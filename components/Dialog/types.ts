@@ -1,11 +1,11 @@
-import { BottomSheetProps } from '@gorhom/bottom-sheet';
 import React from 'react';
-import type { GestureResponderEvent, ScrollViewProps } from 'react-native';
+import type { GestureResponderEvent } from 'react-native';
 import { ViewStyle } from 'react-native';
 import { StyleProp } from 'react-native';
 
 export enum BottomSheetSnapPoint {
 	Hidden,
+	Quarter,
 	Partial,
 	Full,
 }
@@ -24,6 +24,7 @@ export type DialogControlProps = DialogControlRefProps & {
 
 export interface DialogOuterProps {
 	control: DialogControlProps;
+	snapPoints?: BottomSheetSnapPoint;
 	onClose?: () => void;
 }
 

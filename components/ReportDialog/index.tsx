@@ -2,20 +2,29 @@ export { useDialogControl as useReportDialogControl } from "~/components/Dialog"
 import * as Dialog from "~/components/Dialog";
 import { ReportDialogProps } from "./types";
 import { Text } from "../ui/text";
+import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import { useModalControls } from "~/state/modals";
 
 export function ReportDialog(props: ReportDialogProps) {
-  console.log("props", props.control.isOpen);
   return (
     <Dialog.Outer control={props.control}>
-      <Dialog.Handle />
       <ReportDialogInner {...props} />
     </Dialog.Outer>
   );
 }
 function ReportDialogInner(props: ReportDialogProps) {
+  const { openModal } = useModalControls();
+  const handleOpenModal = () => {
+    props.control.close();
+    openModal({
+      name: "edit-post",
+    });
+  };
   return (
     <Dialog.Inner>
-      <Text>Report</Text>
+      <TouchableOpacity onPress={handleOpenModal}>
+        <Text>Open modal btn</Text>
+      </TouchableOpacity>
     </Dialog.Inner>
   );
 }

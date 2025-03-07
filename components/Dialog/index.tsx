@@ -2,6 +2,7 @@ import React, { useCallback, useImperativeHandle } from 'react';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+	BottomSheetSnapPoint,
 	DialogControlProps,
 	DialogInnerProps,
 	DialogOuterProps,
@@ -9,21 +10,29 @@ import {
 import {
 	BottomSheetBackdrop,
 	BottomSheetModal,
+	BottomSheetScrollView,
 	BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import { useDialogStateControlContext } from '~/state/dialogs';
 import { Context, useDialogContext } from './context';
 import { FullWindowOverlay } from 'react-native-screens';
+import { useReducedMotion } from 'react-native-reanimated';
 export {
 	useDialogContext,
 	useDialogControl,
 } from '~/components/Dialog/context';
 export * from '~/components/Dialog/types';
 export * from '~/components/Dialog/utils';
-const SNAPPOINTS = ['50%'];
+const SNAPPOINTS = {
+	[BottomSheetSnapPoint.Hidden]: ['0%'],
+	[BottomSheetSnapPoint.Quarter]: ['30%'],
+	[BottomSheetSnapPoint.Partial]: ['50%'],
+	[BottomSheetSnapPoint.Full]: ['90%'],
+};
 export function Outer({
 	children,
 	control,
+	snapPoints = BottomSheetSnapPoint.Partial,
 }: React.PropsWithChildren<DialogOuterProps>) {
 	const ref = React.useRef<BottomSheetModal>(null);
 	const { setDialogIsOpen } = useDialogStateControlContext();
@@ -81,20 +90,24 @@ export function Outer({
 		}),
 		[close, disableDrag, setDisableDrag]
 	);
+	const reduceMotion = useReducedMotion();
 
 	return (
 		<BottomSheetModal
 			backdropComponent={Backdrop}
+			animateOnMount={!reduceMotion}
 			keyboardBehavior="interactive"
 			keyboardBlurBehavior="restore"
 			containerComponent={renderContainerComponent}
 			android_keyboardInputMode="adjustPan"
+			style={{ borderRadius: 20 }}
+			handleComponent={Handle}
 			enableDynamicSizing={false}
 			ref={ref}
-			snapPoints={SNAPPOINTS}
+			snapPoints={SNAPPOINTS[snapPoints]}
 		>
 			<Context.Provider value={context}>
-				<BottomSheetView className="relative">{children}</BottomSheetView>
+				<View className="relative">{children}</View>
 			</Context.Provider>
 		</BottomSheetModal>
 	);
@@ -105,7 +118,7 @@ export function Inner({ children, style, header }: DialogInnerProps) {
 	return (
 		<>
 			{header}
-			<View
+			<BottomSheetView
 				className="pt-6 px-5"
 				style={[
 					{
@@ -115,17 +128,22 @@ export function Inner({ children, style, header }: DialogInnerProps) {
 				]}
 			>
 				{children}
-			</View>
+			</BottomSheetView>
 		</>
 	);
+}
+
+export function ScrollableInner({ children, style, header }: DialogInnerProps) {
+	const insets = useSafeAreaInsets();
+	return <BottomSheetScrollView>{children}</BottomSheetScrollView>;
 }
 
 export function Handle() {
 	const { close } = useDialogContext();
 	return (
-		<View className="absolute w-full items-center z-10 h-3">
+		<View className="absolute w-full items-center z-10 py-2">
 			<Pressable onPress={() => close()}>
-				<View className="rounded-sm w-9 h-1 self-center opacity-50" />
+				<View className="rounded-sm w-9 h-1 self-center bg-gray-500 dark:bg-gray-400 opacity-50" />
 			</Pressable>
 		</View>
 	);
