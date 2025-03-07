@@ -9,6 +9,7 @@ import {
 } from '~/components/Dialog/types';
 import {
 	BottomSheetBackdrop,
+	BottomSheetHandleProps,
 	BottomSheetModal,
 	BottomSheetScrollView,
 	BottomSheetView,
@@ -17,6 +18,13 @@ import { useDialogStateControlContext } from '~/state/dialogs';
 import { Context, useDialogContext } from './context';
 import { FullWindowOverlay } from 'react-native-screens';
 import { useReducedMotion } from 'react-native-reanimated';
+import { cssInterop } from 'nativewind';
+import {
+	useAnimatedStyle,
+	interpolate,
+	Extrapolate,
+} from 'react-native-reanimated';
+import { Animated } from 'react-native';
 export {
 	useDialogContext,
 	useDialogControl,
@@ -29,6 +37,14 @@ const SNAPPOINTS = {
 	[BottomSheetSnapPoint.Partial]: ['50%'],
 	[BottomSheetSnapPoint.Full]: ['90%'],
 };
+let NativewindModal = cssInterop(BottomSheetModal, {
+	backgroundClassName: {
+		target: 'backgroundStyle',
+	},
+	className: {
+		target: 'style',
+	},
+});
 export function Outer({
 	children,
 	control,
@@ -92,24 +108,29 @@ export function Outer({
 	);
 	const reduceMotion = useReducedMotion();
 
+	const renderHandle = useCallback(
+		(props: BottomSheetHandleProps) => <Handle {...props} />,
+		[]
+	);
+
 	return (
-		<BottomSheetModal
+		<NativewindModal
 			backdropComponent={Backdrop}
+			handleComponent={renderHandle}
 			animateOnMount={!reduceMotion}
 			keyboardBehavior="interactive"
 			keyboardBlurBehavior="restore"
 			containerComponent={renderContainerComponent}
+			backgroundClassName="bg-background"
 			android_keyboardInputMode="adjustPan"
-			style={{ borderRadius: 20 }}
-			handleComponent={Handle}
 			enableDynamicSizing={false}
 			ref={ref}
 			snapPoints={SNAPPOINTS[snapPoints]}
 		>
 			<Context.Provider value={context}>
-				<View className="relative">{children}</View>
+				<View className="bg-background">{children}</View>
 			</Context.Provider>
-		</BottomSheetModal>
+		</NativewindModal>
 	);
 }
 
@@ -135,13 +156,18 @@ export function Inner({ children, style, header }: DialogInnerProps) {
 
 export function ScrollableInner({ children, style, header }: DialogInnerProps) {
 	const insets = useSafeAreaInsets();
-	return <BottomSheetScrollView>{children}</BottomSheetScrollView>;
+	return (
+		<BottomSheetScrollView className={'bg-background'}>
+			{children}
+		</BottomSheetScrollView>
+	);
 }
 
-export function Handle() {
+export function Handle(props: BottomSheetHandleProps) {
 	const { close } = useDialogContext();
+
 	return (
-		<View className="absolute w-full items-center z-10 py-2">
+		<View className="rounded-t-2xl w-full items-center z-10 bg-background py-2">
 			<Pressable onPress={() => close()}>
 				<View className="rounded-sm w-9 h-1 self-center bg-gray-500 dark:bg-gray-400 opacity-50" />
 			</Pressable>
