@@ -123,3 +123,41 @@ export const deletePost = mutation({
 		await ctx.db.delete(args.id);
 	},
 });
+
+export const updatePost = mutation({
+	args: {
+		id: v.id('posts'),
+		bean: v.string(),
+		roastLevel: v.string(),
+		coffeeIn: v.string(),
+		ratio: v.string(),
+		beverageWeight: v.string(),
+		brewTemperature: v.string(),
+		filterPaper: v.string(),
+		brewingWater: v.optional(v.string()),
+		grinder: v.string(),
+		grindSetting: v.string(),
+		bloomTime: v.string(),
+		totalDrawdownTime: v.optional(v.string()),
+		methodName: v.optional(v.string()),
+		brewer: v.optional(v.string()),
+		otherTools: v.optional(v.string()),
+		flavor: v.optional(v.string()),
+		tds: v.optional(v.number()),
+		ey: v.optional(v.number()),
+		recipeSteps: v.array(
+			v.object({
+				timestamp: v.string(),
+				action: v.string(),
+				value: v.number(),
+			})
+		),
+	},
+	handler: async (ctx, args) => {
+		await getCurrentUserOrThrow(ctx);
+		const { id, ...postData } = args;
+		await ctx.db.patch(id, {
+			...postData,
+		});
+	},
+});

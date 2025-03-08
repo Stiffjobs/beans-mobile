@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createPostSchema } from '~/lib/schemas';
+import { createPostSchema, editPostSchema } from '~/lib/schemas';
 import { z } from 'zod';
 import {
 	useMutation as useConvexMutation,
@@ -67,6 +67,32 @@ export const useDeletePost = (id: string) => {
 		onSuccess: () => {
 			Toast.show('Post deleted successfully', 'CircleAlert', 'success');
 			router.back();
+		},
+		onError: error => {
+			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
+		},
+	});
+};
+
+type EditPostFormFields = z.infer<typeof editPostSchema>;
+export const useEditPost = ({
+	id,
+	onSuccess,
+}: {
+	id: string;
+	onSuccess?: () => void;
+}) => {
+	const mutation = useConvexMutation(api.posts.updatePost);
+	return useMutation({
+		mutationFn: async (values: EditPostFormFields) => {
+			await mutation({
+				id: id as Id<'posts'>,
+				...values,
+			});
+		},
+		onSuccess: () => {
+			Toast.show('Post updated successfully', 'CircleCheck', 'success');
+			onSuccess?.();
 		},
 		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
