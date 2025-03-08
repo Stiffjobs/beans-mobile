@@ -19,12 +19,6 @@ import { Context, useDialogContext } from './context';
 import { FullWindowOverlay } from 'react-native-screens';
 import { useReducedMotion } from 'react-native-reanimated';
 import { cssInterop } from 'nativewind';
-import {
-	useAnimatedStyle,
-	interpolate,
-	Extrapolate,
-} from 'react-native-reanimated';
-import { Animated } from 'react-native';
 export {
 	useDialogContext,
 	useDialogControl,

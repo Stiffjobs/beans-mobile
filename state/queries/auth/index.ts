@@ -5,7 +5,6 @@ import {
 } from '@clerk/clerk-expo';
 import { convexQuery } from '@convex-dev/react-query';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useQuery as useConvexQuery } from 'convex/react';
 import { router } from 'expo-router';
 import { Alert } from 'react-native';
 import { z } from 'zod';
