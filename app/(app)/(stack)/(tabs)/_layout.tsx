@@ -5,6 +5,7 @@ import { Tabs } from 'expo-router';
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { Hamburger } from '~/view/com/util/Hamburger';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -19,15 +20,18 @@ export default function TabLayout() {
 
 	return (
 		<Tabs
+			initialRouteName="home"
 			screenOptions={{
 				tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
 				// Disable the static render of the header on web
 				// to prevent a hydration error in React Navigation v6.
 				headerShown: useClientOnlyValue(false, true),
+				headerShadowVisible: false,
+				headerLeft: () => <Hamburger />,
 			}}
 		>
 			<Tabs.Screen
-				name="index"
+				name="home"
 				options={{
 					title: 'Home',
 					tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
