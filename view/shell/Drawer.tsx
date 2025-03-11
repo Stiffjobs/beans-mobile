@@ -99,7 +99,7 @@ const MenuItem = React.forwardRef<View, MenuItemProps>(
 );
 let HomeMenuItem = ({ onPress }: { onPress?: () => void }): React.ReactNode => {
 	return (
-		<Link asChild href="/(app)/(stack)/(tabs)">
+		<Link asChild href="/(app)/(stack)/(tabs)/home">
 			<MenuItem
 				icon={<StyledIcon className="text-primary w-6 h-6" name="House" />}
 				label={'Home'}

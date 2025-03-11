@@ -10,7 +10,7 @@ export function Hamburger() {
 			size={'icon'}
 			onPress={() => setIsDrawerOpen(true)}
 		>
-			<StyledIcon name="Menu" className="text-primary" />
+			<StyledIcon name="Menu" className="text-primary/50" />
 		</Button>
 	);
 }
