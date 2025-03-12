@@ -8,8 +8,9 @@ import {
 import * as Toast from '~/view/com/util/Toast';
 import { api } from '~/convex/_generated/api';
 import { useModalControls } from '~/state/modals';
-import { convexQuery } from '@convex-dev/react-query';
+import { convexQuery, useConvexPaginatedQuery } from '@convex-dev/react-query';
 import { Id } from '~/convex/_generated/dataModel';
+
 import { router } from 'expo-router';
 import { uploadToStorage } from '~/utils/images';
 type CreatePostFormFields = z.infer<typeof createPostSchema>;
@@ -55,6 +56,14 @@ export const useListPosts = () => {
 export const useGetPostById = (id: string) => {
 	return useQuery(
 		convexQuery(api.posts.getPostById, { id: id as Id<'posts'> })
+	);
+};
+
+export const useFetchFeed = ({ refreshKey }: { refreshKey: number }) => {
+	return useConvexPaginatedQuery(
+		api.posts.feed,
+		{ refreshKey },
+		{ initialNumItems: 10 }
 	);
 };
 

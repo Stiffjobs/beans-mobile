@@ -12,23 +12,40 @@ import {
 import { StyledIcon } from '../icons/StyledIcons';
 import Svg, { Circle, Path } from 'react-native-svg';
 import { CircleNativeWind, PathNativeWind, SvgNativeWind } from './images/svg';
+import { cn } from '~/lib/utils';
 
 interface BaseUserAvatarProps {
 	shape?: 'circle' | 'square';
 	avatar?: string | null;
+	size?: 'sm' | 'md' | 'lg';
 }
 
-let UserAvatar = ({ avatar }: BaseUserAvatarProps): React.ReactNode => {
+const getSize = (size: 'sm' | 'md' | 'lg') => {
+	switch (size) {
+		case 'sm':
+			return 'w-8 h-8';
+		case 'md':
+			return 'w-20 h-20';
+		case 'lg':
+			return 'w-30 h-30';
+	}
+};
+
+let UserAvatar = ({
+	avatar,
+	size = 'md',
+}: BaseUserAvatarProps): React.ReactNode => {
+	let sizeClass = getSize(size);
 	return (
-		<Avatar className="w-20 h-20 overflow-visible" alt="Avatar">
+		<Avatar className={cn('overflow-visible', sizeClass)} alt="Avatar">
 			{avatar && (
 				<AvatarImage
-					className="w-20 h-20 rounded-full"
+					className={cn('rounded-full', sizeClass)}
 					source={{ uri: avatar }}
 				/>
 			)}
 			<AvatarFallback>
-				<DefaultAvatar />
+				<DefaultAvatar size={size} />
 			</AvatarFallback>
 		</Avatar>
 	);
@@ -38,11 +55,16 @@ UserAvatar = memo(UserAvatar);
 
 export { UserAvatar };
 
-let DefaultAvatar = ({}: {}): React.ReactNode => {
+let DefaultAvatar = ({
+	size = 'md',
+}: {
+	size?: 'sm' | 'md' | 'lg';
+}): React.ReactNode => {
+	const sizeClass = getSize(size);
 	return (
 		<SvgNativeWind
 			testID="userAvatarFallback"
-			className="w-20 h-20"
+			className={sizeClass}
 			viewBox="0 0 24 24"
 			fill="none"
 			stroke="none"

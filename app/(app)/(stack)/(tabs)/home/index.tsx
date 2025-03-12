@@ -1,4 +1,11 @@
-import { StyleSheet, Pressable, useWindowDimensions, View } from 'react-native';
+import {
+	StyleSheet,
+	Pressable,
+	useWindowDimensions,
+	View,
+	FlatList,
+	RefreshControl,
+} from 'react-native';
 import { useModalControls } from '~/state/modals';
 import { Calendar, DateData } from 'react-native-calendars';
 import { StyledIcon } from '~/view/com/icons/StyledIcons';
@@ -8,7 +15,13 @@ import { Text } from '~/components/ui/text';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Loader } from '~/components/Loader';
 import { useFetchFeed, useListPosts } from '~/state/queries/post';
-import { Dispatch, SetStateAction, useCallback, useState } from 'react';
+import {
+	Dispatch,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { formatDate } from '~/lib/utils';
 import { useCalendarTheme } from '~/hooks/useCalendarTheme';
 import {
@@ -26,6 +39,8 @@ import {
 	TabView,
 } from 'react-native-tab-view';
 import { CustomTabBar } from '~/view/com/pager/TabBar';
+import { UserAvatar } from '~/view/com/util/UserAvatar';
+import { ScrollView } from 'react-native-gesture-handler';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -44,12 +59,6 @@ function CalendarScreen({
 			[selectedDate]: { marked: date === selectedDate, selected: true },
 		};
 	}, {}) || { [selectedDate]: { selected: true } };
-	const openCreatePostModal = () => {
-		openModal({
-			name: 'create-post',
-			selectedDate: selectedDate,
-		});
-	};
 	const { key, theme } = useCalendarTheme();
 	if (fetchListPosts.isLoading) {
 		return (
@@ -80,10 +89,66 @@ function CalendarScreen({
 }
 
 function FeedScreen() {
-	const fetchFeed = useFetchFeed();
-	if (true) {
-		return <Loader centered />;
-	}
+	const [refreshKey, setRefreshKey] = useState(0);
+	const [refreshing, setRefreshing] = useState(false);
+	const fetchFeed = useFetchFeed({ refreshKey });
+	const handlePullToRefresh = useCallback(() => {
+		setRefreshKey(prev => prev + 1);
+	}, [setRefreshKey]);
+	useEffect(() => {
+		if (fetchFeed.isLoading) {
+			setRefreshing(true);
+		} else {
+			setRefreshing(false);
+		}
+	}, [fetchFeed.isLoading]);
+	const handleLoadMore = useCallback(() => {
+		if (fetchFeed.status === 'Exhausted') {
+			return;
+		}
+		fetchFeed.loadMore(10);
+	}, [fetchFeed]);
+
+	return (
+		<ScrollView className="flex-1 p-4">
+			<FlatList
+				data={fetchFeed.results}
+				scrollEnabled={false}
+				refreshControl={
+					<RefreshControl
+						refreshing={refreshing}
+						onRefresh={handlePullToRefresh}
+					/>
+				}
+				onEndReached={handleLoadMore}
+				onEndReachedThreshold={0.1}
+				ItemSeparatorComponent={() => <View className="h-4" />}
+				ListFooterComponent={() => {
+					if (fetchFeed.status === 'Exhausted') {
+						return (
+							<Text className="text-center text-gray-400 ">No more data</Text>
+						);
+					}
+				}}
+				renderItem={({ item }) => {
+					return (
+						<Pressable
+							onPress={() => router.navigate(`/home/${item.post._id}`)}
+						>
+							<View className="bg-secondary p-4 rounded-md">
+								<View className="flex-row items-center gap-2">
+									<UserAvatar size="sm" avatar={item.author.avatarUrl} />
+									<Text>{item.author?.name}</Text>
+								</View>
+								<Text>{item.post.bean}</Text>
+								<Text>{item.post.brewer}</Text>
+							</View>
+						</Pressable>
+					);
+				}}
+			/>
+		</ScrollView>
+	);
 }
 type Route = {
 	key: string;

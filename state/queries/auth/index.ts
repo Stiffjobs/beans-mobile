@@ -18,7 +18,7 @@ export const useSignOut = () => {
 			await signOut();
 		},
 		onSuccess: () => {
-			router.navigate('/');
+			router.navigate('/(app)/(stack)/(tabs)/home');
 		},
 	});
 };
@@ -53,13 +53,12 @@ export const useVerifyEmail = () => {
 			});
 			if (signUpAttempt.status === 'complete') {
 				await setActive({ session: signUpAttempt.createdSessionId });
-				router.replace('/');
 			} else {
 				throw new Error(JSON.stringify(signUpAttempt, null, 2));
 			}
 		},
 		onSuccess: () => {
-			router.replace('/');
+			router.replace('/(app)/(stack)/(tabs)/home');
 		},
 		onError: error => Alert.alert('Error', error.message),
 	});
@@ -76,7 +75,7 @@ export const useSignIn = () => {
 			});
 			if (signInAttempt.status === 'complete') {
 				await setActive({ session: signInAttempt.createdSessionId });
-				router.replace('/');
+				router.replace('/(app)/(stack)/(tabs)/home');
 			} else {
 				// If the status isn't complete, check why. User might need to
 				// complete further steps.

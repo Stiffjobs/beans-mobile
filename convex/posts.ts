@@ -1,6 +1,7 @@
 import { ConvexError, v } from 'convex/values';
 import { mutation, query, QueryCtx } from './_generated/server';
 import { getCurrentUserOrThrow } from './users';
+import { paginationOptsValidator } from 'convex/server';
 
 export const createPost = mutation({
 	args: {
@@ -76,8 +77,52 @@ export const list = query({
 	},
 });
 
+export const feed = query({
+	args: { paginationOpts: paginationOptsValidator, refreshKey: v.number() },
+	handler: async (ctx, args) => {
+		const postRows = await ctx.db
+			.query('posts')
+			.order('desc')
+			.paginate(args.paginationOpts);
+
+		const postWithImages = await Promise.all(
+			postRows.page.map(async post => {
+				const author = await ctx.db.get(post.author);
+				if (!author) throw new ConvexError('Author not found');
+				let avatar = null;
+				if (author.avatar) {
+					avatar = await ctx.storage.getUrl(author?.avatar);
+				}
+				const images = await ctx.db
+					.query('post_images')
+					.withIndex('by_post', q => q.eq('postId', post._id))
+					.collect();
+				const imagesUrl = await Promise.all(
+					images.map(async image => {
+						const url = await ctx.storage.getUrl(image.storageId);
+						return url;
+					})
+				);
+
+				return {
+					post: post,
+					author: {
+						...author,
+						avatarUrl: avatar,
+					},
+					images: imagesUrl.filter(e => e !== null),
+				};
+			})
+		);
+		return {
+			...postRows,
+			page: postWithImages,
+		};
+	},
+});
+
 export const generateUploadUrl = mutation(async ctx => {
-	const identity = await getCurrentUserOrThrow(ctx);
+	await getCurrentUserOrThrow(ctx);
 	return await ctx.storage.generateUploadUrl();
 });
 
