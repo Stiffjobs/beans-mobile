@@ -13,6 +13,7 @@ import {
 	useDetailsDialogControl,
 } from '~/components/DetailsDialog';
 import { useModalControls } from '~/state/modals';
+import { useGetCurrentUser } from '~/state/queries/auth';
 
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -21,9 +22,11 @@ export default function PostDetailsPage() {
 	const { data, isLoading } = useGetPostById(id);
 	const detailsDialogControl = useDetailsDialogControl();
 	const { openModal } = useModalControls();
+	const currentUser = useGetCurrentUser();
 	const openDetailsDialog = useCallback(() => {
 		detailsDialogControl.open();
 	}, [detailsDialogControl]);
+	const isOwner = data?.author === currentUser.data?._id;
 
 	const openEditPostModal = useCallback(() => {
 		openModal({
@@ -40,15 +43,17 @@ export default function PostDetailsPage() {
 		);
 	}
 	const urls = data?.images.filter(e => e !== null) ?? [];
+
 	return (
 		<ScrollView className="flex-1  p-4 gap-4">
 			<Stack.Screen
 				options={{
-					headerRight: () => (
-						<Button onPress={openDetailsDialog} size="icon" variant="ghost">
-							<StyledIcon name="Ellipsis" />
-						</Button>
-					),
+					headerRight: () =>
+						isOwner ? (
+							<Button onPress={openDetailsDialog} size="icon" variant="ghost">
+								<StyledIcon name="Ellipsis" />
+							</Button>
+						) : null,
 				}}
 			/>
 			<Text className="text-2xl font-bold mb-4">{data?.bean}</Text>
@@ -145,7 +150,7 @@ export default function PostDetailsPage() {
 			/>
 			<DetailsDialog
 				control={detailsDialogControl}
-				params={{ type: 'post-details', openModal: openEditPostModal }}
+				params={{ type: 'post-details', openModal: openEditPostModal, isOwner }}
 			/>
 		</ScrollView>
 	);
