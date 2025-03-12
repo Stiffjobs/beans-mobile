@@ -6,6 +6,7 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { Hamburger } from '~/view/com/util/Hamburger';
+import { CoffeeBean } from '~/view/com/icons/SvgIcons';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -34,6 +35,7 @@ export default function TabLayout() {
 				name="home"
 				options={{
 					title: 'Home',
+					headerTitle: () => <CoffeeBean className="w-8 h-8" />,
 					tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
 				}}
 			/>
