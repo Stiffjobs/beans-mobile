@@ -47,10 +47,7 @@ export function Loader({
 				className="relative justify-center items-center"
 				style={[{ width: common.size, height: common.size }, animatedStyles]}
 			>
-				<Icon
-					{...props}
-					className={cn('absolute inset-0 text-contrast-high', props.className)}
-				/>
+				<Icon {...props} className={cn('absolute inset-0', props.className)} />
 			</Animated.View>
 		</View>
 	);

@@ -7,15 +7,8 @@ import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Loader } from '~/components/Loader';
-import { useListPosts } from '~/state/queries/post';
-import {
-	Dispatch,
-	SetStateAction,
-	useCallback,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import { useFetchFeed, useListPosts } from '~/state/queries/post';
+import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { formatDate } from '~/lib/utils';
 import { useCalendarTheme } from '~/hooks/useCalendarTheme';
 import {
@@ -87,11 +80,10 @@ function CalendarScreen({
 }
 
 function FeedScreen() {
-	return (
-		<View>
-			<Text>Feed</Text>
-		</View>
-	);
+	const fetchFeed = useFetchFeed();
+	if (true) {
+		return <Loader centered />;
+	}
 }
 type Route = {
 	key: string;
