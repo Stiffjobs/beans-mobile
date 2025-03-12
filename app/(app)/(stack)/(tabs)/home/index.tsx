@@ -41,6 +41,7 @@ import {
 import { CustomTabBar } from '~/view/com/pager/TabBar';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
 import { ScrollView } from 'react-native-gesture-handler';
+import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -163,14 +164,16 @@ const renderTabBar = (
 ) => {
 	const { options, ...rest } = props;
 	return (
-		<CustomTabBar
-			className="bg-background"
-			tabStyle={{ width: 'auto' }}
-			activeClassName="text-primary"
-			inactiveClassName="text-primary/50"
-			indicatorClassName="bg-primary/75"
-			{...rest}
-		/>
+		<BlockDrawerGesture>
+			<CustomTabBar
+				className="bg-background"
+				tabStyle={{ width: 'auto' }}
+				activeClassName="text-primary"
+				inactiveClassName="text-primary/50"
+				indicatorClassName="bg-primary/75"
+				{...rest}
+			/>
+		</BlockDrawerGesture>
 	);
 };
 export default function HomeScreen() {
