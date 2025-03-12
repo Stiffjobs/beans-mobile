@@ -98,8 +98,24 @@ type Route = {
 	title: string;
 };
 
-type State = NavigationState<Route>;
-
+const renderTabBar = (
+	props: SceneRendererProps & {
+		navigationState: NavigationState<Route>;
+		options: Record<string, TabDescriptor<Route>> | undefined;
+	}
+) => {
+	const { options, ...rest } = props;
+	return (
+		<CustomTabBar
+			className="bg-background"
+			tabStyle={{ width: 'auto' }}
+			activeClassName="text-primary"
+			inactiveClassName="text-primary/50"
+			indicatorClassName="bg-primary/75"
+			{...rest}
+		/>
+	);
+};
 export default function HomeScreen() {
 	const { openModal } = useModalControls();
 	const [selectedDate, setSelectedDate] = useState<string>(
@@ -143,35 +159,6 @@ export default function HomeScreen() {
 		{ key: 'calendar', title: 'Calendar' },
 	];
 
-	const renderTabBar = (
-		props: SceneRendererProps & {
-			navigationState: NavigationState<{
-				key: string;
-				title: string;
-			}>;
-			options:
-				| Record<
-						string,
-						TabDescriptor<{
-							key: string;
-							title: string;
-						}>
-				  >
-				| undefined;
-		}
-	) => {
-		const { options, ...rest } = props;
-		return (
-			<CustomTabBar
-				tabStyle={{ width: 'auto' }}
-				className="bg-background"
-				activeClassName="text-primary"
-				inactiveClassName="text-primary/50"
-				indicatorClassName="bg-primary"
-				{...rest}
-			/>
-		);
-	};
 	return (
 		<View className="flex-1">
 			<Authenticated>
