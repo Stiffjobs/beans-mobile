@@ -309,17 +309,3 @@ interface BrewingData {
 	tds?: number;
 	ey?: number;
 }
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	indicator: {
-		backgroundColor: 'rgb(0, 132, 255)',
-		width: 48,
-		height: 48,
-		borderRadius: 24,
-		margin: 6,
-	},
-});
