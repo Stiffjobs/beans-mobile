@@ -35,3 +35,8 @@ export const POST_IMG_MAX = {
 	height: 2000,
 	size: 1000000,
 };
+
+export enum GEAR_TYPE {
+	Grinder = 'grinder',
+	Brewer = 'brewer',
+}

@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as gears from "../gears.js";
 import type * as http from "../http.js";
 import type * as migrations from "../migrations.js";
 import type * as posts from "../posts.js";
@@ -28,6 +29,7 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  gears: typeof gears;
   http: typeof http;
   migrations: typeof migrations;
   posts: typeof posts;

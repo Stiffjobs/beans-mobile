@@ -42,6 +42,8 @@ import { CustomTabBar } from '~/view/com/pager/TabBar';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
+import { FAB } from '~/components/FAB';
+import { BrewingData } from '~/lib/types';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -229,17 +231,7 @@ export default function HomeScreen() {
 					initialLayout={{ width: layout.width }}
 					navigationState={{ index, routes }}
 				/>
-				<View className="absolute bottom-4  right-4 ">
-					<Pressable
-						className="h-16 aspect-square bg-primary active:opacity-90 rounded-full items-center justify-center"
-						onPress={openCreatePostModal}
-					>
-						<StyledIcon
-							name="Plus"
-							className="w-8 h-8 text-primary-foreground"
-						/>
-					</Pressable>
-				</View>
+				<FAB iconName="Plus" onPress={openCreatePostModal} />
 			</Authenticated>
 			<Unauthenticated>
 				<View className="flex-1 items-center justify-center">
@@ -289,46 +281,3 @@ function BrewingCard({ data }: { data: BrewingData }) {
 		</Pressable>
 	);
 }
-interface BrewingData {
-	_creationTime: number;
-	_id: string;
-	author: string;
-	createdDate: string;
-	bean: string;
-	roastLevel: string;
-	coffeeIn: string;
-	ratio: string;
-	beverageWeight: string;
-	brewTemperature: string;
-	filterPaper: string;
-	grinder: string;
-	grindSetting: string;
-	bloomTime: string;
-	totalDrawdownTime?: string;
-	brewingWater?: string;
-	recipeSteps?: {
-		timestamp: string;
-		action: string;
-		value: number;
-	}[];
-	methodName?: string;
-	brewer?: string;
-	otherTools?: string;
-	flavor?: string;
-	tds?: number;
-	ey?: number;
-}
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	indicator: {
-		backgroundColor: 'rgb(0, 132, 255)',
-		width: 48,
-		height: 48,
-		borderRadius: 24,
-		margin: 6,
-	},
-});

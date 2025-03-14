@@ -15,7 +15,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TimeMaskInput } from '../time/TimeMaskInput';
 import Slider from '@react-native-community/slider';
-import { SelectRoastLevel } from '~/components/SelectRoastLevel';
+import { SelectRoastLevel } from '~/components/select/SelectRoastLevel';
 import { RoastLevelEnum } from '~/lib/constants';
 import { useModalControls } from '~/state/modals';
 import { Button } from '~/components/ui/button';

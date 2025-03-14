@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { RoastLevel } from './constants';
+import { GEAR_TYPE, RoastLevel } from './constants';
 import { ComposerImage } from '~/state/gallery';
 
 export const signInSchema = z.object({
@@ -57,3 +57,12 @@ export const updateProfileSchema = z.object({
 	name: z.string().min(3, 'Name must be at least 3 characters').optional(),
 	description: z.string().optional(),
 });
+
+export const createGearSchema = z.object({
+	name: z.string(),
+	type: z.nativeEnum(GEAR_TYPE),
+	details: z.string().optional(),
+	settings: z.string().optional(),
+});
+
+export const updateGearSchema = createGearSchema;

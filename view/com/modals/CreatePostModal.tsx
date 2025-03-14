@@ -38,7 +38,7 @@ import {
 	DialogTrigger,
 } from '~/components/ui/dialog';
 import { RequiredLabel } from '~/components/RequiredLabel';
-import { SelectRoastLevel } from '~/components/SelectRoastLevel';
+import { SelectRoastLevel } from '~/components/select/SelectRoastLevel';
 import { RecipeStepsEditor } from '~/components/RecipeStepsEditor';
 
 type FormFields = z.infer<typeof createPostSchema>;
