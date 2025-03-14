@@ -69,7 +69,7 @@ function CalendarScreen({
 		);
 	}
 	return (
-		<View className="flex-1">
+		<ScrollView className="flex-1">
 			<Calendar
 				key={key}
 				theme={theme}
@@ -85,7 +85,7 @@ function CalendarScreen({
 						<BrewingCard key={post._id} data={post} />
 					)
 			)}
-		</View>
+		</ScrollView>
 	);
 }
 
