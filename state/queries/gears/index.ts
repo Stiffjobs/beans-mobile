@@ -49,7 +49,13 @@ export const useDeleteGear = () => {
 };
 
 type EditGearFormFields = z.infer<typeof updateGearSchema>;
-export const useUpdateGear = ({ id }: { id: string }) => {
+export const useUpdateGear = ({
+	id,
+	onSuccess,
+}: {
+	id: string;
+	onSuccess?: () => void;
+}) => {
 	const mutation = useConvexMutation(api.gears.updateGear);
 	return useMutation({
 		mutationFn: async (values: EditGearFormFields) => {
@@ -57,6 +63,7 @@ export const useUpdateGear = ({ id }: { id: string }) => {
 		},
 		onSuccess: () => {
 			Toast.show('Gear updated', 'CircleCheck', 'success');
+			onSuccess?.();
 		},
 		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
@@ -65,6 +72,9 @@ export const useUpdateGear = ({ id }: { id: string }) => {
 };
 
 export const useGetGearById = (id: string) => {
+	console.log('====================================');
+	console.log(id);
+	console.log('====================================');
 	return useQuery(
 		convexQuery(api.gears.getGearById, { id: id as Id<'gears'> })
 	);
