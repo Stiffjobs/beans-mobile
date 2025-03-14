@@ -61,8 +61,11 @@ export function RecipeStepsEditor({ steps, setSteps }: RecipeStepsEditorProps) {
 				value={currentAction}
 				onChangeText={setCurrentAction}
 			/>
-			<Button size={'sm'} variant={'outline'} onPress={addRecipeStep}>
-				<Text>Add Step</Text>
+			<Button variant={'outline'} onPress={addRecipeStep}>
+				<View className="flex-row items-center gap-2">
+					<StyledIcon name="Plus" className="size-6 text-primary" />
+					<Text>Add Step</Text>
+				</View>
 			</Button>
 			<FlatList
 				data={steps}

@@ -155,8 +155,10 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									<>
 										<RequiredLabel>Bean</RequiredLabel>
 										<Input
-											multiline={false}
+											multiline
+											className="truncate"
 											numberOfLines={1}
+											lineBreakStrategyIOS="standard"
 											onChangeText={onChange}
 										/>
 										{form.formState.errors?.bean && (
@@ -483,19 +485,16 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							dispatch={dispatch}
 							images={state.embed?.media?.images ?? []}
 						/>
-						<Button size={'sm'} variant={'outline'} onPress={onOpenLibrary}>
+						<Button variant={'outline'} onPress={onOpenLibrary}>
 							<View className="flex-row items-center gap-2">
-								<StyledIcon
-									name="ImagePlus"
-									className="w-6 aspect-square color-gray-600"
-								/>
+								<StyledIcon name="ImagePlus" className="size-6 text-primary" />
 								<Text>Select Images</Text>
 							</View>
 						</Button>
 						<View className="h-5" />
 						<Dialog>
 							<DialogTrigger asChild>
-								<Button size="sm" variant="destructive">
+								<Button variant="destructive">
 									<Text>Discard post</Text>
 								</Button>
 							</DialogTrigger>
