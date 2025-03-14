@@ -25,6 +25,7 @@ import { Input } from '~/components/ui/input';
 import { useCreateGear } from '~/state/queries/gears';
 import { useCallback } from 'react';
 import { ErrorMessage } from '~/components/ErrorMessage';
+import { StyledIcon } from '../icons/StyledIcons';
 
 export const snapPoints = ['fullscreen'];
 const SELECT_PORTAL_HOST = 'select-gear-portal';
@@ -47,6 +48,27 @@ export function Component() {
 				<H4>Create Gear</H4>
 				<Separator />
 				<View className="gap-4">
+					<Controller
+						control={form.control}
+						name="name"
+						render={({ field }) => {
+							return (
+								<>
+									<Label>Name</Label>
+									<Input
+										maxLength={50}
+										onChangeText={field.onChange}
+										{...field}
+									/>
+									{form.formState.errors.name && (
+										<ErrorMessage
+											message={form.formState.errors.name?.message}
+										/>
+									)}
+								</>
+							);
+						}}
+					/>
 					<Controller
 						control={form.control}
 						name="type"
@@ -74,23 +96,6 @@ export function Component() {
 									{form.formState.errors.type && (
 										<ErrorMessage
 											message={form.formState.errors.type?.message}
-										/>
-									)}
-								</>
-							);
-						}}
-					/>
-					<Controller
-						control={form.control}
-						name="name"
-						render={({ field }) => {
-							return (
-								<>
-									<Label>Name</Label>
-									<Input onChangeText={field.onChange} {...field} />
-									{form.formState.errors.name && (
-										<ErrorMessage
-											message={form.formState.errors.name?.message}
 										/>
 									)}
 								</>
@@ -148,10 +153,10 @@ function Header() {
 
 	return (
 		<View className="flex p-4 flex-row justify-between items-center">
-			<Button size={'sm'} variant={'destructive'} onPress={closeModal}>
-				<Text>Cancel</Text>
-			</Button>
 			<View />
+			<Button variant={'ghost'} size="icon" onPress={closeModal}>
+				<StyledIcon name="X" className="text-primary" />
+			</Button>
 		</View>
 	);
 }
