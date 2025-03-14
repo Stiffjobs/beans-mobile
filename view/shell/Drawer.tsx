@@ -38,6 +38,10 @@ export function DrawerContent() {
 		setIsDrawerOpen(false);
 	}, [setIsDrawerOpen]);
 
+	const onPressGears = useCallback(() => {
+		setIsDrawerOpen(false);
+	}, [setIsDrawerOpen]);
+
 	const onPressSignOut = useCallback(async () => {
 		setIsDrawerOpen(false);
 		await handleSignOut();
@@ -57,6 +61,7 @@ export function DrawerContent() {
 					<DrawerProfileCard />
 					<Separator />
 					<HomeMenuItem onPress={onPressHome} />
+					<GearsMenuItem onPress={onPressGears} />
 					<ProfileMenuItem onPress={onPressProfile} />
 				</View>
 				<View>
@@ -109,6 +114,24 @@ let HomeMenuItem = ({ onPress }: { onPress?: () => void }): React.ReactNode => {
 	);
 };
 HomeMenuItem = React.memo(HomeMenuItem);
+
+let GearsMenuItem = ({
+	onPress,
+}: {
+	onPress?: () => void;
+}): React.ReactNode => {
+	return (
+		<Link asChild href="/(app)/(stack)/(tabs)/gears">
+			<MenuItem
+				icon={<StyledIcon className="text-primary w-6 h-6" name="Warehouse" />}
+				label={'Gears'}
+				onPress={onPress}
+			/>
+		</Link>
+	);
+};
+
+GearsMenuItem = React.memo(GearsMenuItem);
 
 let ProfileMenuItem = ({
 	onPress,
