@@ -32,3 +32,38 @@ export const list = query({
 		return gears;
 	},
 });
+
+export const getGearById = query({
+	args: {
+		id: v.id('gears'),
+	},
+	handler: async (ctx, args) => {
+		const gear = await ctx.db.get(args.id);
+		return gear;
+	},
+});
+
+export const updateGear = mutation({
+	args: {
+		id: v.id('gears'),
+		name: v.string(),
+		type: v.string(),
+		details: v.optional(v.string()),
+		settings: v.optional(v.string()),
+	},
+	handler: async (ctx, args) => {
+		await getCurrentUserOrThrow(ctx);
+		const { id, ...data } = args;
+		await ctx.db.patch(id, data);
+	},
+});
+
+export const deleteGear = mutation({
+	args: {
+		id: v.id('gears'),
+	},
+	handler: async (ctx, args) => {
+		await getCurrentUserOrThrow(ctx);
+		await ctx.db.delete(args.id);
+	},
+});

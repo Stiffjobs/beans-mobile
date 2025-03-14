@@ -5,10 +5,11 @@ import {
 	useMutation as useConvexMutation,
 	useQuery as useConvexQuery,
 } from 'convex/react';
-import { createGearSchema } from '~/lib/schemas';
+import { createGearSchema, updateGearSchema } from '~/lib/schemas';
 import { z } from 'zod';
 import { useModalControls } from '~/state/modals';
 import * as Toast from '~/view/com/util/Toast';
+import { Id } from '~/convex/_generated/dataModel';
 
 export const useListGears = () => {
 	return useQuery(convexQuery(api.gears.list, {}));
@@ -30,4 +31,41 @@ export const useCreateGear = () => {
 			console.error(error);
 		},
 	});
+};
+
+export const useDeleteGear = () => {
+	const mutation = useConvexMutation(api.gears.deleteGear);
+	return useMutation({
+		mutationFn: async (id: string) => {
+			await mutation({ id: id as Id<'gears'> });
+		},
+		onSuccess: () => {
+			Toast.show('Gear deleted', 'CircleCheck', 'success');
+		},
+		onError: error => {
+			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
+		},
+	});
+};
+
+type EditGearFormFields = z.infer<typeof updateGearSchema>;
+export const useUpdateGear = ({ id }: { id: string }) => {
+	const mutation = useConvexMutation(api.gears.updateGear);
+	return useMutation({
+		mutationFn: async (values: EditGearFormFields) => {
+			await mutation({ id: id as Id<'gears'>, ...values });
+		},
+		onSuccess: () => {
+			Toast.show('Gear updated', 'CircleCheck', 'success');
+		},
+		onError: error => {
+			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
+		},
+	});
+};
+
+export const useGetGearById = (id: string) => {
+	return useQuery(
+		convexQuery(api.gears.getGearById, { id: id as Id<'gears'> })
+	);
 };
