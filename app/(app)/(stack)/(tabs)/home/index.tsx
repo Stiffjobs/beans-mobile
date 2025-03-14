@@ -43,6 +43,7 @@ import { UserAvatar } from '~/view/com/util/UserAvatar';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
 import { FAB } from '~/components/FAB';
+import { BrewingData } from '~/lib/types';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -279,33 +280,4 @@ function BrewingCard({ data }: { data: BrewingData }) {
 			</Card>
 		</Pressable>
 	);
-}
-interface BrewingData {
-	_creationTime: number;
-	_id: string;
-	author: string;
-	createdDate: string;
-	bean: string;
-	roastLevel: string;
-	coffeeIn: string;
-	ratio: string;
-	beverageWeight: string;
-	brewTemperature: string;
-	filterPaper: string;
-	grinder: string;
-	grindSetting: string;
-	bloomTime: string;
-	totalDrawdownTime?: string;
-	brewingWater?: string;
-	recipeSteps?: {
-		timestamp: string;
-		action: string;
-		value: number;
-	}[];
-	methodName?: string;
-	brewer?: string;
-	otherTools?: string;
-	flavor?: string;
-	tds?: number;
-	ey?: number;
 }
