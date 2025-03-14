@@ -42,6 +42,7 @@ import { CustomTabBar } from '~/view/com/pager/TabBar';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
+import { FAB } from '~/components/FAB';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -229,17 +230,7 @@ export default function HomeScreen() {
 					initialLayout={{ width: layout.width }}
 					navigationState={{ index, routes }}
 				/>
-				<View className="absolute bottom-4  right-4 ">
-					<Pressable
-						className="h-16 aspect-square bg-primary active:opacity-90 rounded-full items-center justify-center"
-						onPress={openCreatePostModal}
-					>
-						<StyledIcon
-							name="Plus"
-							className="w-8 h-8 text-primary-foreground"
-						/>
-					</Pressable>
-				</View>
+				<FAB iconName="Plus" onPress={openCreatePostModal} />
 			</Authenticated>
 			<Unauthenticated>
 				<View className="flex-1 items-center justify-center">
