@@ -20,6 +20,11 @@ export interface CreateGearModal {
 	name: 'create-gear';
 }
 
+export interface EditGearModal {
+	name: 'edit-gear';
+	id: string;
+}
+
 export type Modal =
 	| CreatePostModal
 	| EditProfileModal
