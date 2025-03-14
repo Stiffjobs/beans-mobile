@@ -7,6 +7,7 @@ import { useEffect, useRef } from 'react';
 import * as CreatePostModal from './CreatePostModal';
 import * as EditProfileModal from './EditProfile';
 import * as EditPostModal from './EditPostModal';
+import * as EditGearModal from './EditGearModal';
 import * as CreateGearModal from './CreateGearModal';
 import { SafeAreaView, View, Modal } from 'react-native';
 import { createCustomBackdrop } from '../util/BottomSheetCustomBackdrop';
@@ -56,6 +57,9 @@ export function ModalsContainer() {
 	} else if (activeModal?.name === 'create-gear') {
 		snapPoints = CreateGearModal.snapPoints;
 		element = <CreateGearModal.Component />;
+	} else if (activeModal?.name === 'edit-gear') {
+		snapPoints = EditGearModal.snapPoints;
+		element = <EditGearModal.Component {...activeModal} />;
 	} else {
 		return null;
 	}

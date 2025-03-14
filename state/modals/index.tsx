@@ -29,7 +29,8 @@ export type Modal =
 	| CreatePostModal
 	| EditProfileModal
 	| EditPostModal
-	| CreateGearModal;
+	| CreateGearModal
+	| EditGearModal;
 
 const ModalContext = React.createContext<{
 	isModalActive: boolean;
