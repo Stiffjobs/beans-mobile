@@ -9,6 +9,7 @@ import { StyledIcon } from '../com/icons/StyledIcons';
 import { Link } from 'expo-router';
 import { useSetDrawerOpen } from '~/state/shell/drawer-open';
 import { UserAvatar } from '../com/util/UserAvatar';
+import { CoffeeBean } from '../com/icons/SvgIcons';
 let DrawerProfileCard = ({}): React.ReactNode => {
 	const currentUser = useGetCurrentUser();
 	return (
@@ -41,7 +42,9 @@ export function DrawerContent() {
 	const onPressGears = useCallback(() => {
 		setIsDrawerOpen(false);
 	}, [setIsDrawerOpen]);
-
+	const onPressBeans = useCallback(() => {
+		setIsDrawerOpen(false);
+	}, [setIsDrawerOpen]);
 	const onPressSignOut = useCallback(async () => {
 		setIsDrawerOpen(false);
 		await handleSignOut();
@@ -61,6 +64,7 @@ export function DrawerContent() {
 					<DrawerProfileCard />
 					<Separator />
 					<HomeMenuItem onPress={onPressHome} />
+					<BeansMenuItem onPress={onPressBeans} />
 					<GearsMenuItem onPress={onPressGears} />
 					<ProfileMenuItem onPress={onPressProfile} />
 				</View>
@@ -106,7 +110,7 @@ let HomeMenuItem = ({ onPress }: { onPress?: () => void }): React.ReactNode => {
 	return (
 		<Link asChild href="/(app)/(stack)/(tabs)/home">
 			<MenuItem
-				icon={<StyledIcon className="text-primary w-6 h-6" name="House" />}
+				icon={<StyledIcon className="text-primary size-6" name="House" />}
 				label={'Home'}
 				onPress={onPress}
 			/>
@@ -123,7 +127,7 @@ let GearsMenuItem = ({
 	return (
 		<Link asChild href="/(app)/(stack)/(tabs)/gears">
 			<MenuItem
-				icon={<StyledIcon className="text-primary w-6 h-6" name="Warehouse" />}
+				icon={<StyledIcon className="text-primary size-6" name="Warehouse" />}
 				label={'Gears'}
 				onPress={onPress}
 			/>
@@ -141,7 +145,7 @@ let ProfileMenuItem = ({
 	return (
 		<Link asChild href="/(app)/(stack)/(tabs)/profile">
 			<MenuItem
-				icon={<StyledIcon className="text-primary w-6 h-6" name="User" />}
+				icon={<StyledIcon className="text-primary size-6" name="User" />}
 				label={'Profile'}
 				onPress={onPress}
 			/>
@@ -150,11 +154,27 @@ let ProfileMenuItem = ({
 };
 HomeMenuItem = React.memo(HomeMenuItem);
 
+let BeansMenuItem = ({
+	onPress,
+}: {
+	onPress?: () => void;
+}): React.ReactNode => {
+	return (
+		<Link href={'/(app)/(stack)/(tabs)/beans'} asChild>
+			<MenuItem
+				icon={<StyledIcon name="Bean" className="size-6 text-primary" />}
+				label={'Beans'}
+				onPress={onPress}
+			/>
+		</Link>
+	);
+};
+
 export function SignOutMenuItem({ onPress }: { onPress: () => void }) {
 	return (
 		<Link asChild href={'/signin'}>
 			<MenuItem
-				icon={<StyledIcon className="text-destructive w-6 h-6" name="LogOut" />}
+				icon={<StyledIcon className="text-destructive size-6" name="LogOut" />}
 				label="Sign Out"
 				onPress={onPress}
 				variant="destructive"
