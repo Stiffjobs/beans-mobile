@@ -9,7 +9,7 @@ import { StyledIcon } from '../com/icons/StyledIcons';
 import { Link } from 'expo-router';
 import { useSetDrawerOpen } from '~/state/shell/drawer-open';
 import { UserAvatar } from '../com/util/UserAvatar';
-import { CoffeeBean } from '../com/icons/SvgIcons';
+import { CoffeeBean, TripleBeans } from '../com/icons/SvgIcons';
 let DrawerProfileCard = ({}): React.ReactNode => {
 	const currentUser = useGetCurrentUser();
 	return (
@@ -161,11 +161,7 @@ let BeansMenuItem = ({
 }): React.ReactNode => {
 	return (
 		<Link href={'/(app)/(stack)/(tabs)/beans'} asChild>
-			<MenuItem
-				icon={<StyledIcon name="Bean" className="size-6 text-primary" />}
-				label={'Beans'}
-				onPress={onPress}
-			/>
+			<MenuItem icon={<TripleBeans />} label={'Beans'} onPress={onPress} />
 		</Link>
 	);
 };
