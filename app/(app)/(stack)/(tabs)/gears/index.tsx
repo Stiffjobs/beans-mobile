@@ -2,10 +2,8 @@ import { FlashList } from '@shopify/flash-list';
 import { useCallback, useState } from 'react';
 import { Pressable, RefreshControl, View } from 'react-native';
 import { FAB } from '~/components/FAB';
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Separator } from '~/components/ui/separator';
-import { Text } from '~/components/ui/text';
-import { H4 } from '~/components/ui/typography';
+import { H4, Small } from '~/components/ui/typography';
 import { GEAR_TYPE } from '~/lib/constants';
 import { GearData } from '~/lib/types';
 import { useModalControls } from '~/state/modals';
@@ -57,9 +55,9 @@ function GearCard({ gear }: { gear: GearData }) {
 	return (
 		<Pressable onPress={openEditGearModal}>
 			<View className="p-4 justify-between flex flex-row">
-				<View className="">
+				<View className="gap-4">
 					<H4>{gear.name}</H4>
-					<Text className="text-secondary">{gear.type}</Text>
+					<Small className="">{gear.type}</Small>
 				</View>
 				<GearTypeIcon type={gear.type} />
 			</View>
