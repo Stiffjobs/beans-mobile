@@ -6,7 +6,7 @@ import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { Hamburger } from '~/view/com/util/Hamburger';
-import { CoffeeBean } from '~/view/com/icons/SvgIcons';
+import { CoffeeBean, DoubleBeans } from '~/view/com/icons/SvgIcons';
 import { TabBarAnimatedIcon } from '~/view/com/icons/StyledIcons';
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -40,6 +40,20 @@ export default function TabLayout() {
 					headerTitle: () => <CoffeeBean className="w-8 h-8" />,
 					tabBarIcon: ({ color, focused }) => (
 						<TabBarAnimatedIcon name="House" color={color} focused={focused} />
+					),
+				}}
+			/>
+			<Tabs.Screen
+				name="beans"
+				options={{
+					title: 'Beans',
+					tabBarIcon: ({ color, focused }) => (
+						<DoubleBeans
+							animated
+							className="size-10"
+							color={color}
+							focused={focused}
+						/>
 					),
 				}}
 			/>
