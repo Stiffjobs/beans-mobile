@@ -236,7 +236,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="ratio"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Ratio</Label>
+									<RequiredLabel>Ratio</RequiredLabel>
 									<Input numberOfLines={1} onChangeText={onChange} />
 									{form.formState.errors.ratio && (
 										<ErrorMessage
