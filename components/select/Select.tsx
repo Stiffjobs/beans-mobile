@@ -26,7 +26,7 @@ export function SelectComponent(props: {
 	const { onChange, value, placeholder, portalHost, options } = props;
 	const label = options.find(e => e.value === value)?.label;
 	return (
-		<Select onValueChange={onChange}>
+		<Select onValueChange={e => onChange(e?.value)}>
 			<SelectTrigger className="w-[250px]">
 				<SelectValue
 					className="text-foreground text-sm native:text-lg"
