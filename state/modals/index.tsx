@@ -25,12 +25,17 @@ export interface EditGearModal {
 	id: string;
 }
 
+export interface CreateBeanProfileModal {
+	name: 'create-bean-profile';
+}
+
 export type Modal =
 	| CreatePostModal
 	| EditProfileModal
 	| EditPostModal
 	| CreateGearModal
-	| EditGearModal;
+	| EditGearModal
+	| CreateBeanProfileModal;
 
 const ModalContext = React.createContext<{
 	isModalActive: boolean;

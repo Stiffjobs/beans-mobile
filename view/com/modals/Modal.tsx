@@ -9,6 +9,7 @@ import * as EditProfileModal from './EditProfile';
 import * as EditPostModal from './EditPostModal';
 import * as EditGearModal from './EditGearModal';
 import * as CreateGearModal from './CreateGearModal';
+import * as CreateBeanProfileModal from './CreateBeanProfileModal';
 import { SafeAreaView, View, Modal } from 'react-native';
 import { createCustomBackdrop } from '../util/BottomSheetCustomBackdrop';
 import { useReducedMotion } from 'react-native-reanimated';
@@ -60,6 +61,9 @@ export function ModalsContainer() {
 	} else if (activeModal?.name === 'edit-gear') {
 		snapPoints = EditGearModal.snapPoints;
 		element = <EditGearModal.Component {...activeModal} />;
+	} else if (activeModal?.name === 'create-bean-profile') {
+		snapPoints = CreateBeanProfileModal.snapPoints;
+		element = <CreateBeanProfileModal.Component />;
 	} else {
 		return null;
 	}
