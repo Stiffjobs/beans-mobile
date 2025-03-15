@@ -20,11 +20,10 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '~/components/ui/dialog';
-import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
 import { Text } from '~/components/ui/text';
 import { GEAR_TYPE } from '~/lib/constants';
-import { X } from '~/lib/icons/X';
+import { Input } from '~/components/input/Input';
 import { updateGearSchema } from '~/lib/schemas';
 import { useModalControls } from '~/state/modals';
 import {

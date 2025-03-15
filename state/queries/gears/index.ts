@@ -72,9 +72,6 @@ export const useUpdateGear = ({
 };
 
 export const useGetGearById = (id: string) => {
-	console.log('====================================');
-	console.log(id);
-	console.log('====================================');
 	return useQuery(
 		convexQuery(api.gears.getGearById, { id: id as Id<'gears'> })
 	);

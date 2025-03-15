@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Alert, Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Text } from '~/components/ui/text';
-import { Input } from '~/components/ui/input';
+import { Input } from '~/components/input/Input';
 import { Button } from '~/components/ui/button';
 import { Controller, useForm } from 'react-hook-form';
 import { signUpSchema } from '~/lib/schemas';

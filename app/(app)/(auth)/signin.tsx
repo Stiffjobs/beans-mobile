@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native';
 import React from 'react';
 
 import { Text } from '~/components/ui/text';
-import { Input } from '~/components/ui/input';
+import { Input } from '~/components/input/Input';
 import { Button } from '~/components/ui/button';
 import { Controller, useForm } from 'react-hook-form';
 import { ErrorMessage } from '~/components/ErrorMessage';

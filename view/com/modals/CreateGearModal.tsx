@@ -21,7 +21,7 @@ import { createGearSchema } from '~/lib/schemas';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { H4 } from '~/components/ui/typography';
-import { Input } from '~/components/ui/input';
+import { Input } from '~/components/input/Input';
 import { useCreateGear } from '~/state/queries/gears';
 import { useCallback } from 'react';
 import { ErrorMessage } from '~/components/ErrorMessage';

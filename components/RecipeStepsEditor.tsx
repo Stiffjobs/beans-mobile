@@ -1,7 +1,7 @@
 import React from 'react';
 import { formatRecipeTime, parseRecipeTime } from '~/lib/recipes/utils';
 import { Textarea } from './ui/textarea';
-import { Input } from './ui/input';
+import { Input } from './input/Input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
 import { Text } from './ui/text';

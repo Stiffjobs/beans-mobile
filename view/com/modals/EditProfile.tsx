@@ -7,16 +7,13 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { Separator } from '~/components/ui/separator';
 import { EditableUserAvatar } from '../util/UserAvatar';
 import { useCallback, useState } from 'react';
-import {
-	Image as CroppedImage,
-	openCropper,
-} from 'react-native-image-crop-picker';
+import { Image as CroppedImage } from 'react-native-image-crop-picker';
 import { useUpdateProfile } from '~/state/queries/users';
 import { updateProfileSchema } from '~/lib/schemas';
 import { z } from 'zod';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '~/components/ui/input';
+import { Input } from '~/components/input/Input';
 import { ErrorMessage } from '~/components/ErrorMessage';
 import { User } from '~/lib/auth/types';
 import { Label } from '~/components/ui/label';

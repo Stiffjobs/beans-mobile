@@ -8,7 +8,7 @@ import { Label } from '~/components/ui/label';
 import { H4 } from '~/components/ui/typography';
 import { Text } from '~/components/ui/text';
 import { ErrorMessage } from '~/components/ErrorMessage';
-import { Input } from '~/components/ui/input';
+import { Input } from '~/components/input/Input';
 import { RequiredLabel } from '~/components/RequiredLabel';
 import { editPostSchema } from '~/lib/schemas';
 import { z } from 'zod';

@@ -1,11 +1,11 @@
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Label } from '~/components/ui/label';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
-import { Input } from '~/components/ui/input';
+import { Input } from '~/components/input/Input';
 import Slider from '@react-native-community/slider';
 import { RoastLevelEnum } from '~/lib/constants';
 import { ErrorMessage } from '~/components/ErrorMessage';
@@ -40,6 +40,8 @@ import {
 import { RequiredLabel } from '~/components/RequiredLabel';
 import { SelectRoastLevel } from '~/components/select/SelectRoastLevel';
 import { RecipeStepsEditor } from '~/components/RecipeStepsEditor';
+import { useListGears } from '~/state/queries/gears';
+import { SelectComponent } from '~/components/select/Select';
 
 type FormFields = z.infer<typeof createPostSchema>;
 
@@ -80,6 +82,22 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			images: results,
 		});
 	}, [state.embed.media.images]);
+	const fetchGearList = useListGears();
+	const brewers =
+		fetchGearList.data
+			?.filter(gear => gear.type === 'brewer')
+			.map(e => ({
+				label: e.name,
+				value: e.name,
+			})) ?? [];
+	const grinders =
+		fetchGearList.data
+			?.filter(gear => gear.type === 'grinder')
+			.map(e => ({
+				label: e.name,
+				value: e.name,
+				id: e._id,
+			})) ?? [];
 
 	const createPostMutation = useCreatePost();
 	async function onSubmit(values: FormFields) {
@@ -96,6 +114,17 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 	}, [form.formState.errors]);
 
 	const isSecondPage = activePage === 1;
+
+	useEffect(() => {
+		console.log('form.watch', form.watch('grinder'));
+		const grinder = fetchGearList.data?.find(
+			g => g.name === form.watch('grinder')
+		);
+		console.log('grinder', grinder);
+		if (grinder?.settings) {
+			form.setValue('grindSetting', grinder.settings);
+		}
+	}, [form.watch('grinder')]);
 
 	const handleScrollPage = useCallback(
 		(index: number) => {
@@ -154,13 +183,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								return (
 									<>
 										<RequiredLabel>Bean</RequiredLabel>
-										<Input
-											multiline
-											className="truncate"
-											numberOfLines={1}
-											lineBreakStrategyIOS="standard"
-											onChangeText={onChange}
-										/>
+										<Input onChangeText={onChange} />
 										{form.formState.errors?.bean && (
 											<ErrorMessage
 												message={form.formState?.errors?.bean.message}
@@ -257,6 +280,26 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								</>
 							)}
 						/>
+						<Controller
+							control={form.control}
+							name="brewer"
+							render={({ field: { onChange } }) => (
+								<>
+									<RequiredLabel>Brewer</RequiredLabel>
+									<SelectComponent
+										placeholder="Select your brewers"
+										portalHost={CUSTOM_PORTAL_HOST_NAME}
+										onChange={onChange}
+										options={brewers}
+									/>
+									{form.formState.errors.brewer && (
+										<ErrorMessage
+											message={form.formState.errors.brewer.message}
+										/>
+									)}
+								</>
+							)}
+						/>
 						{/* TODO: this should look like a dropdown with options */}
 						<Controller
 							name="filterPaper"
@@ -295,7 +338,12 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							render={({ field: { onChange } }) => (
 								<>
 									<RequiredLabel>Grinder</RequiredLabel>
-									<Input numberOfLines={1} onChangeText={onChange} />
+									<SelectComponent
+										placeholder="Select your grinder"
+										portalHost={CUSTOM_PORTAL_HOST_NAME}
+										options={grinders}
+										onChange={onChange}
+									/>
 									{form.formState.errors.grinder && (
 										<ErrorMessage
 											message={form.formState.errors.grinder.message}
@@ -308,10 +356,10 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<Controller
 							control={form.control}
 							name="grindSetting"
-							render={({ field: { onChange } }) => (
+							render={({ field: { onChange, value } }) => (
 								<>
 									<RequiredLabel>Grind setting</RequiredLabel>
-									<Input numberOfLines={1} onChangeText={onChange} />
+									<Input value={value} editable={false} />
 									{form.formState.errors.grindSetting && (
 										<ErrorMessage
 											message={form.formState.errors.grindSetting.message}
@@ -367,21 +415,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									{form.formState.errors.methodName && (
 										<ErrorMessage
 											message={form.formState.errors.methodName.message}
-										/>
-									)}
-								</>
-							)}
-						/>
-						<Controller
-							control={form.control}
-							name="brewer"
-							render={({ field: { onChange } }) => (
-								<>
-									<Label>Brewer</Label>
-									<Input onChangeText={onChange} />
-									{form.formState.errors.brewer && (
-										<ErrorMessage
-											message={form.formState.errors.brewer.message}
 										/>
 									)}
 								</>
