@@ -121,8 +121,8 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			g => g.name === form.watch('grinder')
 		);
 		console.log('grinder', grinder);
-		if (grinder?.settings) {
-			form.setValue('grindSetting', grinder.settings);
+		if (grinder?.details) {
+			form.setValue('grindSetting', grinder.details);
 		}
 	}, [form.watch('grinder')]);
 
@@ -410,7 +410,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							name="methodName"
 							render={({ field: { onChange } }) => (
 								<>
-									<Label>Preparation method</Label>
+									<Label>Preparation</Label>
 									<Input onChangeText={onChange} />
 									{form.formState.errors.methodName && (
 										<ErrorMessage

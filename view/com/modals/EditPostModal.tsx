@@ -358,7 +358,7 @@ export function Component({ id }: { id: string }) {
 							name="methodName"
 							render={({ field: { onChange, value } }) => (
 								<>
-									<Label>Preparation method</Label>
+									<Label>Preparation</Label>
 									<Input onChangeText={onChange} value={value} />
 									{form.formState.errors.methodName && (
 										<ErrorMessage

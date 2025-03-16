@@ -96,7 +96,7 @@ export default function PostDetailsPage() {
 						value={data?.beverageWeight}
 					/>
 					<DetailItem label="Temperature (°C)" value={data?.brewTemperature} />
-					<DetailItem label="Method" value={data?.methodName} />
+					<DetailItem label="Preparation" value={data?.methodName} />
 				</View>
 
 				{/* Equipment */}
