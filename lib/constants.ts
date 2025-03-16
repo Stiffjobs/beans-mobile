@@ -39,4 +39,5 @@ export const POST_IMG_MAX = {
 export enum GEAR_TYPE {
 	Grinder = 'grinder',
 	Brewer = 'brewer',
+	'Filter paper' = 'filter paper',
 }

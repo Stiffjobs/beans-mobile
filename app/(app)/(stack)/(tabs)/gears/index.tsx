@@ -8,7 +8,7 @@ import { GEAR_TYPE } from '~/lib/constants';
 import { GearData } from '~/lib/types';
 import { useModalControls } from '~/state/modals';
 import { useListGears } from '~/state/queries/gears';
-import { Brewer, Grinder } from '~/view/com/icons/SvgIcons';
+import { Brewer, FilterPaper, Grinder } from '~/view/com/icons/SvgIcons';
 
 export default function Gears() {
 	const { openModal } = useModalControls();
@@ -69,6 +69,8 @@ function GearTypeIcon({ type }: { type: GEAR_TYPE }) {
 	switch (type) {
 		case GEAR_TYPE.Brewer:
 			return <Brewer className="size-12" />;
+		case GEAR_TYPE['Filter paper']:
+			return <FilterPaper className="size-12" />;
 		default:
 			return <Grinder className="size-12" />;
 	}

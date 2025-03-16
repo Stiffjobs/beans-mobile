@@ -62,7 +62,6 @@ export const createGearSchema = z.object({
 	name: z.string(),
 	type: z.nativeEnum(GEAR_TYPE),
 	details: z.string().optional(),
-	settings: z.string().optional(),
 });
 
 export const updateGearSchema = createGearSchema;
