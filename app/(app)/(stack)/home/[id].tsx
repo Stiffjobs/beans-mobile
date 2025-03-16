@@ -14,6 +14,7 @@ import {
 } from '~/components/DetailsDialog';
 import { useModalControls } from '~/state/modals';
 import { useGetCurrentUser } from '~/state/queries/auth';
+import { H3 } from '~/components/ui/typography';
 
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -56,62 +57,67 @@ export default function PostDetailsPage() {
 						) : null,
 				}}
 			/>
-			<Text className="text-2xl font-bold mb-4">{data?.bean}</Text>
-			<FlatList
-				data={urls}
-				horizontal
-				keyExtractor={(_, index) => index.toString()}
-				ItemSeparatorComponent={() => <View className="w-1" />}
-				renderItem={({ item, index }) => (
-					<Pressable
-						onPress={() => {
-							setViewImageIndex(index);
-							setVisible(true);
-						}}
-					>
-						<Image
-							contentFit="cover"
-							style={{ height: 180, aspectRatio: 1, borderRadius: 8 }}
-							source={{ uri: item }}
-						/>
-					</Pressable>
-				)}
-			/>
+			<View className="px-4 flex-1 gap-4">
+				<H3 className="text-2xl font-bold">{data?.bean}</H3>
+				<FlatList
+					data={urls}
+					horizontal
+					keyExtractor={(_, index) => index.toString()}
+					ItemSeparatorComponent={() => <View className="w-1" />}
+					renderItem={({ item, index }) => (
+						<Pressable
+							onPress={() => {
+								setViewImageIndex(index);
+								setVisible(true);
+							}}
+						>
+							<Image
+								contentFit="cover"
+								style={{ height: 180, aspectRatio: 1, borderRadius: 8 }}
+								source={{ uri: item }}
+							/>
+						</Pressable>
+					)}
+				/>
+				<View className="rounded-lg">
+					<Text className="text-lg font-semibold mb-2">Basic Information</Text>
+					<DetailItem label="Bean" value={data?.bean} />
+					<DetailItem label="Flavor" value={data?.flavor} />
+					<DetailItem label="Roast Level" value={data?.roastLevel} />
+				</View>
+
+				{/* Brewing Parameters */}
+				<View className="rounded-lg ">
+					<Text className="text-lg font-semibold mb-2">Brewing Parameters</Text>
+					<DetailItem label="Coffee In (g)" value={data?.coffeeIn} />
+					<DetailItem label="Ratio" value={data?.ratio?.replace('/', ':')} />
+					<DetailItem
+						label="Beverage Weight (g)"
+						value={data?.beverageWeight}
+					/>
+					<DetailItem label="Temperature (°C)" value={data?.brewTemperature} />
+					<DetailItem label="Method" value={data?.methodName} />
+				</View>
+
+				{/* Equipment */}
+				<View className="rounded-lg ">
+					<Text className="text-lg font-semibold mb-2">Equipment</Text>
+					<DetailItem label="Filter Paper" value={data?.filterPaper} />
+					<DetailItem label="Water" value={data?.brewingWater} />
+					<DetailItem label="Grinder" value={data?.grinder} />
+					<DetailItem label="Grind Setting" value={data?.grindSetting} />
+				</View>
+
+				{/* Technical Details */}
+				<View className="rounded-lg ">
+					<Text className="text-lg font-semibold mb-2">Technical Details</Text>
+					<DetailItem label="TDS" value={data?.tds?.toFixed(2)} />
+					<DetailItem label="Extraction Yield" value={data?.ey?.toFixed(2)} />
+					<DetailItem label="Bloom Time" value={data?.bloomTime} />
+					<DetailItem label="Total Time" value={data?.totalDrawdownTime} />
+				</View>
+			</View>
 			{/* Basic Info Section */}
-			<View className="rounded-lg p-4 ">
-				<Text className="text-lg font-semibold mb-2">Basic Information</Text>
-				<DetailItem label="Bean" value={data?.bean} />
-				<DetailItem label="Flavor" value={data?.flavor} />
-				<DetailItem label="Roast Level" value={data?.roastLevel} />
-			</View>
-
-			{/* Brewing Parameters */}
-			<View className="rounded-lg p-4 ">
-				<Text className="text-lg font-semibold mb-2">Brewing Parameters</Text>
-				<DetailItem label="Coffee In (g)" value={data?.coffeeIn} />
-				<DetailItem label="Ratio" value={data?.ratio?.replace('/', ':')} />
-				<DetailItem label="Beverage Weight (g)" value={data?.beverageWeight} />
-				<DetailItem label="Temperature (°C)" value={data?.brewTemperature} />
-				<DetailItem label="Method" value={data?.methodName} />
-			</View>
-
-			{/* Equipment */}
-			<View className="rounded-lg p-4 ">
-				<Text className="text-lg font-semibold mb-2">Equipment</Text>
-				<DetailItem label="Filter Paper" value={data?.filterPaper} />
-				<DetailItem label="Water" value={data?.brewingWater} />
-				<DetailItem label="Grinder" value={data?.grinder} />
-				<DetailItem label="Grind Setting" value={data?.grindSetting} />
-			</View>
-
-			{/* Technical Details */}
-			<View className="rounded-lg p-4 ">
-				<Text className="text-lg font-semibold mb-2">Technical Details</Text>
-				<DetailItem label="TDS" value={data?.tds?.toFixed(2)} />
-				<DetailItem label="Extraction Yield" value={data?.ey?.toFixed(2)} />
-				<DetailItem label="Bloom Time" value={data?.bloomTime} />
-				<DetailItem label="Total Time" value={data?.totalDrawdownTime} />
-			</View>
 
 			{/* Brewing Steps */}
 			{data?.recipeSteps && data.recipeSteps.length > 0 && (
@@ -121,10 +127,10 @@ export default function PostDetailsPage() {
 						<View key={index} className="py-2 border-b border-gray-200">
 							<Text className="font-medium">{step.timestamp}</Text>
 							<View className="flex-row justify-between">
-								<Text className="text-gray-600 dark:text-gray-400">
+								<Text className="flex-1 text-gray-800 dark:text-gray-200">
 									{step.action}
 								</Text>
-								<Text className="text-gray-900 dark:text-gray-100">
+								<Text className="ml-4 text-gray-800 dark:text-gray-200">
 									{step.value}(s)
 								</Text>
 							</View>
@@ -132,7 +138,6 @@ export default function PostDetailsPage() {
 					))}
 				</View>
 			)}
-
 			{/* Additional Information */}
 			<View className="rounded-lg p-4 ">
 				<Text className="text-lg font-semibold mb-2">
@@ -162,9 +167,12 @@ const DetailItem = ({
 }: {
 	label: string;
 	value: string | number | undefined;
-}) => (
-	<View className="flex-row justify-between py-2 border-b border-gray-200">
-		<Text className=" font-medium">{label}</Text>
-		<Text className="">{value}</Text>
-	</View>
-);
+}) => {
+	if (!value) return null;
+	return (
+		<View className="flex-row justify-between py-2 border-b border-gray-200">
+			<Text className="font-semibold mr-2">{label}</Text>
+			<Text className="flex-1 text-right">{value}</Text>
+		</View>
+	);
+};
