@@ -1,5 +1,4 @@
 import {
-	StyleSheet,
 	Pressable,
 	useWindowDimensions,
 	View,
@@ -8,8 +7,7 @@ import {
 } from 'react-native';
 import { useModalControls } from '~/state/modals';
 import { Calendar, DateData } from 'react-native-calendars';
-import { StyledIcon } from '~/view/com/icons/StyledIcons';
-import { Link, router, Stack } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Authenticated, Unauthenticated } from 'convex/react';

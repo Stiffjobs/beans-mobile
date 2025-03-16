@@ -359,7 +359,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							render={({ field: { onChange, value } }) => (
 								<>
 									<RequiredLabel>Grind setting</RequiredLabel>
-									<Input value={value} editable={false} />
+									<Input value={value} />
 									{form.formState.errors.grindSetting && (
 										<ErrorMessage
 											message={form.formState.errors.grindSetting.message}
