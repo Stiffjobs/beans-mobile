@@ -50,7 +50,6 @@ export function Component(props: EditGearModalProps) {
 			name: '',
 			type: 'GRINDER' as GEAR_TYPE,
 			details: '',
-			settings: '',
 		},
 	});
 	// Update form values when data is fetched
@@ -60,7 +59,6 @@ export function Component(props: EditGearModalProps) {
 				name: fetchGearDetails.data.name,
 				type: fetchGearDetails.data.type as GEAR_TYPE,
 				details: fetchGearDetails.data.details || '', // Handle null/undefined
-				settings: fetchGearDetails.data.settings || '', // Handle null/undefined
 			});
 		}
 	}, [fetchGearDetails.data]);
@@ -119,23 +117,6 @@ export function Component(props: EditGearModalProps) {
 										value,
 									}))}
 								/>
-							</>
-						);
-					}}
-				/>
-				<Controller
-					control={form.control}
-					name="settings"
-					render={({ field }) => {
-						return (
-							<>
-								<Label>Settings</Label>
-								<Input onChangeText={field.onChange} {...field} />
-								{form.formState.errors.settings && (
-									<ErrorMessage
-										message={form.formState.errors.settings?.message}
-									/>
-								)}
 							</>
 						);
 					}}

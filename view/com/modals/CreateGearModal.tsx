@@ -104,23 +104,6 @@ export function Component() {
 					/>
 					<Controller
 						control={form.control}
-						name="settings"
-						render={({ field }) => {
-							return (
-								<>
-									<Label>Settings</Label>
-									<Input onChangeText={field.onChange} {...field} />
-									{form.formState.errors.settings && (
-										<ErrorMessage
-											message={form.formState.errors.settings?.message}
-										/>
-									)}
-								</>
-							);
-						}}
-					/>
-					<Controller
-						control={form.control}
 						name="details"
 						render={({ field }) => {
 							return (
