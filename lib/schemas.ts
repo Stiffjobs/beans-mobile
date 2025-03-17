@@ -59,9 +59,14 @@ export const updateProfileSchema = z.object({
 });
 
 export const createGearSchema = z.object({
-	name: z.string(),
+	name: z.string().min(1),
 	type: z.nativeEnum(GEAR_TYPE),
 	details: z.string().optional(),
 });
 
 export const updateGearSchema = createGearSchema;
+
+export const createBeanProfileSchema = z.object({
+	name: z.string(),
+	confirm_name: z.string(),
+});
