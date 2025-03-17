@@ -111,10 +111,9 @@ function FeedScreen() {
 	}, [fetchFeed]);
 
 	return (
-		<ScrollView className="flex-1 p-4">
+		<View className="flex-1 p-4">
 			<FlatList
 				data={fetchFeed.results}
-				scrollEnabled={false}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
@@ -148,7 +147,7 @@ function FeedScreen() {
 					);
 				}}
 			/>
-		</ScrollView>
+		</View>
 	);
 }
 type Route = {
