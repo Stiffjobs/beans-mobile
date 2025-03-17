@@ -115,17 +115,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 
 	const isSecondPage = activePage === 1;
 
-	useEffect(() => {
-		console.log('form.watch', form.watch('grinder'));
-		const grinder = fetchGearList.data?.find(
-			g => g.name === form.watch('grinder')
-		);
-		console.log('grinder', grinder);
-		if (grinder?.details) {
-			form.setValue('grindSetting', grinder.details);
-		}
-	}, [form.watch('grinder')]);
-
 	const handleScrollPage = useCallback(
 		(index: number) => {
 			pagerRef.current?.setPage(index);
@@ -359,7 +348,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							render={({ field: { onChange, value } }) => (
 								<>
 									<RequiredLabel>Grind setting</RequiredLabel>
-									<Input value={value} />
+									<Input value={value} onChangeText={onChange} />
 									{form.formState.errors.grindSetting && (
 										<ErrorMessage
 											message={form.formState.errors.grindSetting.message}
