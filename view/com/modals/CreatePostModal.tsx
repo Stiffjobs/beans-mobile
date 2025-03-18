@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, Controller } from 'react-hook-form';
 import { Input } from '~/components/input/Input';
 import Slider from '@react-native-community/slider';
-import { RoastLevelEnum } from '~/lib/constants';
+import { GEAR_TYPE, RoastLevelEnum } from '~/lib/constants';
 import { ErrorMessage } from '~/components/ErrorMessage';
 import { createPostSchema } from '~/lib/schemas';
 import { useCreatePost } from '~/state/queries/post';
@@ -85,20 +85,26 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 	const fetchGearList = useListGears();
 	const brewers =
 		fetchGearList.data
-			?.filter(gear => gear.type === 'brewer')
+			?.filter(gear => gear.type === GEAR_TYPE.Brewer)
 			.map(e => ({
 				label: e.name,
 				value: e.name,
 			})) ?? [];
 	const grinders =
 		fetchGearList.data
-			?.filter(gear => gear.type === 'grinder')
+			?.filter(gear => gear.type === GEAR_TYPE.Grinder)
 			.map(e => ({
 				label: e.name,
 				value: e.name,
 				id: e._id,
 			})) ?? [];
-
+	const filterPapers =
+		fetchGearList.data
+			?.filter(gear => gear.type === GEAR_TYPE['Filter paper'])
+			.map(e => ({
+				label: e.name,
+				value: e.name,
+			})) ?? [];
 	const createPostMutation = useCreatePost();
 	async function onSubmit(values: FormFields) {
 		console.log('data', values);
@@ -269,26 +275,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								</>
 							)}
 						/>
-						<Controller
-							control={form.control}
-							name="brewer"
-							render={({ field: { onChange } }) => (
-								<>
-									<RequiredLabel>Brewer</RequiredLabel>
-									<SelectComponent
-										placeholder="Select your brewers"
-										portalHost={CUSTOM_PORTAL_HOST_NAME}
-										onChange={onChange}
-										options={brewers}
-									/>
-									{form.formState.errors.brewer && (
-										<ErrorMessage
-											message={form.formState.errors.brewer.message}
-										/>
-									)}
-								</>
-							)}
-						/>
 						{/* TODO: this should look like a dropdown with options */}
 						<Controller
 							name="filterPaper"
@@ -296,25 +282,15 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							render={({ field: { onChange } }) => (
 								<>
 									<RequiredLabel>Filter paper</RequiredLabel>
-									<Input numberOfLines={1} onChangeText={onChange} />
+									<SelectComponent
+										placeholder="Select your filter paper"
+										portalHost={CUSTOM_PORTAL_HOST_NAME}
+										options={filterPapers}
+										onChange={onChange}
+									/>
 									{form.formState.errors.filterPaper && (
 										<ErrorMessage
 											message={form.formState.errors.filterPaper.message}
-										/>
-									)}
-								</>
-							)}
-						/>
-						<Controller
-							control={form.control}
-							name="brewingWater"
-							render={({ field: { onChange } }) => (
-								<>
-									<RequiredLabel>Brewing water (ppm)</RequiredLabel>
-									<Input numberOfLines={1} onChangeText={onChange} />
-									{form.formState.errors.brewingWater && (
-										<ErrorMessage
-											message={form.formState.errors.brewingWater.message}
 										/>
 									)}
 								</>
@@ -394,6 +370,41 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							}}
 						/>
 						{/* INFO: under is for optional fields */}
+						<Controller
+							control={form.control}
+							name="brewer"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Brewer</Label>
+									<SelectComponent
+										placeholder="Select your brewers"
+										portalHost={CUSTOM_PORTAL_HOST_NAME}
+										onChange={onChange}
+										options={brewers}
+									/>
+									{form.formState.errors.brewer && (
+										<ErrorMessage
+											message={form.formState.errors.brewer.message}
+										/>
+									)}
+								</>
+							)}
+						/>
+						<Controller
+							control={form.control}
+							name="brewingWater"
+							render={({ field: { onChange } }) => (
+								<>
+									<Label>Brewing water (ppm)</Label>
+									<Input numberOfLines={1} onChangeText={onChange} />
+									{form.formState.errors.brewingWater && (
+										<ErrorMessage
+											message={form.formState.errors.brewingWater.message}
+										/>
+									)}
+								</>
+							)}
+						/>
 						<Controller
 							control={form.control}
 							name="methodName"
