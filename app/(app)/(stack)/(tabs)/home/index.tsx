@@ -50,7 +50,6 @@ function CalendarScreen({
 	selectedDate: string;
 	setSelectedDate: Dispatch<SetStateAction<string>>;
 }) {
-	const { openModal } = useModalControls();
 	const fetchListPosts = useListPosts();
 	const markedDates = fetchListPosts.data?.reduce((acc, post) => {
 		const date = post.createdDate;
@@ -193,6 +192,7 @@ export default function HomeScreen() {
 				case 'feed':
 					return <FeedScreen />;
 				case 'calendar':
+					console.log('calendar', selectedDate);
 					return (
 						<CalendarScreen
 							selectedDate={selectedDate}
@@ -209,7 +209,7 @@ export default function HomeScreen() {
 			name: 'create-post',
 			selectedDate: selectedDate,
 		});
-	}, [openModal]);
+	}, [openModal, selectedDate]);
 	const layout = useWindowDimensions();
 
 	const [index, setIndex] = useState(0);
