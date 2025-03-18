@@ -16,7 +16,6 @@ export const createGear = mutation({
 			name: args.name,
 			type: args.type,
 			details: args.details,
-			settings: args.settings,
 		});
 	},
 });
@@ -49,7 +48,6 @@ export const updateGear = mutation({
 		name: v.string(),
 		type: v.string(),
 		details: v.optional(v.string()),
-		settings: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
 		await getCurrentUserOrThrow(ctx);
