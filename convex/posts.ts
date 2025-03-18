@@ -16,7 +16,6 @@ export const createPost = mutation({
 		grindSetting: v.string(),
 		bloomTime: v.string(),
 		totalDrawdownTime: v.string(),
-		brewingWater: v.string(),
 		recipeSteps: v.array(
 			v.object({
 				timestamp: v.string(),
@@ -24,6 +23,7 @@ export const createPost = mutation({
 				value: v.number(),
 			})
 		),
+		brewingWater: v.optional(v.string()),
 		methodName: v.optional(v.string()),
 		brewer: v.optional(v.string()),
 		otherTools: v.optional(v.string()),

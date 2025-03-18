@@ -28,7 +28,6 @@ export const createPostSchema = z.object({
 	beverageWeight: z.string(),
 	brewTemperature: z.string(),
 	filterPaper: z.string(),
-	brewingWater: z.string(),
 	grinder: z.string(),
 	grindSetting: z.string(),
 	bloomTime: z.string(),
@@ -40,6 +39,7 @@ export const createPostSchema = z.object({
 			value: z.number(),
 		})
 	),
+	brewingWater: z.string().optional(),
 	methodName: z.string().optional(),
 	brewer: z.string().optional(),
 	otherTools: z.string().optional(),
