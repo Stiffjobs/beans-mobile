@@ -8,7 +8,7 @@ import { Text } from './ui/text';
 import { FlatList, View } from 'react-native';
 import { StyledIcon } from '~/view/com/icons/StyledIcons';
 
-type RecipeStep = {
+export type RecipeStep = {
 	timestamp: string;
 	action: string;
 	value: number;
