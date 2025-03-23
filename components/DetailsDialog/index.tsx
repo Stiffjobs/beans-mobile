@@ -7,7 +7,6 @@ import { IconName, StyledIcon } from '~/view/com/icons/StyledIcons';
 import { TouchableOpacity } from '@gorhom/bottom-sheet';
 import { Separator } from '../ui/separator';
 import { cn } from '~/lib/utils';
-import { useModalControls, useModals } from '~/state/modals';
 export { useDialogControl as useDetailsDialogControl } from '~/components/Dialog';
 
 export function DetailsDialog(props: DetailsDialogProps) {
