@@ -7,7 +7,6 @@ import { Text } from '~/components/ui/text';
 import { useCallback, useState } from 'react';
 import ImageView from 'react-native-image-viewing';
 import { Button } from '~/components/ui/button';
-import { StyledIcon } from '~/view/com/icons/StyledIcons';
 import {
 	DetailsDialog,
 	useDetailsDialogControl,
@@ -62,8 +61,7 @@ export default function PostDetailsPage() {
 				{data?.bean && <H3>{data?.bean}</H3>}
 				{data?.beanProfile && (
 					<H3>
-						{data.beanProfile.origin} {data.beanProfile.farm}
-						{data.beanProfile.variety}
+						{`${data.beanProfile.roaster} ${data.beanProfile.origin} ${data.beanProfile.farm} ${data.beanProfile.process} ${data.beanProfile.variety}`}
 					</H3>
 				)}
 				<FlatList
@@ -92,6 +90,7 @@ export default function PostDetailsPage() {
 					<DetailItem label="Bean" value={data?.bean} />
 					{data?.beanProfile && (
 						<>
+							<DetailItem label="Roaster" value={data.beanProfile.roaster} />
 							<DetailItem label="Origin" value={data?.beanProfile.origin} />
 							<DetailItem label="Producer" value={data?.beanProfile.producer} />
 							<DetailItem label="Farm" value={data?.beanProfile.farm} />

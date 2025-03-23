@@ -142,8 +142,7 @@ function FeedScreen() {
 								</View>
 								{item.beanProfile ? (
 									<Text>
-										{item.beanProfile.origin} {item.beanProfile.farm}{' '}
-										{item.beanProfile.variety}
+										{`${item.beanProfile.roaster} ${item.beanProfile.origin} ${item.beanProfile.farm} ${item.beanProfile.process} ${item.beanProfile.variety}`}
 									</Text>
 								) : (
 									<Text>{item.post.bean}</Text>
