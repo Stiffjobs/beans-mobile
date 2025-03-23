@@ -58,7 +58,13 @@ export default function PostDetailsPage() {
 				}}
 			/>
 			<View className="px-4 flex-1 gap-4">
-				<H3 className="text-2xl font-bold">{data?.bean}</H3>
+				{data?.bean && <H3>{data?.bean}</H3>}
+				{data?.beanProfile && (
+					<H3>
+						{data.beanProfile.origin} {data.beanProfile.farm}
+						{data.beanProfile.variety}
+					</H3>
+				)}
 				<FlatList
 					data={urls}
 					horizontal
@@ -81,7 +87,21 @@ export default function PostDetailsPage() {
 				/>
 				<View className="rounded-lg">
 					<Text className="text-lg font-semibold mb-2">Basic Information</Text>
+
 					<DetailItem label="Bean" value={data?.bean} />
+					{data?.beanProfile && (
+						<>
+							<DetailItem label="Origin" value={data?.beanProfile.origin} />
+							<DetailItem label="Producer" value={data?.beanProfile.producer} />
+							<DetailItem label="Farm" value={data?.beanProfile.farm} />
+							<DetailItem label="Process" value={data?.beanProfile.process} />
+							<DetailItem label="Variety" value={data?.beanProfile.variety} />
+							<DetailItem
+								label="Elevation"
+								value={data?.beanProfile.elevation}
+							/>
+						</>
+					)}
 					<DetailItem label="Flavor" value={data?.flavor} />
 					<DetailItem label="Roast Level" value={data?.roastLevel} />
 				</View>
