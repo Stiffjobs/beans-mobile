@@ -73,8 +73,17 @@ export const list = query({
 			.query('posts')
 			.withIndex('by_author', q => q.eq('author', userId._id))
 			.collect();
+		const postWithBeanProfile = await Promise.all(
+			posts.map(async post => {
+				let beanProfile = null;
+				if (post.beanProfile) {
+					beanProfile = await ctx.db.get(post.beanProfile);
+				}
+				return { ...post, beanProfile };
+			})
+		);
 
-		return posts;
+		return postWithBeanProfile;
 	},
 });
 

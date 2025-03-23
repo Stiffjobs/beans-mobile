@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import PagerView from 'react-native-pager-view';
@@ -12,11 +11,10 @@ import { Input } from '~/components/input/Input';
 import { RequiredLabel } from '~/components/RequiredLabel';
 import { editPostSchema } from '~/lib/schemas';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { TimeMaskInput } from '../time/TimeMaskInput';
 import Slider from '@react-native-community/slider';
 import { SelectRoastLevel } from '~/components/select/SelectRoastLevel';
-import { RoastLevelEnum } from '~/lib/constants';
+import { GEAR_TYPE, RoastLevelEnum } from '~/lib/constants';
 import { useModalControls } from '~/state/modals';
 import { Button } from '~/components/ui/button';
 import { WindowOverlay } from '../util/WindowOverlay';
@@ -26,53 +24,94 @@ import { Pager } from '../pager/Pager';
 import { useEditPost, useGetPostById } from '~/state/queries/post';
 import { Loader } from '~/components/Loader';
 import { RecipeStepsEditor } from '~/components/RecipeStepsEditor';
+import { useForm } from '@tanstack/react-form';
+import { useListBeanProfiles } from '~/state/queries/bean_profiles';
+import {
+	BeanProfileListDialog,
+	useBeanProfileListDialogControl,
+} from '~/components/BeanProfileListDialog';
+import { Id } from '~/convex/_generated/dataModel';
+import { ChevronDown } from '~/lib/icons/ChevronDown';
+import { SelectComponent } from '~/components/select/Select';
+import { useListGears } from '~/state/queries/gears';
 
 export const snapPoints = ['fullscreen'];
 type FormFields = z.infer<typeof editPostSchema>;
 
 export function Component({ id }: { id: string }) {
 	const postDetails = useGetPostById(id);
-	const form = useForm<FormFields>({
-		resolver: zodResolver(editPostSchema),
+	const fetchBeanProfiles = useListBeanProfiles();
+	const form = useForm({
 		defaultValues: {
-			bean: postDetails.data?.bean,
-			roastLevel: Object.values(RoastLevelEnum).find(
-				e => e === postDetails.data?.roastLevel
-			),
-			coffeeIn: postDetails.data?.coffeeIn,
-			ratio: postDetails.data?.ratio,
-			beverageWeight: postDetails.data?.beverageWeight,
-			brewTemperature: postDetails.data?.brewTemperature,
-			filterPaper: postDetails.data?.filterPaper,
-			brewingWater: postDetails.data?.brewingWater,
-			grinder: postDetails.data?.grinder,
-			grindSetting: postDetails.data?.grindSetting,
-			bloomTime: postDetails.data?.bloomTime,
-			totalDrawdownTime: postDetails.data?.totalDrawdownTime,
-			methodName: postDetails.data?.methodName,
-			brewer: postDetails.data?.brewer,
-			otherTools: postDetails.data?.otherTools,
-			flavor: postDetails.data?.flavor,
+			bean: postDetails.data?.bean ?? '',
+			roastLevel: postDetails.data?.roastLevel ?? '',
+			coffeeIn: postDetails.data?.coffeeIn ?? '',
+			ratio: postDetails.data?.ratio ?? '',
+			beverageWeight: postDetails.data?.beverageWeight ?? '',
+			brewTemperature: postDetails.data?.brewTemperature ?? '',
+			filterPaper: postDetails.data?.filterPaper ?? '',
+			brewingWater: postDetails.data?.brewingWater ?? '',
+			grinder: postDetails.data?.grinder ?? '',
+			grindSetting: postDetails.data?.grindSetting ?? '',
+			bloomTime: postDetails.data?.bloomTime ?? '',
+			totalDrawdownTime: postDetails.data?.totalDrawdownTime ?? '',
+			methodName: postDetails.data?.methodName ?? '',
+			brewer: postDetails.data?.brewer ?? '',
+			otherTools: postDetails.data?.otherTools ?? '',
+			flavor: postDetails.data?.flavor ?? '',
 			tds: postDetails.data?.tds,
 			ey: postDetails.data?.ey,
-			recipeSteps: postDetails.data?.recipeSteps,
+			recipeSteps: postDetails.data?.recipeSteps ?? [],
+			beanProfile: postDetails.data?.beanProfile?._id ?? '',
+		} as FormFields,
+		onSubmit: async ({ value }) => {
+			await editPostMutation.mutateAsync(value);
+		},
+		validators: {
+			onMount: editPostSchema,
 		},
 	});
+	const beanProfileListDialogControl = useBeanProfileListDialogControl();
+	const onOpenBeanProfileListDialog = useCallback(() => {
+		beanProfileListDialogControl.open();
+	}, [beanProfileListDialogControl]);
 	const [activePage, setActivePage] = React.useState(0);
 	const pagerRef = useRef<PagerView>(null);
 	const { closeModal } = useModalControls();
+	const fetchGearList = useListGears();
 	const editPostMutation = useEditPost({
 		id,
 		onSuccess: () => {
 			closeModal();
 		},
 	});
-
-	const handleSave = useCallback(
-		async (data: FormFields) => {
-			await editPostMutation.mutateAsync(data);
+	const brewers =
+		fetchGearList.data
+			?.filter(gear => gear.type === GEAR_TYPE.Brewer)
+			.map(e => ({
+				label: e.name,
+				value: e.name,
+			})) ?? [];
+	const grinders =
+		fetchGearList.data
+			?.filter(gear => gear.type === GEAR_TYPE.Grinder)
+			.map(e => ({
+				label: e.name,
+				value: e.name,
+				id: e._id,
+			})) ?? [];
+	const filterPapers =
+		fetchGearList.data
+			?.filter(gear => gear.type === GEAR_TYPE['Filter paper'])
+			.map(e => ({
+				label: e.name,
+				value: e.name,
+			})) ?? [];
+	const handleBeanProfileSelect = useCallback(
+		(beanProfile: Id<'bean_profiles'>) => {
+			form.setFieldValue('beanProfile', beanProfile);
 		},
-		[editPostMutation]
+		[form]
 	);
 
 	if (postDetails.isLoading) {
@@ -91,8 +130,8 @@ export function Component({ id }: { id: string }) {
 				</Button>
 				<Text>{activePage + 1}/2</Text>
 				<Button
-					disabled={!form.formState.isDirty}
-					onPress={form.handleSubmit(handleSave)}
+					disabled={!form.state.isDirty}
+					onPress={() => form.handleSubmit()}
 					variant={'secondary'}
 					size="sm"
 				>
@@ -114,32 +153,29 @@ export function Component({ id }: { id: string }) {
 							Fields marked with <Text className="text-destructive">*</Text> are
 							required
 						</Text>
-						<Controller
-							control={form.control}
-							name="bean"
-							render={({ field: { onChange, value } }) => {
-								return (
-									<>
-										<RequiredLabel>Bean</RequiredLabel>
-										<Input
-											multiline={false}
-											numberOfLines={1}
-											value={value}
-											onChangeText={onChange}
-										/>
-										{form.formState.errors?.bean && (
-											<ErrorMessage
-												message={form.formState?.errors?.bean.message}
+						<form.Field name="beanProfile">
+							{field => (
+								<>
+									<RequiredLabel>Bean profile</RequiredLabel>
+									<Pressable onPressIn={onOpenBeanProfileListDialog}>
+										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+											<Text className="native:text-lg text-sm text-foreground">
+												{fetchBeanProfiles?.data?.find(
+													e => e._id === field.state.value
+												)?.origin ?? 'Select a bean profile'}
+											</Text>
+											<ChevronDown
+												size={16}
+												aria-hidden={true}
+												className="text-foreground opacity-50"
 											/>
-										)}
-									</>
-								);
-							}}
-						/>
-						<Controller
-							control={form.control}
-							name="roastLevel"
-							render={({ field: { onChange, value } }) => (
+										</View>
+									</Pressable>
+								</>
+							)}
+						</form.Field>
+						<form.Field name="roastLevel">
+							{field => (
 								<>
 									<RequiredLabel>Roast level</RequiredLabel>
 									<SelectRoastLevel
@@ -149,334 +185,247 @@ export function Component({ id }: { id: string }) {
 											label: value,
 											value: value,
 										}))}
-										onChange={onChange}
-										value={value}
+										onChange={field.handleChange}
+										value={field.state.value}
 									/>
-									{form.formState.errors.roastLevel && (
-										<ErrorMessage
-											message={form.formState.errors.roastLevel.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="coffeeIn"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="coffeeIn">
+							{field => (
 								<>
 									<RequiredLabel>Coffee in (g)</RequiredLabel>
 									<Input
 										numberOfLines={1}
-										onChangeText={onChange}
-										value={value}
+										onChangeText={field.handleChange}
+										value={field.state.value}
 									/>
-									{form.formState.errors.coffeeIn && (
-										<ErrorMessage
-											message={form.formState.errors.coffeeIn.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="ratio"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="ratio">
+							{field => (
 								<>
 									<Label>Ratio</Label>
 									<Input
 										numberOfLines={1}
-										onChangeText={onChange}
-										value={value}
+										onChangeText={field.handleChange}
+										value={field.state.value}
 									/>
-									{form.formState.errors.ratio && (
-										<ErrorMessage
-											message={form.formState.errors.coffeeIn?.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="beverageWeight"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="beverageWeight">
+							{field => (
 								<>
 									<RequiredLabel>Beverage weight(g)</RequiredLabel>
 									<Input
 										numberOfLines={1}
-										onChangeText={onChange}
-										value={value}
+										onChangeText={field.handleChange}
+										value={field.state.value}
 									/>
-									{form.formState.errors.beverageWeight && (
-										<ErrorMessage
-											message={form.formState.errors.beverageWeight.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="brewTemperature"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="brewTemperature">
+							{field => (
 								<>
 									<RequiredLabel>Brew temperature (°C)</RequiredLabel>
 									<Input
 										numberOfLines={1}
-										onChangeText={onChange}
+										onChangeText={field.handleChange}
 										keyboardType="numeric"
-										value={value}
+										value={field.state.value}
 									/>
-									{form.formState.errors.brewTemperature && (
-										<ErrorMessage
-											message={form.formState.errors.brewTemperature.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						{/* TODO: this should look like a dropdown with options */}
-						<Controller
-							name="filterPaper"
-							control={form.control}
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="brewer">
+							{field => (
+								<>
+									<RequiredLabel>Brewer</RequiredLabel>
+									<SelectComponent
+										placeholder="Select your brewer"
+										portalHost={EDIT_POST_SELECT_PORTAL}
+										options={brewers}
+										onChange={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+								</>
+							)}
+						</form.Field>
+						<form.Field name="filterPaper">
+							{field => (
 								<>
 									<RequiredLabel>Filter paper</RequiredLabel>
-									<Input
-										numberOfLines={1}
-										onChangeText={onChange}
-										value={value}
+									<SelectComponent
+										placeholder="Select your filter paper"
+										portalHost={EDIT_POST_SELECT_PORTAL}
+										options={filterPapers}
+										onChange={field.handleChange}
 									/>
-									{form.formState.errors.filterPaper && (
-										<ErrorMessage
-											message={form.formState.errors.filterPaper.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="brewingWater"
-							render={({ field: { onChange, value } }) => (
-								<>
-									<RequiredLabel>Brewing water (ppm)</RequiredLabel>
-									<Input
-										numberOfLines={1}
-										onChangeText={onChange}
-										value={value}
-									/>
-									{form.formState.errors.brewingWater && (
-										<ErrorMessage
-											message={form.formState.errors.brewingWater.message}
-										/>
-									)}
-								</>
-							)}
-						/>
-						{/* TODO: this should look like a dropdown with options */}
-						<Controller
-							control={form.control}
-							name="grinder"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="grinder">
+							{field => (
 								<>
 									<RequiredLabel>Grinder</RequiredLabel>
-									<Input
-										numberOfLines={1}
-										onChangeText={onChange}
-										value={value}
+									<SelectComponent
+										placeholder="Select your grinder"
+										portalHost={EDIT_POST_SELECT_PORTAL}
+										options={grinders}
+										onChange={field.handleChange}
 									/>
-									{form.formState.errors.grinder && (
-										<ErrorMessage
-											message={form.formState.errors.grinder.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						{/* TODO: this should look like  */}
-						<Controller
-							control={form.control}
-							name="grindSetting"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="grindSetting">
+							{field => (
 								<>
 									<RequiredLabel>Grind setting</RequiredLabel>
 									<Input
 										numberOfLines={1}
-										onChangeText={onChange}
-										value={value}
+										onChangeText={field.handleChange}
+										value={field.state.value}
 									/>
-									{form.formState.errors.grindSetting && (
-										<ErrorMessage
-											message={form.formState.errors.grindSetting.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="bloomTime"
-							render={({ field: { onChange, value } }) => {
-								return (
-									<>
-										<RequiredLabel>Bloom time</RequiredLabel>
-										<TimeMaskInput value={value} onChange={onChange} />
-										{form.formState.errors.bloomTime && (
-											<ErrorMessage
-												message={form.formState.errors.bloomTime.message}
-											/>
-										)}
-									</>
-								);
-							}}
-						/>
-						<Controller
-							control={form.control}
-							name="totalDrawdownTime"
-							render={({ field: { onChange, value } }) => {
-								return (
-									<>
-										<RequiredLabel>Total drawdown time</RequiredLabel>
-										<TimeMaskInput value={value} onChange={onChange} />
-										{form.formState.errors.totalDrawdownTime && (
-											<ErrorMessage
-												message={
-													form.formState.errors.totalDrawdownTime.message
-												}
-											/>
-										)}
-									</>
-								);
-							}}
-						/>
-						{/* INFO: under is for optional fields */}
-						<Controller
-							control={form.control}
-							name="methodName"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="bloomTime">
+							{field => (
+								<>
+									<RequiredLabel>Bloom time</RequiredLabel>
+									<TimeMaskInput
+										value={field.state.value}
+										onChange={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+								</>
+							)}
+						</form.Field>
+						<form.Field name="totalDrawdownTime">
+							{field => (
+								<>
+									<RequiredLabel>Total drawdown time</RequiredLabel>
+									<TimeMaskInput
+										value={field.state.value}
+										onChange={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+								</>
+							)}
+						</form.Field>
+						<form.Field name="brewingWater">
+							{field => (
+								<>
+									<Label>Brewing water (ppm)</Label>
+									<Input
+										numberOfLines={1}
+										onChangeText={field.handleChange}
+										value={field.state.value}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+								</>
+							)}
+						</form.Field>
+						<form.Field name="methodName">
+							{field => (
 								<>
 									<Label>Preparation</Label>
-									<Input onChangeText={onChange} value={value} />
-									{form.formState.errors.methodName && (
-										<ErrorMessage
-											message={form.formState.errors.methodName.message}
-										/>
-									)}
+									<Input
+										onChangeText={field.handleChange}
+										value={field.state.value}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="brewer"
-							render={({ field: { onChange, value } }) => (
-								<>
-									<Label>Brewer</Label>
-									<Input onChangeText={onChange} value={value} />
-									{form.formState.errors.brewer && (
-										<ErrorMessage
-											message={form.formState.errors.brewer.message}
-										/>
-									)}
-								</>
-							)}
-						/>
-						<Controller
-							control={form.control}
-							name="otherTools"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="otherTools">
+							{field => (
 								<>
 									<Label>Other tools</Label>
-									<Input onChangeText={onChange} value={value} />
-									{form.formState.errors.otherTools && (
-										<ErrorMessage
-											message={form.formState.errors.otherTools.message}
-										/>
-									)}
+									<Input
+										onChangeText={field.handleChange}
+										value={field.state.value}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="flavor"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="flavor">
+							{field => (
 								<>
 									<Label>Flavor</Label>
-									<Input onChangeText={onChange} value={value} />
-									{form.formState.errors.flavor && (
-										<ErrorMessage
-											message={form.formState.errors.flavor?.message}
-										/>
-									)}
+									<Input
+										onChangeText={field.handleChange}
+										value={field.state.value}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="tds"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="tds">
+							{field => (
 								<>
 									<Label>TDS</Label>
 									<Slider
 										minimumValue={1.0}
 										maximumValue={2.0}
 										step={0.01}
-										value={value}
+										value={field.state.value}
 										onValueChange={newValue => {
-											onChange(newValue);
+											field.handleChange(newValue);
 											// Calculate and set EY when TDS changes
 											const beverageWeight = parseFloat(
-												form.getValues('beverageWeight') || '0'
+												form.getFieldValue('beverageWeight') || '0'
 											);
 											const coffeeIn = parseFloat(
-												form.getValues('coffeeIn') || '0'
+												form.getFieldValue('coffeeIn') || '0'
 											);
 											if (beverageWeight && coffeeIn) {
 												const ey = (newValue * beverageWeight) / coffeeIn;
-												form.setValue('ey', ey);
+												form.setFieldValue('ey', ey);
 											}
 										}}
 									/>
-									<Text>{value?.toFixed(2)}</Text>
-									{form.formState.errors.tds && (
-										<ErrorMessage message={form.formState.errors.tds.message} />
-									)}
+									<Text>{field.state.value?.toFixed(2)}</Text>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="ey"
-							render={({ field: { value } }) => (
+						</form.Field>
+						<form.Field name="ey">
+							{field => (
 								<>
 									<Label>Extraction Yield (%)</Label>
-									<H4>{value?.toFixed(2)}%</H4>
-									{form.formState.errors.ey && (
-										<ErrorMessage message={form.formState.errors.ey.message} />
-									)}
+									<H4>{field.state.value?.toFixed(2)}%</H4>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
+						</form.Field>
 					</View>
 				</KeyboardAwareScrollView>
 				<KeyboardAwareScrollView key={2}>
 					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
-						<Controller
-							control={form.control}
-							name="recipeSteps"
-							render={({ field: { onChange, value } }) => (
+						<form.Field name="recipeSteps">
+							{field => (
 								<>
-									<RecipeStepsEditor steps={value} setSteps={onChange} />
-									{form.formState.errors.recipeSteps && (
-										<ErrorMessage
-											message={form.formState.errors.recipeSteps.message}
-										/>
-									)}
+									<RecipeStepsEditor
+										steps={field.state.value}
+										setSteps={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
+						</form.Field>
 						<View className="h-5" />
 					</View>
 				</KeyboardAwareScrollView>
@@ -484,6 +433,13 @@ export function Component({ id }: { id: string }) {
 			<WindowOverlay>
 				<PortalHost name={EDIT_POST_SELECT_PORTAL} />
 			</WindowOverlay>
+			<BeanProfileListDialog
+				control={beanProfileListDialogControl}
+				params={{
+					type: 'bean-profile-list',
+					onSelect: handleBeanProfileSelect,
+				}}
+			/>
 		</>
 	);
 }

@@ -258,7 +258,14 @@ function BrewingCard({ data }: { data: BrewingData }) {
 				<CardHeader className="pb-2">
 					<View className="flex-row justify-between items-center">
 						<View className="flex-1">
-							<CardTitle className="text-primary">{data.bean}</CardTitle>
+							{data.bean && (
+								<CardTitle className="text-primary">{data.bean}</CardTitle>
+							)}
+							{data.beanProfile && (
+								<CardTitle className="text-primary">
+									{`${data.beanProfile?.roaster} ${data.beanProfile?.origin} ${data.beanProfile?.farm} ${data.beanProfile?.process} ${data.beanProfile?.variety}`}
+								</CardTitle>
+							)}
 							<CardDescription>{data.brewer}</CardDescription>
 						</View>
 						<Text className="text-gray-500 dark:text-gray-400">

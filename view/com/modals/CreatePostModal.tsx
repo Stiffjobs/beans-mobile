@@ -492,7 +492,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						/>
 						<Button variant={'outline'} onPress={onOpenLibrary}>
 							<View className="flex-row items-center gap-2">
-								<ImagePlus className="size-6" />
+								<ImagePlus className="text-primary size-6" />
 								<Text>Select Images</Text>
 							</View>
 						</Button>

@@ -37,6 +37,7 @@ export interface BrewingData {
 	flavor?: string;
 	tds?: number;
 	ey?: number;
+	beanProfile?: BeanProfileProps | null;
 }
 
 export type BeanProfileProps = Doc<'bean_profiles'>;

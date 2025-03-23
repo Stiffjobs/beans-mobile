@@ -9,6 +9,7 @@ import { ChevronDown } from './ChevronDown';
 import { House } from './House';
 import { Warehouse } from './Warehouse';
 import { User } from './User';
+import { Plus } from './Plus';
 export {
 	ImagePlus,
 	ChevronLeft,
@@ -21,4 +22,5 @@ export {
 	House,
 	Warehouse,
 	User,
+	Plus,
 };
