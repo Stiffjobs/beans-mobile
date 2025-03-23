@@ -1,10 +1,9 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Label } from '~/components/ui/label';
 import * as z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from '@tanstack/react-form';
 import { Input } from '~/components/input/Input';
 import Slider from '@react-native-community/slider';
 import { GEAR_TYPE, RoastLevelEnum } from '~/lib/constants';
@@ -14,7 +13,7 @@ import { useCreatePost } from '~/state/queries/post';
 import { openPicker } from '~/lib/media/picker';
 import { usePhotoLibraryPermission } from '~/lib/hooks/usePermissions';
 import React, { useCallback, useEffect, useReducer, useRef } from 'react';
-import { createComposerImage } from '~/state/gallery';
+import { ComposerImage, createComposerImage } from '~/state/gallery';
 import { composerReducer, initialPostDraft } from '../composer/state/composer';
 import { Gallery } from '../composer/photos/Gallery';
 import { useModalControls } from '~/state/modals';
@@ -39,29 +38,73 @@ import {
 } from '~/components/ui/dialog';
 import { RequiredLabel } from '~/components/RequiredLabel';
 import { SelectRoastLevel } from '~/components/select/SelectRoastLevel';
-import { RecipeStepsEditor } from '~/components/RecipeStepsEditor';
+import { RecipeStep, RecipeStepsEditor } from '~/components/RecipeStepsEditor';
 import { useListGears } from '~/state/queries/gears';
 import { SelectComponent } from '~/components/select/Select';
+import {
+	BeanProfileListDialog,
+	useBeanProfileListDialogControl,
+} from '~/components/BeanProfileListDialog';
+import { Id } from '~/convex/_generated/dataModel';
+import { useListBeanProfiles } from '~/state/queries/bean_profiles';
+import { ChevronDown } from '~/lib/icons/ChevronDown';
+
+const CUSTOM_PORTAL_HOST_NAME = 'modal-select';
+const CUSTOM_PORTAL_DIALOG = 'dialog';
 
 type FormFields = z.infer<typeof createPostSchema>;
 
 export const snapPoints = ['fullscreen'];
+
 export function Component({ selectedDate }: { selectedDate: string }) {
-	const form = useForm<FormFields>({
-		resolver: zodResolver(createPostSchema),
+	const form = useForm({
 		defaultValues: {
 			createdDate: selectedDate,
-			recipeSteps: [],
-			images: [],
+			bean: '',
+			roastLevel: '',
+			coffeeIn: '',
+			ratio: '',
+			beanProfile: '' as Id<'bean_profiles'>,
+			beverageWeight: '',
+			brewTemperature: '',
+			filterPaper: '',
+			grinder: '',
+			grindSetting: '',
+			bloomTime: '',
+			totalDrawdownTime: '',
+			recipeSteps: [] as RecipeStep[],
+			images: [] as ComposerImage[],
+			brewingWater: '',
+			methodName: '',
+			brewer: '',
+			otherTools: '',
+			flavor: '',
+			tds: undefined,
+			ey: undefined,
+		} as z.infer<typeof createPostSchema>,
+		onSubmit: async ({ value }) => {
+			console.log('data', value);
+			await createPostMutation.mutateAsync({
+				...value,
+				images: state.embed.media.images,
+			});
+		},
+		validators: {
+			onSubmit: createPostSchema,
 		},
 	});
 	const [state, dispatch] = useReducer(composerReducer, initialPostDraft);
+	const beanProfileListDialogControl = useBeanProfileListDialogControl();
 
 	const [activePage, setActivePage] = React.useState(0);
 	const pagerRef = useRef<PagerView>(null);
 
 	const { requestPhotoAccessIfNeeded } = usePhotoLibraryPermission();
 	const { closeModal } = useModalControls();
+
+	const onOpenBeanProfileListDialog = useCallback(() => {
+		beanProfileListDialogControl.open();
+	}, [beanProfileListDialogControl]);
 
 	const onOpenLibrary = React.useCallback(async () => {
 		if (!(await requestPhotoAccessIfNeeded())) {
@@ -83,6 +126,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 		});
 	}, [state.embed.media.images]);
 	const fetchGearList = useListGears();
+	const fetchBeanProfiles = useListBeanProfiles();
 	const brewers =
 		fetchGearList.data
 			?.filter(gear => gear.type === GEAR_TYPE.Brewer)
@@ -106,18 +150,10 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 				value: e.name,
 			})) ?? [];
 	const createPostMutation = useCreatePost();
-	async function onSubmit(values: FormFields) {
-		console.log('data', values);
-		await createPostMutation.mutateAsync({
-			...values,
-			ey: values.ey,
-			images: state.embed.media.images,
-		});
-	}
 
 	useEffect(() => {
-		console.log('errors', form.formState.errors);
-	}, [form.formState.errors]);
+		console.log('errors', form.state.errors.join(', '));
+	}, [form.state.errors.join(', ')]);
 
 	const isSecondPage = activePage === 1;
 
@@ -126,6 +162,13 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			pagerRef.current?.setPage(index);
 		},
 		[pagerRef]
+	);
+
+	const handleBeanProfileSelect = useCallback(
+		(beanProfile: Id<'bean_profiles'>) => {
+			form.setFieldValue('beanProfile', beanProfile);
+		},
+		[form]
 	);
 
 	return (
@@ -142,7 +185,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 				)}
 				<Text>{activePage + 1} / 2</Text>
 				{isSecondPage ? (
-					<Button onPress={form.handleSubmit(onSubmit)} size="sm">
+					<Button onPress={() => form.handleSubmit()} size="sm">
 						<Text>Post</Text>
 					</Button>
 				) : (
@@ -171,27 +214,31 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							Fields marked with <Text className="text-destructive">*</Text> are
 							required
 						</Text>
-						<Controller
-							control={form.control}
-							name="bean"
-							render={({ field: { onChange } }) => {
+						<form.Field name="beanProfile">
+							{field => {
 								return (
 									<>
-										<RequiredLabel>Bean</RequiredLabel>
-										<Input onChangeText={onChange} />
-										{form.formState.errors?.bean && (
-											<ErrorMessage
-												message={form.formState?.errors?.bean.message}
-											/>
-										)}
+										<RequiredLabel>Bean profile</RequiredLabel>
+										<Pressable onPressIn={onOpenBeanProfileListDialog}>
+											<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+												<Text className="native:text-lg text-sm text-foreground">
+													{fetchBeanProfiles?.data?.find(
+														e => e._id === field.state.value
+													)?.origin ?? 'Select a bean profile'}
+												</Text>
+												<ChevronDown
+													size={16}
+													aria-hidden={true}
+													className="text-foreground opacity-50"
+												/>
+											</View>
+										</Pressable>
 									</>
 								);
 							}}
-						/>
-						<Controller
-							control={form.control}
-							name="roastLevel"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="roastLevel">
+							{field => (
 								<>
 									<RequiredLabel>Roast level</RequiredLabel>
 									<SelectRoastLevel
@@ -201,318 +248,245 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 											label: value,
 											value: value,
 										}))}
-										onChange={onChange}
+										onChange={field.handleChange}
 									/>
-									{form.formState.errors.roastLevel && (
-										<ErrorMessage
-											message={form.formState.errors.roastLevel.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="coffeeIn"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="coffeeIn">
+							{field => (
 								<>
 									<RequiredLabel>Coffee in (g)</RequiredLabel>
-									<Input numberOfLines={1} onChangeText={onChange} />
-									{form.formState.errors.coffeeIn && (
-										<ErrorMessage
-											message={form.formState.errors.coffeeIn.message}
-										/>
-									)}
+									<Input
+										numberOfLines={1}
+										value={field.state.value}
+										onChangeText={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="ratio"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="ratio">
+							{field => (
 								<>
 									<RequiredLabel>Ratio</RequiredLabel>
-									<Input numberOfLines={1} onChangeText={onChange} />
-									{form.formState.errors.ratio && (
-										<ErrorMessage
-											message={form.formState.errors.coffeeIn?.message}
-										/>
-									)}
+									<Input
+										numberOfLines={1}
+										value={field.state.value}
+										onChangeText={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="beverageWeight"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="beverageWeight">
+							{field => (
 								<>
 									<RequiredLabel>Beverage weight(g)</RequiredLabel>
-									<Input numberOfLines={1} onChangeText={onChange} />
-									{form.formState.errors.beverageWeight && (
-										<ErrorMessage
-											message={form.formState.errors.beverageWeight.message}
-										/>
-									)}
+									<Input
+										numberOfLines={1}
+										value={field.state.value}
+										onChangeText={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="brewTemperature"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="brewTemperature">
+							{field => (
 								<>
 									<RequiredLabel>Brew temperature (°C)</RequiredLabel>
 									<Input
 										numberOfLines={1}
-										onChangeText={onChange}
+										value={field.state.value}
+										onChangeText={field.handleChange}
 										keyboardType="numeric"
 									/>
-									{form.formState.errors.brewTemperature && (
-										<ErrorMessage
-											message={form.formState.errors.brewTemperature.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						{/* TODO: this should look like a dropdown with options */}
-						<Controller
-							name="filterPaper"
-							control={form.control}
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="brewer">
+							{field => (
+								<>
+									<RequiredLabel>Brewer</RequiredLabel>
+									<SelectComponent
+										placeholder="Select your brewers"
+										portalHost={CUSTOM_PORTAL_HOST_NAME}
+										onChange={field.handleChange}
+										options={brewers}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+								</>
+							)}
+						</form.Field>
+						<form.Field name="filterPaper">
+							{field => (
 								<>
 									<RequiredLabel>Filter paper</RequiredLabel>
 									<SelectComponent
 										placeholder="Select your filter paper"
 										portalHost={CUSTOM_PORTAL_HOST_NAME}
 										options={filterPapers}
-										onChange={onChange}
+										onChange={field.handleChange}
 									/>
-									{form.formState.errors.filterPaper && (
-										<ErrorMessage
-											message={form.formState.errors.filterPaper.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						{/* TODO: this should look like a dropdown with options */}
-						<Controller
-							control={form.control}
-							name="grinder"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="grinder">
+							{field => (
 								<>
 									<RequiredLabel>Grinder</RequiredLabel>
 									<SelectComponent
 										placeholder="Select your grinder"
 										portalHost={CUSTOM_PORTAL_HOST_NAME}
 										options={grinders}
-										onChange={onChange}
+										onChange={field.handleChange}
 									/>
-									{form.formState.errors.grinder && (
-										<ErrorMessage
-											message={form.formState.errors.grinder.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						{/* TODO: this should look like  */}
-						<Controller
-							control={form.control}
-							name="grindSetting"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="grindSetting">
+							{field => (
 								<>
 									<RequiredLabel>Grind setting</RequiredLabel>
-									<Input value={value} onChangeText={onChange} />
-									{form.formState.errors.grindSetting && (
-										<ErrorMessage
-											message={form.formState.errors.grindSetting.message}
-										/>
-									)}
-								</>
-							)}
-						/>
-						<Controller
-							control={form.control}
-							name="bloomTime"
-							render={({ field: { onChange, value } }) => {
-								return (
-									<>
-										<RequiredLabel>Bloom time</RequiredLabel>
-										<TimeMaskInput value={value} onChange={onChange} />
-										{form.formState.errors.bloomTime && (
-											<ErrorMessage
-												message={form.formState.errors.bloomTime.message}
-											/>
-										)}
-									</>
-								);
-							}}
-						/>
-						<Controller
-							control={form.control}
-							name="totalDrawdownTime"
-							render={({ field: { onChange, value } }) => {
-								return (
-									<>
-										<RequiredLabel>Total drawdown time</RequiredLabel>
-										<TimeMaskInput value={value} onChange={onChange} />
-										{form.formState.errors.totalDrawdownTime && (
-											<ErrorMessage
-												message={
-													form.formState.errors.totalDrawdownTime.message
-												}
-											/>
-										)}
-									</>
-								);
-							}}
-						/>
-						{/* INFO: under is for optional fields */}
-						<Controller
-							control={form.control}
-							name="brewer"
-							render={({ field: { onChange } }) => (
-								<>
-									<Label>Brewer</Label>
-									<SelectComponent
-										placeholder="Select your brewers"
-										portalHost={CUSTOM_PORTAL_HOST_NAME}
-										onChange={onChange}
-										options={brewers}
+									<Input
+										value={field.state.value}
+										onChangeText={field.handleChange}
 									/>
-									{form.formState.errors.brewer && (
-										<ErrorMessage
-											message={form.formState.errors.brewer.message}
-										/>
-									)}
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="brewingWater"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="bloomTime">
+							{field => (
+								<>
+									<RequiredLabel>Bloom time</RequiredLabel>
+									<TimeMaskInput
+										value={field.state.value}
+										onChange={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+								</>
+							)}
+						</form.Field>
+						<form.Field name="totalDrawdownTime">
+							{field => (
+								<>
+									<RequiredLabel>Total drawdown time</RequiredLabel>
+									<TimeMaskInput
+										value={field.state.value}
+										onChange={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+								</>
+							)}
+						</form.Field>
+						<form.Field name="brewingWater">
+							{field => (
 								<>
 									<Label>Brewing water (ppm)</Label>
-									<Input numberOfLines={1} onChangeText={onChange} />
-									{form.formState.errors.brewingWater && (
-										<ErrorMessage
-											message={form.formState.errors.brewingWater.message}
-										/>
-									)}
+									<Input
+										numberOfLines={1}
+										value={field.state.value}
+										onChangeText={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="methodName"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="methodName">
+							{field => (
 								<>
 									<Label>Preparation</Label>
-									<Input onChangeText={onChange} />
-									{form.formState.errors.methodName && (
-										<ErrorMessage
-											message={form.formState.errors.methodName.message}
-										/>
-									)}
+									<Input
+										value={field.state.value}
+										onChangeText={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="otherTools"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="otherTools">
+							{field => (
 								<>
 									<Label>Other tools</Label>
-									<Input onChangeText={onChange} />
-									{form.formState.errors.otherTools && (
-										<ErrorMessage
-											message={form.formState.errors.otherTools.message}
-										/>
-									)}
+									<Input
+										value={field.state.value}
+										onChangeText={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="flavor"
-							render={({ field: { onChange } }) => (
+						</form.Field>
+						<form.Field name="flavor">
+							{field => (
 								<>
 									<Label>Flavor</Label>
-									<Input onChangeText={onChange} />
-									{form.formState.errors.flavor && (
-										<ErrorMessage
-											message={form.formState.errors.flavor?.message}
-										/>
-									)}
+									<Input
+										value={field.state.value}
+										onChangeText={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="tds"
-							render={({ field: { onChange, value } }) => (
+						</form.Field>
+						<form.Field name="tds">
+							{field => (
 								<>
 									<Label>TDS</Label>
 									<Slider
 										minimumValue={1.0}
 										maximumValue={2.0}
 										step={0.01}
+										value={field.state.value}
 										onValueChange={newValue => {
-											onChange(newValue);
+											field.handleChange(newValue);
 											// Calculate and set EY when TDS changes
 											const beverageWeight = parseFloat(
-												form.getValues('beverageWeight') || '0'
+												form.getFieldValue('beverageWeight') || '0'
 											);
 											const coffeeIn = parseFloat(
-												form.getValues('coffeeIn') || '0'
+												form.getFieldValue('coffeeIn') || '0'
 											);
 											if (beverageWeight && coffeeIn) {
 												const ey = (newValue * beverageWeight) / coffeeIn;
-												form.setValue('ey', ey);
+												form.setFieldValue('ey', ey);
 											}
 										}}
 									/>
-									<Text>{value?.toFixed(2)}</Text>
-									{form.formState.errors.tds && (
-										<ErrorMessage message={form.formState.errors.tds.message} />
-									)}
+									<Text>{field.state.value?.toFixed(2)}</Text>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
-						<Controller
-							control={form.control}
-							name="ey"
-							render={({ field: { value } }) => (
+						</form.Field>
+						<form.Field name="ey">
+							{field => (
 								<>
 									<Label>Extraction Yield (%)</Label>
-									<H4>{value?.toFixed(2)}%</H4>
-									{form.formState.errors.ey && (
-										<ErrorMessage message={form.formState.errors.ey.message} />
-									)}
+									<H4>{field.state.value?.toFixed(2)}%</H4>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
+						</form.Field>
 					</View>
 				</KeyboardAwareScrollView>
 				<KeyboardAwareScrollView key={2}>
 					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
-						<Controller
-							control={form.control}
-							name="recipeSteps"
-							render={({ field: { onChange, value } }) => (
+						<form.Field name="recipeSteps">
+							{field => (
 								<>
-									<RecipeStepsEditor steps={value} setSteps={onChange} />
-									{form.formState.errors.recipeSteps && (
-										<ErrorMessage
-											message={form.formState.errors.recipeSteps.message}
-										/>
-									)}
+									<RecipeStepsEditor
+										steps={field.state.value}
+										setSteps={field.handleChange}
+									/>
+									<ErrorMessage message={field.state.meta.errors.join(', ')} />
 								</>
 							)}
-						/>
+						</form.Field>
 						<Label>Images</Label>
 						<Gallery
 							dispatch={dispatch}
@@ -560,9 +534,13 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 				<PortalHost name={CUSTOM_PORTAL_HOST_NAME} />
 				<PortalHost name={CUSTOM_PORTAL_DIALOG} />
 			</WindowOverlay>
+			<BeanProfileListDialog
+				control={beanProfileListDialogControl}
+				params={{
+					type: 'bean-profile-list',
+				}}
+				onSelect={handleBeanProfileSelect}
+			/>
 		</>
 	);
 }
-
-const CUSTOM_PORTAL_HOST_NAME = 'modal-select';
-const CUSTOM_PORTAL_DIALOG = 'dialog';

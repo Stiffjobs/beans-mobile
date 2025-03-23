@@ -6,6 +6,7 @@ import { paginationOptsValidator } from 'convex/server';
 export const createPost = mutation({
 	args: {
 		bean: v.string(),
+		beanProfile: v.id('bean_profiles'),
 		roastLevel: v.string(),
 		coffeeIn: v.string(),
 		ratio: v.string(),
@@ -89,6 +90,10 @@ export const feed = query({
 			postRows.page.map(async post => {
 				const author = await ctx.db.get(post.author);
 				if (!author) throw new ConvexError('Author not found');
+				let beanProfile = null;
+				if (post.beanProfile) {
+					beanProfile = await ctx.db.get(post.beanProfile);
+				}
 				let avatar = null;
 				if (author.avatar) {
 					avatar = await ctx.storage.getUrl(author?.avatar);
@@ -110,6 +115,7 @@ export const feed = query({
 						...author,
 						avatarUrl: avatar,
 					},
+					beanProfile: beanProfile,
 					images: imagesUrl.filter(e => e !== null),
 				};
 			})
@@ -132,6 +138,10 @@ export const getPostById = query({
 	},
 	handler: async (ctx, args) => {
 		const post = await ctx.db.get(args.id);
+		let beanProfile = null;
+		if (post?.beanProfile) {
+			beanProfile = await ctx.db.get(post?.beanProfile);
+		}
 		const images = await ctx.db
 			.query('post_images')
 			.withIndex('by_post', q => q.eq('postId', args.id))
@@ -144,6 +154,7 @@ export const getPostById = query({
 		);
 		return {
 			...post,
+			beanProfile: beanProfile,
 			images: imagesUrl,
 		};
 	},
