@@ -1,46 +1,79 @@
 import { View } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { Button } from '~/components/ui/button';
-import { Text } from '~/components/ui/text';
+import { BeanProfileProps } from '~/lib/types';
 import { StyledIcon } from '../icons/StyledIcons';
 import { useModalControls } from '~/state/modals';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useForm } from '@tanstack/react-form';
+import { editBeanProfileSchema } from '~/lib/schemas';
+import { Text } from '~/components/ui/text';
 import { z } from 'zod';
-import { createBeanProfileSchema } from '~/lib/schemas';
-import { Label } from '~/components/ui/label';
+import {
+	useDeleteBeanProfile,
+	useGetBeanProfileById,
+	useUpdateBeanProfile,
+} from '~/state/queries/bean_profiles';
+import { Loader } from '~/components/Loader';
+import { RequiredLabel } from '~/components/RequiredLabel';
 import { Input } from '~/components/input/Input';
 import { ErrorMessage } from '~/components/ErrorMessage';
-import { RequiredLabel } from '~/components/RequiredLabel';
-import { useCreateBeanProfile } from '~/state/queries/bean_profiles';
-import { ChevronDown } from '~/lib/icons/ChevronDown';
-export const snapPoints = ['fullscreen'];
+import { Label } from '~/components/ui/label';
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from '~/components/ui/dialog';
+import { PortalHost } from '@rn-primitives/portal';
+import { useCallback } from 'react';
+import { Checkbox } from '~/components/ui/checkbox';
 
-export function Component() {
-	const createBeanProfileMutation = useCreateBeanProfile();
+export const snapPoints = ['fullscreen'];
+const CUSTOM_PORTAL_HOST_NAME = 'edit-bean-profile-modal';
+
+type EditBeanProfileModalProps = {
+	id: string;
+};
+
+export function Component({ id }: EditBeanProfileModalProps) {
+	const fetchBeanProfileById = useGetBeanProfileById(id);
+	const updateBeanProfile = useUpdateBeanProfile({ id });
+	const { closeModal } = useModalControls();
+	const deleteMutation = useDeleteBeanProfile();
+	const handleDelete = useCallback(async () => {
+		await deleteMutation.mutateAsync(id);
+	}, [deleteMutation]);
 	const form = useForm({
 		defaultValues: {
-			origin: '',
-			producer: '',
-			farm: '',
-			process: '',
-			variety: '',
-			elevation: '',
-			description: undefined,
-			finished: false,
-		} as z.infer<typeof createBeanProfileSchema>,
+			origin: fetchBeanProfileById.data?.origin ?? '',
+			producer: fetchBeanProfileById.data?.producer ?? '',
+			farm: fetchBeanProfileById.data?.farm ?? '',
+			process: fetchBeanProfileById.data?.process ?? '',
+			variety: fetchBeanProfileById.data?.variety ?? '',
+			elevation: fetchBeanProfileById.data?.elevation ?? '',
+			description: fetchBeanProfileById.data?.description ?? '',
+			finished: fetchBeanProfileById.data?.finished ?? false,
+		} as z.infer<typeof editBeanProfileSchema>,
 		validators: {
-			onMount: createBeanProfileSchema,
+			onMount: editBeanProfileSchema,
 		},
-		onSubmit: async ({ value }) => {
-			console.log(value);
-			await createBeanProfileMutation.mutateAsync({ ...value });
+		onSubmit: async data => {
+			await updateBeanProfile.mutateAsync({ ...data.value });
+			closeModal();
 		},
 	});
+	if (fetchBeanProfileById.isLoading) {
+		return <Loader />;
+	}
 	return (
 		<>
 			<Header />
-			<KeyboardAwareScrollView>
-				<View className="flex-1 px-10 gap-4">
+			<KeyboardAwareScrollView className="flex-1">
+				<View className="flex-1 px-4 gap-4">
 					<form.Field name="origin">
 						{field => (
 							<View className="gap-2">
@@ -143,6 +176,17 @@ export function Component() {
 							</View>
 						)}
 					</form.Field>
+					<form.Field name="finished">
+						{field => (
+							<View className="gap-2">
+								<Label>Finished</Label>
+								<Checkbox
+									checked={field.state.value}
+									onCheckedChange={field.handleChange}
+								/>
+							</View>
+						)}
+					</form.Field>
 					<form.Field name="description">
 						{field => (
 							<View className="gap-2">
@@ -163,19 +207,55 @@ export function Component() {
 						)}
 					</form.Field>
 
-					<form.Subscribe
-						selector={state => [state.canSubmit, state.isSubmitting]}
-						children={([canSubmit, isSubmitting]) => (
-							<Button
-								onPress={form.handleSubmit}
-								disabled={!canSubmit || isSubmitting}
+					<View className="flex flex-row gap-2">
+						<Dialog className="flex-1">
+							<DialogTrigger asChild>
+								<Button variant="destructive">
+									<Text>Delete</Text>
+								</Button>
+							</DialogTrigger>
+							<DialogContent
+								portalHost={CUSTOM_PORTAL_HOST_NAME}
+								className="sm:max-w-[425px]"
 							>
-								<Text>{isSubmitting ? 'Submitting...' : 'Submit'}</Text>
-							</Button>
-						)}
-					/>
+								<DialogHeader>
+									<DialogTitle>Delete bean</DialogTitle>
+									<DialogDescription>
+										Are you sure you want to delete this bean?
+									</DialogDescription>
+								</DialogHeader>
+								<DialogFooter>
+									<DialogClose asChild>
+										<Button variant={'outline'}>
+											<Text>Cancel</Text>
+										</Button>
+									</DialogClose>
+									<Button onPress={handleDelete} variant="destructive">
+										<Text>Delete</Text>
+									</Button>
+								</DialogFooter>
+							</DialogContent>
+						</Dialog>
+						<form.Subscribe
+							selector={state => [
+								state.canSubmit,
+								state.isDirty,
+								state.isSubmitting,
+							]}
+							children={([canSubmit, isDirty, isSubmitting]) => (
+								<Button
+									onPress={form.handleSubmit}
+									className="flex-1"
+									disabled={!canSubmit || isSubmitting || !isDirty}
+								>
+									<Text>{isSubmitting ? 'Updating...' : 'Update'}</Text>
+								</Button>
+							)}
+						/>
+					</View>
 				</View>
 			</KeyboardAwareScrollView>
+			<PortalHost name={CUSTOM_PORTAL_HOST_NAME} />
 		</>
 	);
 }

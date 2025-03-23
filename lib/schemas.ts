@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { GEAR_TYPE, RoastLevel } from './constants';
 import { ComposerImage } from '~/state/gallery';
+import { Doc, Id } from '~/convex/_generated/dataModel';
 
 export const signInSchema = z.object({
 	email: z.string().email('Please enter a valid email'),
@@ -24,6 +25,7 @@ export const createPostSchema = z.object({
 	bean: z.string(),
 	roastLevel: z.string(),
 	coffeeIn: z.string(),
+	beanProfile: z.custom<Id<'bean_profiles'>>(),
 	ratio: z.string(),
 	beverageWeight: z.string(),
 	brewTemperature: z.string(),
@@ -67,6 +69,14 @@ export const createGearSchema = z.object({
 export const updateGearSchema = createGearSchema;
 
 export const createBeanProfileSchema = z.object({
-	name: z.string(),
-	confirm_name: z.string(),
+	origin: z.string().min(1, 'Origin is required'),
+	producer: z.string().min(1, 'Producer is required'),
+	farm: z.string().min(1, 'Farm is required'),
+	process: z.string().min(1, 'Process is required'),
+	variety: z.string().min(1, 'Variety is required'),
+	elevation: z.string().min(1, 'Elevation is required'),
+	finished: z.boolean(),
+	description: z.string().optional(),
 });
+
+export const editBeanProfileSchema = createBeanProfileSchema;
