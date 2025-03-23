@@ -42,6 +42,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
 import { FAB } from '~/components/FAB';
 import { BrewingData } from '~/lib/types';
+import { timeAgo } from '~/utils/time';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -134,13 +135,23 @@ function FeedScreen() {
 						<Pressable
 							onPress={() => router.navigate(`/home/${item.post._id}`)}
 						>
-							<View className="bg-secondary p-4 rounded-md">
+							<View className="p-4 bg-background rounded-md">
 								<View className="flex-row items-center gap-2">
 									<UserAvatar size="sm" avatar={item.author.avatarUrl} />
 									<Text>{item.author?.name}</Text>
 								</View>
-								<Text>{item.post.bean}</Text>
+								{item.beanProfile ? (
+									<Text>
+										{item.beanProfile.origin} {item.beanProfile.farm}{' '}
+										{item.beanProfile.variety}
+									</Text>
+								) : (
+									<Text>{item.post.bean}</Text>
+								)}
 								<Text>{item.post.brewer}</Text>
+								<Text className="text-muted-foreground text-right">
+									{timeAgo(item.post._creationTime)}
+								</Text>
 							</View>
 						</Pressable>
 					);
@@ -192,7 +203,6 @@ export default function HomeScreen() {
 				case 'feed':
 					return <FeedScreen />;
 				case 'calendar':
-					console.log('calendar', selectedDate);
 					return (
 						<CalendarScreen
 							selectedDate={selectedDate}
