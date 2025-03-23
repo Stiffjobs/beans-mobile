@@ -90,7 +90,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			});
 		},
 		validators: {
-			onSubmit: createPostSchema,
+			onMount: createPostSchema,
 		},
 	});
 	const [state, dispatch] = useReducer(composerReducer, initialPostDraft);
