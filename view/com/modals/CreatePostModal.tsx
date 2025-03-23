@@ -17,7 +17,6 @@ import { ComposerImage, createComposerImage } from '~/state/gallery';
 import { composerReducer, initialPostDraft } from '../composer/state/composer';
 import { Gallery } from '../composer/photos/Gallery';
 import { useModalControls } from '~/state/modals';
-import { StyledIcon } from '../icons/StyledIcons';
 import { Pager } from '../pager/Pager';
 import { TimeMaskInput } from '../time/TimeMaskInput';
 import { H4 } from '~/components/ui/typography';
@@ -48,11 +47,10 @@ import {
 import { Id } from '~/convex/_generated/dataModel';
 import { useListBeanProfiles } from '~/state/queries/bean_profiles';
 import { ChevronDown } from '~/lib/icons/ChevronDown';
+import { ImagePlus } from '~/lib/icons/ImagePlus';
 
 const CUSTOM_PORTAL_HOST_NAME = 'modal-select';
 const CUSTOM_PORTAL_DIALOG = 'dialog';
-
-type FormFields = z.infer<typeof createPostSchema>;
 
 export const snapPoints = ['fullscreen'];
 
@@ -494,7 +492,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						/>
 						<Button variant={'outline'} onPress={onOpenLibrary}>
 							<View className="flex-row items-center gap-2">
-								<StyledIcon name="ImagePlus" className="size-6 text-primary" />
+								<ImagePlus className="size-6" />
 								<Text>Select Images</Text>
 							</View>
 						</Button>
@@ -538,8 +536,8 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 				control={beanProfileListDialogControl}
 				params={{
 					type: 'bean-profile-list',
+					onSelect: handleBeanProfileSelect,
 				}}
-				onSelect={handleBeanProfileSelect}
 			/>
 		</>
 	);

@@ -9,7 +9,8 @@ import { StyledIcon } from '../com/icons/StyledIcons';
 import { Link } from 'expo-router';
 import { useSetDrawerOpen } from '~/state/shell/drawer-open';
 import { UserAvatar } from '../com/util/UserAvatar';
-import { CoffeeBean, TripleBeans } from '../com/icons/SvgIcons';
+import { TripleBeans } from '../com/icons/SvgIcons';
+import { House, User, Warehouse } from '~/lib/icons';
 let DrawerProfileCard = ({}): React.ReactNode => {
 	const currentUser = useGetCurrentUser();
 	return (
@@ -110,7 +111,7 @@ let HomeMenuItem = ({ onPress }: { onPress?: () => void }): React.ReactNode => {
 	return (
 		<Link asChild href="/(app)/(stack)/(tabs)/home">
 			<MenuItem
-				icon={<StyledIcon className="text-primary size-6" name="House" />}
+				icon={<House className="text-primary" />}
 				label={'Home'}
 				onPress={onPress}
 			/>
@@ -127,7 +128,7 @@ let GearsMenuItem = ({
 	return (
 		<Link asChild href="/(app)/(stack)/(tabs)/gears">
 			<MenuItem
-				icon={<StyledIcon className="text-primary size-6" name="Warehouse" />}
+				icon={<Warehouse className="text-primary" />}
 				label={'Gears'}
 				onPress={onPress}
 			/>
@@ -145,7 +146,7 @@ let ProfileMenuItem = ({
 	return (
 		<Link asChild href="/(app)/(stack)/(tabs)/profile">
 			<MenuItem
-				icon={<StyledIcon className="text-primary size-6" name="User" />}
+				icon={<User className="text-primary" />}
 				label={'Profile'}
 				onPress={onPress}
 			/>

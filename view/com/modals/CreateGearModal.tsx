@@ -25,7 +25,7 @@ import { Input } from '~/components/input/Input';
 import { useCreateGear } from '~/state/queries/gears';
 import { useCallback } from 'react';
 import { ErrorMessage } from '~/components/ErrorMessage';
-import { StyledIcon } from '../icons/StyledIcons';
+import { X } from '~/lib/icons';
 
 export const snapPoints = ['fullscreen'];
 const SELECT_PORTAL_HOST = 'select-gear-portal';
@@ -138,7 +138,7 @@ function Header() {
 		<View className="flex p-4 flex-row justify-between items-center">
 			<View />
 			<Button variant={'ghost'} size="icon" onPress={closeModal}>
-				<StyledIcon name="X" className="text-primary" />
+				<X className="text-primary" />
 			</Button>
 		</View>
 	);

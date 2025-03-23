@@ -5,6 +5,6 @@ export type BeanProfileListDialogProps = {
 	control: Dialog.DialogControlProps;
 	params: {
 		type: 'bean-profile-list';
+		onSelect?: (beanProfile: Id<'bean_profiles'>) => void;
 	};
-	onSelect?: (beanProfile: Id<'bean_profiles'>) => void;
 };

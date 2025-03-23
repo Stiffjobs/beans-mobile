@@ -1,10 +1,10 @@
 import { Pressable } from 'react-native';
-import { StyledIcon } from '~/view/com/icons/StyledIcons';
 import { router } from 'expo-router';
+import { ChevronLeft } from '~/lib/icons/ChevronLeft';
 export function HeaderBack() {
 	return (
 		<Pressable onPress={() => router.back()}>
-			<StyledIcon name="ChevronLeft" className="w-8 aspect-square" />
+			<ChevronLeft className="size-8" />
 		</Pressable>
 	);
 }

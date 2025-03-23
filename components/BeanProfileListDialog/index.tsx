@@ -42,7 +42,7 @@ function Inner(props: BeanProfileListDialogProps) {
 						<TouchableOpacity
 							key={profile._id}
 							onPress={() => {
-								props.onSelect?.(profile._id);
+								props.params?.onSelect?.(profile._id);
 								props.control.close();
 							}}
 						>

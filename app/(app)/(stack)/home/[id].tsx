@@ -15,6 +15,7 @@ import {
 import { useModalControls } from '~/state/modals';
 import { useGetCurrentUser } from '~/state/queries/auth';
 import { H3 } from '~/components/ui/typography';
+import { Ellipsis } from '~/lib/icons/Ellipsis';
 
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -52,7 +53,7 @@ export default function PostDetailsPage() {
 					headerRight: () =>
 						isOwner ? (
 							<Button onPress={openDetailsDialog} size="icon" variant="ghost">
-								<StyledIcon name="Ellipsis" />
+								<Ellipsis />
 							</Button>
 						) : null,
 				}}
