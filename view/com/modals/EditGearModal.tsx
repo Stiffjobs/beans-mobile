@@ -8,7 +8,6 @@ import { z } from 'zod';
 import { ErrorMessage } from '~/components/ErrorMessage';
 import { Loader } from '~/components/Loader';
 import { SelectComponent } from '~/components/select/Select';
-import { SelectRoastLevel } from '~/components/select/SelectRoastLevel';
 import { Button } from '~/components/ui/button';
 import {
 	Dialog,

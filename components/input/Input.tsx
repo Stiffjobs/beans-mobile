@@ -4,14 +4,14 @@ import { cn } from '~/lib/utils';
 
 const Input = React.forwardRef<
 	React.ElementRef<typeof TextInput>,
-	TextInputProps
->(({ className, placeholderClassName, ...props }, ref) => {
+	TextInputProps & { editableShowPrimary?: boolean }
+>(({ className, placeholderClassName, editableShowPrimary, ...props }, ref) => {
 	return (
 		<TextInput
 			ref={ref}
 			className={cn(
 				'p-3 rounded-md border border-input bg-background  text-foreground placeholder:text-muted-foreground',
-				props.editable === false && 'opacity-50',
+				props.editable === false && !editableShowPrimary && 'opacity-50',
 				className
 			)}
 			style={{

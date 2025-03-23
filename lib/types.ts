@@ -1,3 +1,4 @@
+import { Doc } from '~/convex/_generated/dataModel';
 import { GEAR_TYPE } from './constants';
 
 export interface GearData {
@@ -37,3 +38,5 @@ export interface BrewingData {
 	tds?: number;
 	ey?: number;
 }
+
+export type BeanProfileProps = Doc<'bean_profiles'>;
