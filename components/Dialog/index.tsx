@@ -43,6 +43,7 @@ export function Outer({
 	children,
 	control,
 	snapPoints = BottomSheetSnapPoint.Partial,
+	containsList = false,
 }: React.PropsWithChildren<DialogOuterProps>) {
 	const ref = React.useRef<BottomSheetModal>(null);
 	const { setDialogIsOpen } = useDialogStateControlContext();
@@ -119,6 +120,7 @@ export function Outer({
 			android_keyboardInputMode="adjustPan"
 			enableDynamicSizing={false}
 			ref={ref}
+			overDragResistanceFactor={containsList ? 0 : undefined}
 			snapPoints={SNAPPOINTS[snapPoints]}
 		>
 			<Context.Provider value={context}>
@@ -131,23 +133,19 @@ export function Outer({
 export function Inner({ children, style, header }: DialogInnerProps) {
 	const insets = useSafeAreaInsets();
 	return (
-		<>
-			{header}
-			<BottomSheetView
-				className="pt-6 px-5"
-				style={[
-					{
-						paddingBottom: insets.bottom + insets.top,
-					},
-					style,
-				]}
-			>
-				{children}
-			</BottomSheetView>
-		</>
+		<BottomSheetView
+			className="pt-6 px-5"
+			style={[
+				{
+					paddingBottom: insets.bottom,
+				},
+				style,
+			]}
+		>
+			{children}
+		</BottomSheetView>
 	);
 }
-
 export function ScrollableInner({ children, style, header }: DialogInnerProps) {
 	const insets = useSafeAreaInsets();
 	return (

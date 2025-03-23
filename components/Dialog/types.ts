@@ -24,6 +24,7 @@ export type DialogControlProps = DialogControlRefProps & {
 
 export interface DialogOuterProps {
 	control: DialogControlProps;
+	containsList?: boolean;
 	snapPoints?: BottomSheetSnapPoint;
 	onClose?: () => void;
 }

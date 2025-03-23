@@ -15,7 +15,7 @@ export { useDialogControl as useBeanProfileListDialogControl } from '~/component
 
 export function BeanProfileListDialog(props: BeanProfileListDialogProps) {
 	return (
-		<Dialog.Outer control={props.control}>
+		<Dialog.Outer containsList control={props.control}>
 			<Inner {...props} />
 		</Dialog.Outer>
 	);
@@ -33,39 +33,38 @@ function Inner(props: BeanProfileListDialogProps) {
 	}
 
 	return (
-		<Dialog.Inner>
-			<View className="gap-2">
-				<Text className="text-lg font-semibold mb-2">Select Bean Profile</Text>
-				<BottomSheetFlatList
-					data={beanProfiles.data ?? []}
-					renderItem={({ item: profile }) => (
-						<TouchableOpacity
-							key={profile._id}
-							onPress={() => {
-								props.params?.onSelect?.(profile._id);
-								props.control.close();
-							}}
-						>
-							<Card>
-								<CardHeader>
-									<CardTitle>{profile.origin}</CardTitle>
-									<CardDescription>{profile.producer}</CardDescription>
-								</CardHeader>
-								<CardContent className="py-2">
-									<View className="flex-row justify-between">
-										<Text className="text-muted-foreground">Variety</Text>
-										<Text>{profile.variety}</Text>
-									</View>
-									<View className="flex-row justify-between">
-										<Text className="text-muted-foreground">Process</Text>
-										<Text>{profile.process}</Text>
-									</View>
-								</CardContent>
-							</Card>
-						</TouchableOpacity>
-					)}
-				/>
-			</View>
+		<Dialog.Inner {...props}>
+			<Text className="text-lg font-semibold mb-2">Select Bean Profile</Text>
+			<BottomSheetFlatList
+				data={beanProfiles.data ?? []}
+				ItemSeparatorComponent={() => <View className="h-2" />}
+				renderItem={({ item: profile }) => (
+					<TouchableOpacity
+						key={profile._id}
+						onPress={() => {
+							props.params?.onSelect?.(profile._id);
+							props.control.close();
+						}}
+					>
+						<Card>
+							<CardHeader>
+								<CardTitle>{profile.origin}</CardTitle>
+								<CardDescription>{profile.producer}</CardDescription>
+							</CardHeader>
+							<CardContent className="py-2">
+								<View className="flex-row justify-between">
+									<Text className="text-muted-foreground">Variety</Text>
+									<Text>{profile.variety}</Text>
+								</View>
+								<View className="flex-row justify-between">
+									<Text className="text-muted-foreground">Process</Text>
+									<Text>{profile.process}</Text>
+								</View>
+							</CardContent>
+						</Card>
+					</TouchableOpacity>
+				)}
+			/>
 		</Dialog.Inner>
 	);
 }
