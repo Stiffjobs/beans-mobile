@@ -81,7 +81,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			ey: undefined,
 		} as z.infer<typeof createPostSchema>,
 		onSubmit: async ({ value }) => {
-			console.log('data', value);
 			await createPostMutation.mutateAsync({
 				...value,
 				images: state.embed.media.images,
@@ -149,10 +148,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			})) ?? [];
 	const createPostMutation = useCreatePost();
 
-	useEffect(() => {
-		console.log('errors', form.state.errors.join(', '));
-	}, [form.state.errors.join(', ')]);
-
 	const isSecondPage = activePage === 1;
 
 	const handleScrollPage = useCallback(
@@ -183,9 +178,17 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 				)}
 				<Text>{activePage + 1} / 2</Text>
 				{isSecondPage ? (
-					<Button onPress={() => form.handleSubmit()} size="sm">
-						<Text>Post</Text>
-					</Button>
+					<form.Subscribe selector={state => [state.canSubmit, state.isValid]}>
+						{([canSubmit, isValid]) => (
+							<Button
+								disabled={!isValid && !canSubmit}
+								onPress={() => form.handleSubmit()}
+								size="sm"
+							>
+								<Text>Post</Text>
+							</Button>
+						)}
+					</form.Subscribe>
 				) : (
 					<Button
 						size="sm"
@@ -248,7 +251,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										}))}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -261,7 +268,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChangeText={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -274,7 +285,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChangeText={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -287,7 +302,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChangeText={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -301,7 +320,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										onChangeText={field.handleChange}
 										keyboardType="numeric"
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -315,7 +338,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										onChange={field.handleChange}
 										options={brewers}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -329,7 +356,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										options={filterPapers}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -343,7 +374,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										options={grinders}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -355,7 +390,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChangeText={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -367,7 +406,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -379,7 +422,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -392,7 +439,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChangeText={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -404,7 +455,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChangeText={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -416,7 +471,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChangeText={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -428,7 +487,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										value={field.state.value}
 										onChangeText={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -457,7 +520,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										}}
 									/>
 									<Text>{field.state.value?.toFixed(2)}</Text>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -466,7 +533,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								<>
 									<Label>Extraction Yield (%)</Label>
 									<H4>{field.state.value?.toFixed(2)}%</H4>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -481,7 +552,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										steps={field.state.value}
 										setSteps={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
