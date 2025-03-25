@@ -193,6 +193,7 @@ export const updatePost = mutation({
 	args: {
 		id: v.id('posts'),
 		bean: v.string(),
+		beanProfile: v.id('bean_profiles'),
 		roastLevel: v.string(),
 		coffeeIn: v.string(),
 		ratio: v.string(),
