@@ -129,14 +129,19 @@ export function Component({ id }: { id: string }) {
 					<Text className="text-destructive">Cancel</Text>
 				</Button>
 				<Text>{activePage + 1}/2</Text>
-				<Button
-					disabled={!form.state.isDirty}
-					onPress={() => form.handleSubmit()}
-					variant={'secondary'}
-					size="sm"
-				>
-					<Text>Save</Text>
-				</Button>
+				<form.Subscribe
+					selector={state => [state.isPristine]}
+					children={([isPristine]) => (
+						<Button
+							disabled={isPristine}
+							onPress={() => form.handleSubmit()}
+							variant={'secondary'}
+							size="sm"
+						>
+							<Text>Save</Text>
+						</Button>
+					)}
+				/>
 			</View>
 			<Separator />
 			<Pager
@@ -188,7 +193,11 @@ export function Component({ id }: { id: string }) {
 										onChange={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -201,7 +210,11 @@ export function Component({ id }: { id: string }) {
 										onChangeText={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -214,7 +227,11 @@ export function Component({ id }: { id: string }) {
 										onChangeText={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -227,7 +244,11 @@ export function Component({ id }: { id: string }) {
 										onChangeText={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -241,7 +262,11 @@ export function Component({ id }: { id: string }) {
 										keyboardType="numeric"
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -254,8 +279,13 @@ export function Component({ id }: { id: string }) {
 										portalHost={EDIT_POST_SELECT_PORTAL}
 										options={brewers}
 										onChange={field.handleChange}
+										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -267,9 +297,14 @@ export function Component({ id }: { id: string }) {
 										placeholder="Select your filter paper"
 										portalHost={EDIT_POST_SELECT_PORTAL}
 										options={filterPapers}
+										value={field.state.value}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -281,9 +316,14 @@ export function Component({ id }: { id: string }) {
 										placeholder="Select your grinder"
 										portalHost={EDIT_POST_SELECT_PORTAL}
 										options={grinders}
+										value={field.state.value}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -296,7 +336,11 @@ export function Component({ id }: { id: string }) {
 										onChangeText={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -308,7 +352,11 @@ export function Component({ id }: { id: string }) {
 										value={field.state.value}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -320,7 +368,11 @@ export function Component({ id }: { id: string }) {
 										value={field.state.value}
 										onChange={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -333,7 +385,11 @@ export function Component({ id }: { id: string }) {
 										onChangeText={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -345,7 +401,11 @@ export function Component({ id }: { id: string }) {
 										onChangeText={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -357,7 +417,11 @@ export function Component({ id }: { id: string }) {
 										onChangeText={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -369,7 +433,11 @@ export function Component({ id }: { id: string }) {
 										onChangeText={field.handleChange}
 										value={field.state.value}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -398,7 +466,11 @@ export function Component({ id }: { id: string }) {
 										}}
 									/>
 									<Text>{field.state.value?.toFixed(2)}</Text>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -407,7 +479,11 @@ export function Component({ id }: { id: string }) {
 								<>
 									<Label>Extraction Yield (%)</Label>
 									<H4>{field.state.value?.toFixed(2)}%</H4>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
@@ -422,7 +498,11 @@ export function Component({ id }: { id: string }) {
 										steps={field.state.value}
 										setSteps={field.handleChange}
 									/>
-									<ErrorMessage message={field.state.meta.errors.join(', ')} />
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
 								</>
 							)}
 						</form.Field>
