@@ -58,11 +58,12 @@ export default function PostDetailsPage() {
 				}}
 			/>
 			<View className="px-4 flex-1 gap-4">
-				{data?.bean && <H3>{data?.bean}</H3>}
-				{data?.beanProfile && (
+				{data?.beanProfile ? (
 					<H3>
-						{`${data.beanProfile.roaster} ${data.beanProfile.origin} ${data.beanProfile.farm} ${data.beanProfile.process} ${data.beanProfile.variety}`}
+						{`${data?.beanProfile?.roaster} ${data?.beanProfile?.origin} ${data?.beanProfile?.farm} ${data?.beanProfile?.process} ${data?.beanProfile?.variety}`}
 					</H3>
+				) : (
+					<H3>{data?.bean}</H3>
 				)}
 				<FlatList
 					data={urls}
@@ -86,9 +87,7 @@ export default function PostDetailsPage() {
 				/>
 				<View className="rounded-lg">
 					<Text className="text-lg font-semibold mb-2">Basic Information</Text>
-
-					<DetailItem label="Bean" value={data?.bean} />
-					{data?.beanProfile && (
+					{data?.beanProfile ? (
 						<>
 							<DetailItem label="Roaster" value={data.beanProfile.roaster} />
 							<DetailItem label="Origin" value={data?.beanProfile.origin} />
@@ -101,6 +100,8 @@ export default function PostDetailsPage() {
 								value={data?.beanProfile.elevation}
 							/>
 						</>
+					) : (
+						<DetailItem label="Bean" value={data?.bean} />
 					)}
 					<DetailItem label="Flavor" value={data?.flavor} />
 					<DetailItem label="Roast Level" value={data?.roastLevel} />
