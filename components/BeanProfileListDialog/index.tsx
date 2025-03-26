@@ -48,23 +48,27 @@ function Inner(props: BeanProfileListDialogProps) {
 					>
 						<Card>
 							<CardHeader>
-								<CardTitle>{profile.origin}</CardTitle>
-								<CardDescription>{profile.producer}</CardDescription>
+								<CardTitle>{profile.roaster}</CardTitle>
+								<CardDescription>{profile.origin}</CardDescription>
 							</CardHeader>
 							<CardContent className="py-2">
-								<View className="flex-row justify-between">
-									<Text className="text-muted-foreground">Variety</Text>
-									<Text>{profile.variety}</Text>
-								</View>
-								<View className="flex-row justify-between">
-									<Text className="text-muted-foreground">Process</Text>
-									<Text>{profile.process}</Text>
-								</View>
+								<Details label="Farm" value={profile.farm} />
+								<Details label="Varietal" value={profile.variety} />
+								<Details label="Process" value={profile.process} />
 							</CardContent>
 						</Card>
 					</TouchableOpacity>
 				)}
 			/>
 		</Dialog.Inner>
+	);
+}
+
+function Details({ label, value }: { label: string; value?: string }) {
+	return (
+		<View className="flex-row justify-between">
+			<Text className="text-muted-foreground">{label}</Text>
+			<Text>{value}</Text>
+		</View>
 	);
 }
