@@ -20,7 +20,7 @@ import {
 	useEffect,
 	useState,
 } from 'react';
-import { formatDate } from '~/lib/utils';
+import { formatDate, formatDateToString } from '~/lib/utils';
 import { useCalendarTheme } from '~/hooks/useCalendarTheme';
 import {
 	Card,
@@ -73,6 +73,7 @@ function CalendarScreen({
 			<Calendar
 				key={key}
 				theme={theme}
+				maxDate={formatDateToString(new Date())}
 				enableSwipeMonths={false}
 				markedDates={markedDates}
 				onDayPress={(day: DateData) => {
