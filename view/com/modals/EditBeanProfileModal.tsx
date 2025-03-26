@@ -175,7 +175,7 @@ export function Component({ id }: EditBeanProfileModalProps) {
 					<form.Field name="elevation">
 						{field => (
 							<View className="gap-2">
-								<RequiredLabel>Elevation</RequiredLabel>
+								<RequiredLabel>Elevation (masl)</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}

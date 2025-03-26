@@ -146,11 +146,11 @@ export function Component() {
 					<form.Field name="elevation">
 						{field => (
 							<View className="gap-2">
-								<RequiredLabel>Elevation</RequiredLabel>
+								<RequiredLabel>Elevation (masl)</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
-									placeholder="e.g. 1300 masl"
+									placeholder="e.g. 1300"
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors

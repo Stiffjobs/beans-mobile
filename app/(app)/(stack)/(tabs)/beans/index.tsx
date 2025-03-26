@@ -192,7 +192,7 @@ function BeanProfileCard(profile: BeanProfileProps) {
 						<Text className="text-foreground">{profile.process}</Text>
 					</View>
 					<View className="flex-row justify-between">
-						<Text className="text-muted-foreground">Elevation</Text>
+						<Text className="text-muted-foreground">Elevation (masl)</Text>
 						<Text className="text-foreground">{profile.elevation}</Text>
 					</View>
 				</CardContent>
