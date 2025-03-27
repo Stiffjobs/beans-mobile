@@ -14,7 +14,7 @@ export function SelectComponent(props: {
 	portalHost?: string;
 	placeholder?: string;
 	label?: string;
-	options: { label: string; value: string }[];
+	options: { label: string; value: string; id: string }[];
 }) {
 	const insets = useSafeAreaInsets();
 	const contentInsets = {
@@ -24,7 +24,7 @@ export function SelectComponent(props: {
 		right: 12,
 	};
 	const { onChange, value, placeholder, portalHost, options } = props;
-	const label = options.find(e => e.value === value)?.label;
+	const label = options.find(e => e.id === value)?.label;
 	return (
 		<Select onValueChange={e => onChange(e?.value)}>
 			<SelectTrigger className="w-[250px]">
@@ -40,11 +40,7 @@ export function SelectComponent(props: {
 			>
 				<SelectGroup>
 					{options.map(option => (
-						<SelectItem
-							key={option.value}
-							label={option.label}
-							value={option.value}
-						>
+						<SelectItem key={option.id} label={option.label} value={option.id}>
 							{option.label}
 						</SelectItem>
 					))}

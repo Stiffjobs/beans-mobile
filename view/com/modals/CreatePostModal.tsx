@@ -66,7 +66,9 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			beverageWeight: '',
 			brewTemperature: '',
 			filterPaper: '',
+			filterPaperId: '' as Id<'gears'>,
 			grinder: '',
+			grinderId: '' as Id<'gears'>,
 			grindSetting: '',
 			bloomTime: '',
 			totalDrawdownTime: '',
@@ -75,6 +77,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			brewingWater: '',
 			methodName: '',
 			brewer: '',
+			brewerId: '' as Id<'gears'>,
 			otherTools: '',
 			flavor: '',
 			tds: undefined,
@@ -128,6 +131,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 		fetchGearList.data
 			?.filter(gear => gear.type === GEAR_TYPE.Brewer)
 			.map(e => ({
+				id: e._id,
 				label: e.name,
 				value: e.name,
 			})) ?? [];
@@ -143,6 +147,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 		fetchGearList.data
 			?.filter(gear => gear.type === GEAR_TYPE['Filter paper'])
 			.map(e => ({
+				id: e._id,
 				label: e.name,
 				value: e.name,
 			})) ?? [];
@@ -328,7 +333,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								</>
 							)}
 						</form.Field>
-						<form.Field name="brewer">
+						<form.Field name="brewerId">
 							{field => (
 								<>
 									<RequiredLabel>Brewer</RequiredLabel>
@@ -346,7 +351,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								</>
 							)}
 						</form.Field>
-						<form.Field name="filterPaper">
+						<form.Field name="filterPaperId">
 							{field => (
 								<>
 									<RequiredLabel>Filter paper</RequiredLabel>
@@ -364,7 +369,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								</>
 							)}
 						</form.Field>
-						<form.Field name="grinder">
+						<form.Field name="grinderId">
 							{field => (
 								<>
 									<RequiredLabel>Grinder</RequiredLabel>

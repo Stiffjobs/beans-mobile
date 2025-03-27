@@ -123,10 +123,23 @@ export default function PostDetailsPage() {
 				{/* Equipment */}
 				<View className="rounded-lg ">
 					<H4>Equipment</H4>
-					<DetailItem label="Brewer" value={data?.brewer} />
-					<DetailItem label="Filter Paper" value={data?.filterPaper} />
+					<DetailItem
+						label="Brewer"
+						value={data?.brewerId ? data?.brewerDetails?.name : data?.brewer}
+					/>
+					<DetailItem
+						label="Filter Paper"
+						value={
+							data?.filterPaperId
+								? data?.filterPaperDetails?.name
+								: data?.filterPaper
+						}
+					/>
 					<DetailItem label="Water" value={data?.brewingWater} />
-					<DetailItem label="Grinder" value={data?.grinder} />
+					<DetailItem
+						label="Grinder"
+						value={data?.grinderId ? data?.grinderDetails?.name : data?.grinder}
+					/>
 					<DetailItem label="Grind Setting" value={data?.grindSetting} />
 					<DetailItem label="Other Tools" value={data?.otherTools} />
 				</View>

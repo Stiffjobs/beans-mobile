@@ -30,11 +30,14 @@ export const createPostSchema = z.object({
 	beverageWeight: z.string().min(1, 'Beverage weight is required'),
 	brewTemperature: z.string().min(1, 'Brew temperature is required'),
 	filterPaper: z.string().min(1, 'Filter paper is required'),
+	filterPaperId: z.custom<Id<'gears'>>(),
 	grinder: z.string().min(1, 'Grinder is required'),
+	grinderId: z.custom<Id<'gears'>>(),
 	grindSetting: z.string().min(1, 'Grind setting is required'),
 	bloomTime: z.string().min(1, 'Bloom time is required'),
 	totalDrawdownTime: z.string().min(1, 'Total drawdown time is required'),
 	brewer: z.string().min(1, 'Brewer is required'),
+	brewerId: z.custom<Id<'gears'>>(),
 	recipeSteps: z.array(
 		z.object({
 			timestamp: z.string(),

@@ -50,13 +50,16 @@ export function Component({ id }: { id: string }) {
 			beverageWeight: postDetails.data?.beverageWeight ?? '',
 			brewTemperature: postDetails.data?.brewTemperature ?? '',
 			filterPaper: postDetails.data?.filterPaper ?? '',
+			filterPaperId: postDetails.data?.filterPaperId ?? '',
 			brewingWater: postDetails.data?.brewingWater ?? '',
 			grinder: postDetails.data?.grinder ?? '',
+			grinderId: postDetails.data?.grinderId ?? '',
 			grindSetting: postDetails.data?.grindSetting ?? '',
 			bloomTime: postDetails.data?.bloomTime ?? '',
 			totalDrawdownTime: postDetails.data?.totalDrawdownTime ?? '',
 			methodName: postDetails.data?.methodName ?? '',
 			brewer: postDetails.data?.brewer ?? '',
+			brewerId: postDetails.data?.brewerId ?? '',
 			otherTools: postDetails.data?.otherTools ?? '',
 			flavor: postDetails.data?.flavor ?? '',
 			tds: postDetails.data?.tds,
@@ -89,6 +92,7 @@ export function Component({ id }: { id: string }) {
 		fetchGearList.data
 			?.filter(gear => gear.type === GEAR_TYPE.Brewer)
 			.map(e => ({
+				id: e._id,
 				label: e.name,
 				value: e.name,
 			})) ?? [];
@@ -104,6 +108,7 @@ export function Component({ id }: { id: string }) {
 		fetchGearList.data
 			?.filter(gear => gear.type === GEAR_TYPE['Filter paper'])
 			.map(e => ({
+				id: e._id,
 				label: e.name,
 				value: e.name,
 			})) ?? [];
@@ -270,7 +275,7 @@ export function Component({ id }: { id: string }) {
 								</>
 							)}
 						</form.Field>
-						<form.Field name="brewer">
+						<form.Field name="brewerId">
 							{field => (
 								<>
 									<RequiredLabel>Brewer</RequiredLabel>
@@ -289,7 +294,7 @@ export function Component({ id }: { id: string }) {
 								</>
 							)}
 						</form.Field>
-						<form.Field name="filterPaper">
+						<form.Field name="filterPaperId">
 							{field => (
 								<>
 									<RequiredLabel>Filter paper</RequiredLabel>
@@ -308,7 +313,7 @@ export function Component({ id }: { id: string }) {
 								</>
 							)}
 						</form.Field>
-						<form.Field name="grinder">
+						<form.Field name="grinderId">
 							{field => (
 								<>
 									<RequiredLabel>Grinder</RequiredLabel>
