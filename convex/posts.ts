@@ -12,7 +12,9 @@ export const createPost = mutation({
 		ratio: v.string(),
 		beverageWeight: v.string(),
 		brewTemperature: v.string(),
+		filterPaperId: v.id('gears'),
 		filterPaper: v.string(),
+		grinderId: v.id('gears'),
 		grinder: v.string(),
 		grindSetting: v.string(),
 		bloomTime: v.string(),
@@ -26,7 +28,8 @@ export const createPost = mutation({
 		),
 		brewingWater: v.optional(v.string()),
 		methodName: v.optional(v.string()),
-		brewer: v.optional(v.string()),
+		brewer: v.string(),
+		brewerId: v.id('gears'),
 		otherTools: v.optional(v.string()),
 		flavor: v.optional(v.string()),
 		tds: v.optional(v.number()),
@@ -148,8 +151,20 @@ export const getPostById = query({
 	handler: async (ctx, args) => {
 		const post = await ctx.db.get(args.id);
 		let beanProfile = null;
+		let filterPaperDetails = null;
+		let grinderDetails = null;
+		let brewerDetails = null;
 		if (post?.beanProfile) {
 			beanProfile = await ctx.db.get(post?.beanProfile);
+		}
+		if (post?.filterPaperId) {
+			filterPaperDetails = await ctx.db.get(post?.filterPaperId);
+		}
+		if (post?.grinderId) {
+			grinderDetails = await ctx.db.get(post?.grinderId);
+		}
+		if (post?.brewerId) {
+			brewerDetails = await ctx.db.get(post?.brewerId);
 		}
 		const images = await ctx.db
 			.query('post_images')
@@ -165,6 +180,9 @@ export const getPostById = query({
 			...post,
 			beanProfile: beanProfile,
 			images: imagesUrl,
+			filterPaperDetails,
+			grinderDetails,
+			brewerDetails,
 		};
 	},
 });
@@ -199,13 +217,16 @@ export const updatePost = mutation({
 		ratio: v.string(),
 		beverageWeight: v.string(),
 		brewTemperature: v.string(),
+		filterPaperId: v.id('gears'),
 		filterPaper: v.string(),
 		brewingWater: v.optional(v.string()),
+		grinderId: v.id('gears'),
 		grinder: v.string(),
 		grindSetting: v.string(),
 		bloomTime: v.string(),
 		totalDrawdownTime: v.optional(v.string()),
 		methodName: v.optional(v.string()),
+		brewerId: v.id('gears'),
 		brewer: v.optional(v.string()),
 		otherTools: v.optional(v.string()),
 		flavor: v.optional(v.string()),
