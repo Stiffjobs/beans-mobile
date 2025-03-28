@@ -46,7 +46,8 @@ export function Component({ id }: EditBeanProfileModalProps) {
 	const deleteMutation = useDeleteBeanProfile();
 	const handleDelete = useCallback(async () => {
 		await deleteMutation.mutateAsync(id);
-	}, [deleteMutation]);
+		closeModal();
+	}, [deleteMutation, closeModal]);
 	const form = useForm({
 		defaultValues: {
 			origin: fetchBeanProfileById.data?.origin ?? '',
