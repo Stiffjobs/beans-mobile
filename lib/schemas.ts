@@ -77,7 +77,9 @@ export const createGearSchema = z.object({
 	details: z.string().optional(),
 });
 
-export const updateGearSchema = createGearSchema;
+export const updateGearSchema = createGearSchema.omit({
+	type: true,
+});
 
 export const createBeanProfileSchema = z.object({
 	origin: z.string().min(1, 'Origin is required'),

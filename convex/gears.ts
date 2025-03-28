@@ -46,7 +46,6 @@ export const updateGear = mutation({
 	args: {
 		id: v.id('gears'),
 		name: v.string(),
-		type: v.string(),
 		details: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
