@@ -38,6 +38,7 @@ function Inner(props: BeanProfileListDialogProps) {
 			<BottomSheetFlatList
 				data={beanProfiles.data ?? []}
 				ItemSeparatorComponent={() => <View className="h-2" />}
+				contentContainerClassName={'pb-20'}
 				renderItem={({ item: profile }) => (
 					<TouchableOpacity
 						key={profile._id}
