@@ -47,7 +47,6 @@ export function Component(props: EditGearModalProps) {
 		resolver: zodResolver(updateGearSchema),
 		defaultValues: {
 			name: '',
-			type: 'GRINDER' as GEAR_TYPE,
 			details: '',
 		},
 	});
@@ -56,7 +55,6 @@ export function Component(props: EditGearModalProps) {
 		if (fetchGearDetails.data) {
 			form.reset({
 				name: fetchGearDetails.data.name,
-				type: fetchGearDetails.data.type as GEAR_TYPE,
 				details: fetchGearDetails.data.details || '', // Handle null/undefined
 			});
 		}
@@ -96,26 +94,6 @@ export function Component(props: EditGearModalProps) {
 								{form.formState.errors.name && (
 									<ErrorMessage message={form.formState.errors.name.message} />
 								)}
-							</>
-						);
-					}}
-				/>
-				<Controller
-					control={form.control}
-					name="type"
-					render={({ field }) => {
-						return (
-							<>
-								<Label>Type</Label>
-								<SelectComponent
-									onChange={field.onChange}
-									value={field.value}
-									portalHost={SELECT_PORTAL_HOST}
-									options={Object.entries(GEAR_TYPE).map(([key, value]) => ({
-										label: key,
-										value,
-									}))}
-								/>
 							</>
 						);
 					}}
