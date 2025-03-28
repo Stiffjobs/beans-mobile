@@ -239,6 +239,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 												/>
 											</View>
 										</Pressable>
+										<ErrorMessage
+											message={field.state.meta.errors
+												.map(e => e?.message)
+												.join(', ')}
+										/>
 									</>
 								);
 							}}
@@ -301,7 +306,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="beverageWeight">
 							{field => (
 								<>
-									<RequiredLabel>Beverage weight(g)</RequiredLabel>
+									<Label>Beverage weight(g)</Label>
 									<Input
 										numberOfLines={1}
 										value={field.state.value}

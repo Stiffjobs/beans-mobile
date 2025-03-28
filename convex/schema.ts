@@ -16,7 +16,7 @@ export default defineSchema({
 		coffeeIn: v.string(),
 		ratio: v.string(),
 		beanProfile: v.optional(v.id('bean_profiles')),
-		beverageWeight: v.string(),
+		beverageWeight: v.optional(v.string()),
 		brewTemperature: v.string(),
 		filterPaper: v.string(),
 		filterPaperId: v.optional(v.id('gears')),

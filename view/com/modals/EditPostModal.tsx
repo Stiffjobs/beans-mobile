@@ -243,7 +243,7 @@ export function Component({ id }: { id: string }) {
 						<form.Field name="beverageWeight">
 							{field => (
 								<>
-									<RequiredLabel>Beverage weight(g)</RequiredLabel>
+									<Label>Beverage weight(g)</Label>
 									<Input
 										numberOfLines={1}
 										onChangeText={field.handleChange}

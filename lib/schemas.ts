@@ -25,19 +25,27 @@ export const createPostSchema = z.object({
 	bean: z.string().min(1, 'Bean is required'),
 	roastLevel: z.string().min(1, 'Roast level is required'),
 	coffeeIn: z.string().min(1, 'Coffee in is required'),
-	beanProfile: z.custom<Id<'bean_profiles'>>(),
+	beanProfile: z
+		.custom<Id<'bean_profiles'>>()
+		.refine(id => id.length > 0, 'Bean profile is required'),
 	ratio: z.string().min(1, 'Ratio is required'),
-	beverageWeight: z.string().min(1, 'Beverage weight is required'),
+	beverageWeight: z.string().optional(),
 	brewTemperature: z.string().min(1, 'Brew temperature is required'),
 	filterPaper: z.string().min(1, 'Filter paper is required'),
-	filterPaperId: z.custom<Id<'gears'>>(),
+	filterPaperId: z
+		.custom<Id<'gears'>>()
+		.refine(id => id.length > 0, 'Filter paper is required'),
 	grinder: z.string().min(1, 'Grinder is required'),
-	grinderId: z.custom<Id<'gears'>>(),
+	grinderId: z
+		.custom<Id<'gears'>>()
+		.refine(id => id.length > 0, 'Grinder is required'),
 	grindSetting: z.string().min(1, 'Grind setting is required'),
 	bloomTime: z.string().min(1, 'Bloom time is required'),
 	totalDrawdownTime: z.string().min(1, 'Total drawdown time is required'),
 	brewer: z.string().min(1, 'Brewer is required'),
-	brewerId: z.custom<Id<'gears'>>(),
+	brewerId: z
+		.custom<Id<'gears'>>()
+		.refine(id => id.length > 0, 'Brewer is required'),
 	recipeSteps: z.array(
 		z.object({
 			timestamp: z.string(),
