@@ -4,7 +4,7 @@ import { GEAR_TYPE } from './constants';
 export interface GearData {
 	_id: string;
 	name: string;
-	type: GEAR_TYPE;
+	type: string | GEAR_TYPE;
 	details?: string;
 	settings?: string;
 }
