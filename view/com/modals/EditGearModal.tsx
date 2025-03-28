@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PortalHost } from '@rn-primitives/portal';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -135,7 +135,8 @@ function Header({ id, portalHost }: HeaderProps) {
 	const deleteGearMutation = useDeleteGear();
 	const handleDelete = useCallback(async () => {
 		await deleteGearMutation.mutateAsync(id);
-	}, [deleteGearMutation]);
+		closeModal();
+	}, [deleteGearMutation, closeModal]);
 	return (
 		<View className="flex p-4 flex-row justify-between items-center">
 			<Button size={'icon'} variant={'ghost'} onPress={closeModal}>
