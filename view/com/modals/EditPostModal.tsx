@@ -34,6 +34,7 @@ import { Id } from '~/convex/_generated/dataModel';
 import { ChevronDown } from '~/lib/icons/ChevronDown';
 import { SelectComponent } from '~/components/select/Select';
 import { useListGears } from '~/state/queries/gears';
+import { X } from '~/lib/icons';
 
 export const snapPoints = ['fullscreen'];
 type FormFields = z.infer<typeof editPostSchema>;
@@ -206,57 +207,92 @@ export function Component({ id }: { id: string }) {
 								</>
 							)}
 						</form.Field>
-						<form.Field name="coffeeIn">
-							{field => (
-								<>
-									<RequiredLabel>Coffee in (g)</RequiredLabel>
-									<Input
-										numberOfLines={1}
-										onChangeText={field.handleChange}
-										value={field.state.value}
-									/>
-									<ErrorMessage
-										message={field.state.meta.errors
-											.map(e => e?.message)
-											.join(', ')}
-									/>
-								</>
-							)}
-						</form.Field>
-						<form.Field name="ratio">
-							{field => (
-								<>
-									<Label>Ratio</Label>
-									<Input
-										numberOfLines={1}
-										onChangeText={field.handleChange}
-										value={field.state.value}
-									/>
-									<ErrorMessage
-										message={field.state.meta.errors
-											.map(e => e?.message)
-											.join(', ')}
-									/>
-								</>
-							)}
-						</form.Field>
-						<form.Field name="beverageWeight">
-							{field => (
-								<>
-									<Label>Beverage weight(g)</Label>
-									<Input
-										numberOfLines={1}
-										onChangeText={field.handleChange}
-										value={field.state.value}
-									/>
-									<ErrorMessage
-										message={field.state.meta.errors
-											.map(e => e?.message)
-											.join(', ')}
-									/>
-								</>
-							)}
-						</form.Field>
+						<View className="flex flex-row gap-2 items-center">
+							<form.Field
+								name="coffeeIn"
+								listeners={{
+									onChange: e => {
+										const ratio = parseFloat(form.getFieldValue('ratio'));
+										const coffeeIn = parseFloat(e.value);
+										if (!coffeeIn) return;
+										const beverageWeight = coffeeIn * ratio;
+										if (isNaN(beverageWeight)) return;
+										form.setFieldValue(
+											'beverageWeight',
+											beverageWeight.toString()
+										);
+									},
+								}}
+							>
+								{field => (
+									<View className="flex-1">
+										<RequiredLabel>Coffee in (g)</RequiredLabel>
+										<Input
+											keyboardType="number-pad"
+											numberOfLines={1}
+											onChangeText={field.handleChange}
+											value={field.state.value}
+										/>
+										<ErrorMessage
+											message={field.state.meta.errors
+												.map(e => e?.message)
+												.join(', ')}
+										/>
+									</View>
+								)}
+							</form.Field>
+							<X className="text-primary size-6" />
+							<form.Field
+								name="ratio"
+								listeners={{
+									onChange: e => {
+										const coffeeIn = parseFloat(form.getFieldValue('coffeeIn'));
+										const ratio = parseFloat(e.value);
+										if (!coffeeIn) return;
+										const beverageWeight = coffeeIn * ratio;
+										if (isNaN(beverageWeight)) return;
+										form.setFieldValue(
+											'beverageWeight',
+											beverageWeight.toString()
+										);
+									},
+								}}
+							>
+								{field => (
+									<View className="flex-1">
+										<RequiredLabel>Ratio</RequiredLabel>
+										<Input
+											keyboardType="number-pad"
+											numberOfLines={1}
+											onChangeText={field.handleChange}
+											value={field.state.value}
+										/>
+										<ErrorMessage
+											message={field.state.meta.errors
+												.map(e => e?.message)
+												.join(', ')}
+										/>
+									</View>
+								)}
+							</form.Field>
+						</View>
+						<form.Subscribe
+							selector={state => [state.values.coffeeIn, state.values.ratio]}
+						>
+							{([coffeeIn, ratio]) => {
+								const beverageWeight = parseFloat(coffeeIn) * parseFloat(ratio);
+								return (
+									<>
+										<Label>Beverage weight(g)</Label>
+										<Input
+											editable={false}
+											editableShowPrimary
+											value={beverageWeight ? beverageWeight.toString() : ''}
+										/>
+									</>
+								);
+							}}
+						</form.Subscribe>
 						<form.Field name="brewTemperature">
 							{field => (
 								<>

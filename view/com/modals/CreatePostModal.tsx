@@ -48,6 +48,7 @@ import { Id } from '~/convex/_generated/dataModel';
 import { useListBeanProfiles } from '~/state/queries/bean_profiles';
 import { ChevronDown } from '~/lib/icons/ChevronDown';
 import { ImagePlus } from '~/lib/icons/ImagePlus';
+import { X } from '~/lib/icons';
 
 const CUSTOM_PORTAL_HOST_NAME = 'modal-select';
 const CUSTOM_PORTAL_DIALOG = 'dialog';
@@ -269,57 +270,92 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								</>
 							)}
 						</form.Field>
-						<form.Field name="coffeeIn">
-							{field => (
-								<>
-									<RequiredLabel>Coffee in (g)</RequiredLabel>
-									<Input
-										numberOfLines={1}
-										value={field.state.value}
-										onChangeText={field.handleChange}
-									/>
-									<ErrorMessage
-										message={field.state.meta.errors
-											.map(e => e?.message)
-											.join(', ')}
-									/>
-								</>
-							)}
-						</form.Field>
-						<form.Field name="ratio">
-							{field => (
-								<>
-									<RequiredLabel>Ratio</RequiredLabel>
-									<Input
-										numberOfLines={1}
-										value={field.state.value}
-										onChangeText={field.handleChange}
-									/>
-									<ErrorMessage
-										message={field.state.meta.errors
-											.map(e => e?.message)
-											.join(', ')}
-									/>
-								</>
-							)}
-						</form.Field>
-						<form.Field name="beverageWeight">
-							{field => (
-								<>
-									<Label>Beverage weight(g)</Label>
-									<Input
-										numberOfLines={1}
-										value={field.state.value}
-										onChangeText={field.handleChange}
-									/>
-									<ErrorMessage
-										message={field.state.meta.errors
-											.map(e => e?.message)
-											.join(', ')}
-									/>
-								</>
-							)}
-						</form.Field>
+						<View className="flex flex-row gap-2 items-center">
+							<form.Field
+								name="coffeeIn"
+								listeners={{
+									onChange: e => {
+										const ratio = parseFloat(form.getFieldValue('ratio'));
+										const coffeeIn = parseFloat(e.value);
+										if (!coffeeIn) return;
+										const beverageWeight = coffeeIn * ratio;
+										if (isNaN(beverageWeight)) return;
+										form.setFieldValue(
+											'beverageWeight',
+											beverageWeight.toString()
+										);
+									},
+								}}
+							>
+								{field => (
+									<View className="flex-1">
+										<RequiredLabel>Coffee in (g)</RequiredLabel>
+										<Input
+											numberOfLines={1}
+											value={field.state.value}
+											keyboardType="number-pad"
+											onChangeText={field.handleChange}
+										/>
+										<ErrorMessage
+											message={field.state.meta.errors
+												.map(e => e?.message)
+												.join(', ')}
+										/>
+									</View>
+								)}
+							</form.Field>
+							<X className="text-primary size-6" />
+							<form.Field
+								name="ratio"
+								listeners={{
+									onChange: e => {
+										const coffeeIn = parseFloat(form.getFieldValue('coffeeIn'));
+										const ratio = parseFloat(e.value);
+										if (!coffeeIn) return;
+										const beverageWeight = coffeeIn * ratio;
+										if (isNaN(beverageWeight)) return;
+										form.setFieldValue(
+											'beverageWeight',
+											beverageWeight.toString()
+										);
+									},
+								}}
+							>
+								{field => (
+									<View className="flex-1">
+										<RequiredLabel>Ratio</RequiredLabel>
+										<Input
+											numberOfLines={1}
+											keyboardType="number-pad"
+											value={field.state.value}
+											onChangeText={field.handleChange}
+										/>
+										<ErrorMessage
+											message={field.state.meta.errors
+												.map(e => e?.message)
+												.join(', ')}
+										/>
+									</View>
+								)}
+							</form.Field>
+						</View>
+						<form.Subscribe
+							selector={state => [state.values.coffeeIn, state.values.ratio]}
+						>
+							{([coffeeIn, ratio]) => {
+								const beverageWeight = parseFloat(coffeeIn) * parseFloat(ratio);
+								return (
+									<>
+										<Label>Beverage weight(g)</Label>
+										<Input
+											editable={false}
+											editableShowPrimary
+											value={beverageWeight ? beverageWeight.toString() : ''}
+										/>
+									</>
+								);
+							}}
+						</form.Subscribe>
 						<form.Field name="brewTemperature">
 							{field => (
 								<>
