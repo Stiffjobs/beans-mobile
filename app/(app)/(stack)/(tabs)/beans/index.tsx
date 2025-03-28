@@ -25,6 +25,9 @@ import {
 import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
 import { CustomTabBar } from '~/view/com/pager/TabBar';
 import { Muted } from '~/components/ui/typography';
+import { Authenticated, Unauthenticated } from 'convex/react';
+import { Link } from 'expo-router';
+import { Button } from '~/components/ui/button';
 
 const renderTabBar = (
 	props: SceneRendererProps & {
@@ -108,14 +111,23 @@ export default function Beans() {
 
 	return (
 		<View className="flex-1">
-			<TabView
-				renderScene={renderScene}
-				renderTabBar={renderTabBar}
-				onIndexChange={setIndex}
-				initialLayout={{ width: layout.width }}
-				navigationState={{ index, routes }}
-			/>
-			<FAB iconName="PackagePlus" onPress={openCreateBeanProfileModal} />
+			<Authenticated>
+				<TabView
+					renderScene={renderScene}
+					renderTabBar={renderTabBar}
+					onIndexChange={setIndex}
+					initialLayout={{ width: layout.width }}
+					navigationState={{ index, routes }}
+				/>
+				<FAB iconName="PackagePlus" onPress={openCreateBeanProfileModal} />
+			</Authenticated>
+			<Unauthenticated>
+				<Link asChild href={'/signin'}>
+					<Button>
+						<Text>Sign In</Text>
+					</Button>
+				</Link>
+			</Unauthenticated>
 		</View>
 	);
 }

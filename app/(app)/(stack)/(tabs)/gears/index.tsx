@@ -1,9 +1,13 @@
 import { FlashList } from '@shopify/flash-list';
+import { Authenticated, Unauthenticated } from 'convex/react';
+import { Link } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Pressable, RefreshControl, View } from 'react-native';
 import { FAB } from '~/components/FAB';
+import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { H4, Small } from '~/components/ui/typography';
+import { Text } from '~/components/ui/text';
 import { GEAR_TYPE } from '~/lib/constants';
 import { GearData } from '~/lib/types';
 import { useModalControls } from '~/state/modals';
@@ -24,25 +28,34 @@ export default function Gears() {
 	}, [fetchListGears]);
 	return (
 		<View className="flex-1">
-			<FlashList
-				refreshControl={
-					<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-				}
-				estimatedItemSize={80}
-				ItemSeparatorComponent={() => <Separator />}
-				data={fetchListGears.data}
-				renderItem={({ item }) => {
-					return (
-						<GearCard
-							gear={{
-								...item,
-								type: item.type as GEAR_TYPE,
-							}}
-						/>
-					);
-				}}
-			/>
+			<Authenticated>
+				<FlashList
+					refreshControl={
+						<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+					}
+					estimatedItemSize={80}
+					ItemSeparatorComponent={() => <Separator />}
+					data={fetchListGears.data}
+					renderItem={({ item }) => {
+						return (
+							<GearCard
+								gear={{
+									...item,
+									type: item.type as GEAR_TYPE,
+								}}
+							/>
+						);
+					}}
+				/>
+			</Authenticated>
 			<FAB iconName="PackagePlus" onPress={openCreateGearModal} />
+			<Unauthenticated>
+				<Link asChild href={'/signin'}>
+					<Button>
+						<Text>Sign In</Text>
+					</Button>
+				</Link>
+			</Unauthenticated>
 		</View>
 	);
 }
