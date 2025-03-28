@@ -148,7 +148,7 @@ function FeedScreen() {
 								) : (
 									<Text>{item.post.bean}</Text>
 								)}
-								<Text>{item.post.brewer}</Text>
+								<Text>{item.brewerDetails?.name ?? item.post.brewer}</Text>
 								<Text className="text-muted-foreground text-right">
 									{timeAgo(item.post._creationTime)}
 								</Text>
@@ -266,7 +266,9 @@ function BrewingCard({ data }: { data: BrewingData }) {
 							) : (
 								<CardTitle className="text-primary">{data.bean}</CardTitle>
 							)}
-							<CardDescription>{data.brewer}</CardDescription>
+							<CardDescription>
+								{data.brewerDetails?.name ?? data.brewer}
+							</CardDescription>
 						</View>
 						<Text className="text-gray-500 dark:text-gray-400">
 							{data.totalDrawdownTime}

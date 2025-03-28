@@ -38,6 +38,13 @@ export interface BrewingData {
 	tds?: number;
 	ey?: number;
 	beanProfile?: BeanProfileProps | null;
+	brewerDetails?: BrewerDetails | null;
+	grinderDetails?: GrinderDetails | null;
+	filterPaperDetails?: FilterPaperDetails | null;
 }
+
+export type BrewerDetails = Doc<'gears'>;
+export type GrinderDetails = Doc<'gears'>;
+export type FilterPaperDetails = Doc<'gears'>;
 
 export type BeanProfileProps = Doc<'bean_profiles'>;

@@ -103,8 +103,20 @@ export const feed = query({
 				const author = await ctx.db.get(post.author);
 				if (!author) throw new ConvexError('Author not found');
 				let beanProfile = null;
+				let filterPaperDetails = null;
+				let grinderDetails = null;
+				let brewerDetails = null;
 				if (post.beanProfile) {
 					beanProfile = await ctx.db.get(post.beanProfile);
+				}
+				if (post.filterPaperId) {
+					filterPaperDetails = await ctx.db.get(post.filterPaperId);
+				}
+				if (post.grinderId) {
+					grinderDetails = await ctx.db.get(post.grinderId);
+				}
+				if (post.brewerId) {
+					brewerDetails = await ctx.db.get(post.brewerId);
 				}
 				let avatar = null;
 				if (author.avatar) {
@@ -128,6 +140,9 @@ export const feed = query({
 						avatarUrl: avatar,
 					},
 					beanProfile: beanProfile,
+					filterPaperDetails: filterPaperDetails,
+					grinderDetails: grinderDetails,
+					brewerDetails: brewerDetails,
 					images: imagesUrl.filter(e => e !== null),
 				};
 			})
