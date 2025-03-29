@@ -43,6 +43,7 @@ import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
 import { FAB } from '~/components/FAB';
 import { BrewingData } from '~/lib/types';
 import { timeAgo } from '~/utils/time';
+import { useLingui } from '@lingui/react/macro';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -221,11 +222,12 @@ export default function HomeScreen() {
 		});
 	}, [openModal, selectedDate]);
 	const layout = useWindowDimensions();
+	const { t } = useLingui();
 
 	const [index, setIndex] = useState(0);
 	const routes = [
-		{ key: 'feed', title: 'Feed' },
-		{ key: 'calendar', title: 'Calendar' },
+		{ key: 'feed', title: t`Feed` },
+		{ key: 'calendar', title: t`Calendar` },
 	];
 
 	return (
