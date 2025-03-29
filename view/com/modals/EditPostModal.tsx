@@ -50,6 +50,7 @@ export function Component({ id }: { id: string }) {
 			ratio: postDetails.data?.ratio ?? '',
 			beverageWeight: postDetails.data?.beverageWeight ?? '',
 			brewTemperature: postDetails.data?.brewTemperature ?? '',
+			waterIn: postDetails.data?.waterIn ?? '',
 			filterPaper: postDetails.data?.filterPaper ?? '',
 			filterPaperId: postDetails.data?.filterPaperId ?? '',
 			brewingWater: postDetails.data?.brewingWater ?? '',
@@ -192,10 +193,6 @@ export function Component({ id }: { id: string }) {
 									<SelectRoastLevel
 										portalHost={EDIT_POST_SELECT_PORTAL}
 										placeholder="Select a roast level"
-										options={Object.values(RoastLevelEnum).map(value => ({
-											label: value,
-											value: value,
-										}))}
 										onChange={field.handleChange}
 										value={field.state.value}
 									/>
@@ -215,12 +212,9 @@ export function Component({ id }: { id: string }) {
 										const ratio = parseFloat(form.getFieldValue('ratio'));
 										const coffeeIn = parseFloat(e.value);
 										if (!coffeeIn) return;
-										const beverageWeight = coffeeIn * ratio;
-										if (isNaN(beverageWeight)) return;
-										form.setFieldValue(
-											'beverageWeight',
-											beverageWeight.toString()
-										);
+										const waterIn = coffeeIn * ratio;
+										if (isNaN(waterIn)) return;
+										form.setFieldValue('waterIn', waterIn.toString());
 									},
 								}}
 							>
@@ -228,7 +222,6 @@ export function Component({ id }: { id: string }) {
 									<View className="flex-1">
 										<RequiredLabel>Coffee in (g)</RequiredLabel>
 										<Input
-											keyboardType="number-pad"
 											numberOfLines={1}
 											onChangeText={field.handleChange}
 											value={field.state.value}
@@ -249,12 +242,9 @@ export function Component({ id }: { id: string }) {
 										const coffeeIn = parseFloat(form.getFieldValue('coffeeIn'));
 										const ratio = parseFloat(e.value);
 										if (!coffeeIn) return;
-										const beverageWeight = coffeeIn * ratio;
-										if (isNaN(beverageWeight)) return;
-										form.setFieldValue(
-											'beverageWeight',
-											beverageWeight.toString()
-										);
+										const waterIn = coffeeIn * ratio;
+										if (isNaN(waterIn)) return;
+										form.setFieldValue('waterIn', waterIn.toString());
 									},
 								}}
 							>
@@ -262,7 +252,6 @@ export function Component({ id }: { id: string }) {
 									<View className="flex-1">
 										<RequiredLabel>Ratio</RequiredLabel>
 										<Input
-											keyboardType="number-pad"
 											numberOfLines={1}
 											onChangeText={field.handleChange}
 											value={field.state.value}
@@ -280,19 +269,36 @@ export function Component({ id }: { id: string }) {
 							selector={state => [state.values.coffeeIn, state.values.ratio]}
 						>
 							{([coffeeIn, ratio]) => {
-								const beverageWeight = parseFloat(coffeeIn) * parseFloat(ratio);
+								const waterIn = parseFloat(coffeeIn) * parseFloat(ratio);
 								return (
 									<>
-										<Label>Beverage weight(g)</Label>
+										<Label>Water in (g)</Label>
 										<Input
 											editable={false}
 											editableShowPrimary
-											value={beverageWeight ? beverageWeight.toString() : ''}
+											value={waterIn ? waterIn.toFixed(2).toString() : ''}
 										/>
 									</>
 								);
 							}}
 						</form.Subscribe>
+						<form.Field name="beverageWeight">
+							{field => (
+								<>
+									<Label>Beverage weight (g)</Label>
+									<Input
+										numberOfLines={1}
+										onChangeText={field.handleChange}
+										value={field.state.value}
+									/>
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
+								</>
+							)}
+						</form.Field>
 						<form.Field name="brewTemperature">
 							{field => (
 								<>
