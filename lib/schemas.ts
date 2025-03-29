@@ -30,6 +30,7 @@ export const createPostSchema = z.object({
 		.refine(id => id.length > 0, 'Bean profile is required'),
 	ratio: z.string().min(1, 'Ratio is required'),
 	beverageWeight: z.string().optional(),
+	waterIn: z.string().optional(),
 	brewTemperature: z.string().min(1, 'Brew temperature is required'),
 	filterPaper: z.string().min(1, 'Filter paper is required'),
 	filterPaperId: z
