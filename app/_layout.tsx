@@ -33,12 +33,10 @@ import { RootSiblingParent } from 'react-native-root-siblings';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
-import { I18nProvider, TransRenderProps } from '@lingui/react';
-import { i18n } from '@lingui/core';
-import { Drawer } from 'expo-router/drawer';
 import { tokenCache } from '~/utils/cache';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Shell } from '~/view/shell';
+import { I18nProvider } from '~/utils/i18nProvider';
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 const convex = new ConvexReactClient(
 	process.env.EXPO_PUBLIC_CONVEX_URL as string
@@ -64,10 +62,6 @@ export {
 	// Catch any errors thrown by the Layout component.
 	ErrorBoundary,
 } from 'expo-router';
-
-const DefaultComponent = (props: TransRenderProps) => {
-	return <Text>{props.children}</Text>;
-};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -163,37 +157,39 @@ function RootLayoutNav({
 		<ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
 			<ClerkLoaded>
 				<RootSiblingParent>
-					<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-						<QueryClientProvider client={queryClient}>
-							<GestureHandlerRootView style={{ flex: 1 }}>
-								<KeyboardProvider>
-									<ThemeProvider
-										value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
-									>
-										<ActionSheetProvider>
-											<ShellStateProvider>
-												<ModalProvider>
-													<BottomSheetModalProvider>
-														<DialogStateProvider>
-															<View
-																onLayout={onLayoutRootView}
-																className="flex-1"
-															>
-																<Shell>
-																	<Slot />
-																</Shell>
-																<PortalHost />
-															</View>
-														</DialogStateProvider>
-													</BottomSheetModalProvider>
-												</ModalProvider>
-											</ShellStateProvider>
-										</ActionSheetProvider>
-									</ThemeProvider>
-								</KeyboardProvider>
-							</GestureHandlerRootView>
-						</QueryClientProvider>
-					</ConvexProviderWithClerk>
+					<I18nProvider>
+						<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+							<QueryClientProvider client={queryClient}>
+								<GestureHandlerRootView style={{ flex: 1 }}>
+									<KeyboardProvider>
+										<ThemeProvider
+											value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}
+										>
+											<ActionSheetProvider>
+												<ShellStateProvider>
+													<ModalProvider>
+														<BottomSheetModalProvider>
+															<DialogStateProvider>
+																<View
+																	onLayout={onLayoutRootView}
+																	className="flex-1"
+																>
+																	<Shell>
+																		<Slot />
+																	</Shell>
+																	<PortalHost />
+																</View>
+															</DialogStateProvider>
+														</BottomSheetModalProvider>
+													</ModalProvider>
+												</ShellStateProvider>
+											</ActionSheetProvider>
+										</ThemeProvider>
+									</KeyboardProvider>
+								</GestureHandlerRootView>
+							</QueryClientProvider>
+						</ConvexProviderWithClerk>
+					</I18nProvider>
 				</RootSiblingParent>
 			</ClerkLoaded>
 		</ClerkProvider>

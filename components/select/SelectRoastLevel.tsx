@@ -1,5 +1,4 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { RoastLevel } from '~/lib/constants';
 import {
 	Select,
 	SelectContent,
@@ -8,10 +7,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '~/components/ui/select';
+import { roastLevelOptions } from '~/utils/labels';
 export function SelectRoastLevel({
 	placeholder,
 	value,
-	options,
 	portalHost,
 	onChange,
 }: {
@@ -19,7 +18,6 @@ export function SelectRoastLevel({
 	value?: string;
 	portalHost?: string;
 	placeholder?: string;
-	options: RoastLevel[];
 }) {
 	const insets = useSafeAreaInsets();
 	const contentInsets = {
@@ -42,7 +40,7 @@ export function SelectRoastLevel({
 				className="w-[250px]"
 			>
 				<SelectGroup>
-					{options.map(option => (
+					{roastLevelOptions.map(option => (
 						<SelectItem
 							key={option.value}
 							label={option.label}

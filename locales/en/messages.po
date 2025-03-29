@@ -11,5 +11,218 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#~ msgid "MessageID"
-#~ msgstr "Translated Message"
+#: view/com/modals/CreatePostModal.tsx:222
+msgid "<0>Fields marked with <1>*</1> are required</0>"
+msgstr "<0>Fields marked with <1>*</1> are required</0>"
+
+#: view/com/modals/CreatePostModal.tsx:634
+msgid "Are you sure to discard this post?"
+msgstr "Are you sure to discard this post?"
+
+#: view/com/modals/CreatePostModal.tsx:232
+msgid "Bean profile"
+msgstr "Bean profile"
+
+#: view/com/modals/CreatePostModal.tsx:349
+msgid "Beverage weight(g)"
+msgstr "Beverage weight(g)"
+
+#: view/com/modals/CreatePostModal.tsx:450
+msgid "Bloom time"
+msgstr "Bloom time"
+
+#: view/com/modals/CreatePostModal.tsx:362
+msgid "Brew temperature (°C)"
+msgstr "Brew temperature (°C)"
+
+#: view/com/modals/CreatePostModal.tsx:380
+#: utils/labels.tsx:14
+msgid "Brewer"
+msgstr "Brewer"
+
+#: view/com/modals/CreatePostModal.tsx:482
+msgid "Brewing water (ppm)"
+msgstr "Brewing water (ppm)"
+
+#: app/(app)/(stack)/(tabs)/home/index.tsx:230
+msgid "Calendar"
+msgstr "Calendar"
+
+#: view/com/modals/CreatePostModal.tsx:184
+#: view/com/modals/CreatePostModal.tsx:643
+msgid "Cancel"
+msgstr "Cancel"
+
+#: view/com/modals/CreatePostModal.tsx:292
+msgid "Coffee in (g)"
+msgstr "Coffee in (g)"
+
+#: view/com/modals/CreatePostModal.tsx:220
+msgid "Created on"
+msgstr "Created on"
+
+#: utils/labels.tsx:9
+msgid "Dark"
+msgstr "Dark"
+
+#: view/com/modals/CreatePostModal.tsx:639
+msgid "Discard"
+msgstr "Discard"
+
+#: view/com/modals/CreatePostModal.tsx:624
+msgid "Discard post"
+msgstr "Discard post"
+
+#: view/com/modals/CreatePostModal.tsx:632
+msgid "Discard Post"
+msgstr "Discard Post"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:208
+msgid "Elevation (masl)"
+msgstr "Elevation (masl)"
+
+#: utils/labels.tsx:4
+msgid "Extra Light"
+msgstr "Extra Light"
+
+#: view/com/modals/CreatePostModal.tsx:580
+msgid "Extraction Yield (%)"
+msgstr "Extraction Yield (%)"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:196
+msgid "Farm"
+msgstr "Farm"
+
+#: app/(app)/(stack)/(tabs)/home/index.tsx:229
+msgid "Feed"
+msgstr "Feed"
+
+#: view/com/modals/CreatePostModal.tsx:398
+msgid "Filter paper"
+msgstr "Filter paper"
+
+#: utils/labels.tsx:15
+msgid "Filter Paper"
+msgstr "Filter Paper"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:75
+msgid "Finished"
+msgstr "Finished"
+
+#: view/com/modals/CreatePostModal.tsx:531
+msgid "Flavor"
+msgstr "Flavor"
+
+#: view/com/modals/CreatePostModal.tsx:434
+msgid "Grind setting"
+msgstr "Grind setting"
+
+#: view/com/modals/CreatePostModal.tsx:416
+#: utils/labels.tsx:13
+msgid "Grinder"
+msgstr "Grinder"
+
+#: view/com/modals/CreatePostModal.tsx:609
+msgid "Images"
+msgstr "Images"
+
+#: utils/labels.tsx:5
+msgid "Light"
+msgstr "Light"
+
+#: utils/labels.tsx:7
+msgid "Medium"
+msgstr "Medium"
+
+#: utils/labels.tsx:8
+msgid "Medium Dark"
+msgstr "Medium Dark"
+
+#: utils/labels.tsx:6
+msgid "Medium Light"
+msgstr "Medium Light"
+
+#: view/com/modals/CreatePostModal.tsx:206
+msgid "Next"
+msgstr "Next"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:147
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:161
+msgid "No data yet"
+msgstr "No data yet"
+
+#: view/com/modals/CreatePostModal.tsx:515
+msgid "Other tools"
+msgstr "Other tools"
+
+#: view/com/modals/CreatePostModal.tsx:196
+msgid "Post"
+msgstr "Post"
+
+#: view/com/modals/CreatePostModal.tsx:499
+msgid "Preparation"
+msgstr "Preparation"
+
+#: view/com/modals/CreatePostModal.tsx:180
+msgid "Prev"
+msgstr "Prev"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:204
+msgid "Process"
+msgstr "Process"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:192
+msgid "Producer"
+msgstr "Producer"
+
+#: view/com/modals/CreatePostModal.tsx:326
+msgid "Ratio"
+msgstr "Ratio"
+
+#: view/com/modals/CreatePostModal.tsx:259
+msgid "Roast level"
+msgstr "Roast level"
+
+#: view/com/modals/CreatePostModal.tsx:238
+msgid "Select a bean profile"
+msgstr "Select a bean profile"
+
+#: view/com/modals/CreatePostModal.tsx:262
+msgid "Select a roast level"
+msgstr "Select a roast level"
+
+#: view/com/modals/CreatePostModal.tsx:617
+msgid "Select Images"
+msgstr "Select Images"
+
+#: view/com/modals/CreatePostModal.tsx:382
+msgid "Select your brewers"
+msgstr "Select your brewers"
+
+#: view/com/modals/CreatePostModal.tsx:400
+msgid "Select your filter paper"
+msgstr "Select your filter paper"
+
+#: view/com/modals/CreatePostModal.tsx:418
+msgid "Select your grinder"
+msgstr "Select your grinder"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:128
+msgid "Sign In"
+msgstr "Sign In"
+
+#: view/com/modals/CreatePostModal.tsx:547
+msgid "TDS"
+msgstr "TDS"
+
+#: view/com/modals/CreatePostModal.tsx:466
+msgid "Total drawdown time"
+msgstr "Total drawdown time"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:74
+msgid "Unfinished"
+msgstr "Unfinished"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:200
+msgid "Varietal"
+msgstr "Varietal"
