@@ -15,6 +15,7 @@ export default defineSchema({
 		roastLevel: v.string(),
 		coffeeIn: v.string(),
 		ratio: v.string(),
+		waterIn: v.optional(v.string()),
 		beanProfile: v.optional(v.id('bean_profiles')),
 		beverageWeight: v.optional(v.string()),
 		brewTemperature: v.string(),

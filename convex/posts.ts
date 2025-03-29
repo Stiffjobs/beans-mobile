@@ -10,7 +10,7 @@ export const createPost = mutation({
 		roastLevel: v.string(),
 		coffeeIn: v.string(),
 		ratio: v.string(),
-		beverageWeight: v.string(),
+		beverageWeight: v.optional(v.string()),
 		brewTemperature: v.string(),
 		filterPaperId: v.id('gears'),
 		filterPaper: v.string(),
@@ -79,10 +79,28 @@ export const list = query({
 		const postWithBeanProfile = await Promise.all(
 			posts.map(async post => {
 				let beanProfile = null;
+				let filterPaperDetails = null;
+				let grinderDetails = null;
+				let brewerDetails = null;
 				if (post.beanProfile) {
 					beanProfile = await ctx.db.get(post.beanProfile);
 				}
-				return { ...post, beanProfile };
+				if (post.filterPaperId) {
+					filterPaperDetails = await ctx.db.get(post.filterPaperId);
+				}
+				if (post.grinderId) {
+					grinderDetails = await ctx.db.get(post.grinderId);
+				}
+				if (post.brewerId) {
+					brewerDetails = await ctx.db.get(post.brewerId);
+				}
+				return {
+					...post,
+					beanProfile,
+					filterPaperDetails,
+					grinderDetails,
+					brewerDetails,
+				};
 			})
 		);
 
@@ -230,7 +248,7 @@ export const updatePost = mutation({
 		roastLevel: v.string(),
 		coffeeIn: v.string(),
 		ratio: v.string(),
-		beverageWeight: v.string(),
+		beverageWeight: v.optional(v.string()),
 		brewTemperature: v.string(),
 		filterPaperId: v.id('gears'),
 		filterPaper: v.string(),

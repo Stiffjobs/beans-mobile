@@ -18,7 +18,7 @@ export interface BrewingData {
 	roastLevel: string;
 	coffeeIn: string;
 	ratio: string;
-	beverageWeight: string;
+	beverageWeight?: string;
 	brewTemperature: string;
 	filterPaper: string;
 	grinder: string;
