@@ -28,6 +28,7 @@ import { Muted } from '~/components/ui/typography';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Link } from 'expo-router';
 import { Button } from '~/components/ui/button';
+import { t } from '@lingui/core/macro';
 
 const renderTabBar = (
 	props: SceneRendererProps & {
@@ -70,8 +71,8 @@ export default function Beans() {
 		setRefreshing(false);
 	}, [fetchListBeanProfiles]);
 	const routes = [
-		{ key: 'unfinished', title: 'Unfinished' },
-		{ key: 'finished', title: 'Finished' },
+		{ key: 'unfinished', title: t`Unfinished` },
+		{ key: 'finished', title: t`Finished` },
 	];
 	const [index, setIndex] = useState(0);
 	const layout = useWindowDimensions();
@@ -124,7 +125,7 @@ export default function Beans() {
 			<Unauthenticated>
 				<Link asChild href={'/signin'}>
 					<Button>
-						<Text>Sign In</Text>
+						<Text>{t`Sign In`}</Text>
 					</Button>
 				</Link>
 			</Unauthenticated>
@@ -143,7 +144,7 @@ function UnFinishedBeanProfiles({ data, refreshing, handlePTR }: ScreenProps) {
 			ItemSeparatorComponent={() => <View className="h-2" />}
 			data={data}
 			ListEmptyComponent={() => (
-				<Muted className="text-center">No data yet</Muted>
+				<Muted className="text-center">{t`No data yet`}</Muted>
 			)}
 			renderItem={({ item }) => <BeanProfileCard {...item} />}
 		/>
@@ -157,7 +158,7 @@ function FinishedBeanProfiles({ data, refreshing, handlePTR }: ScreenProps) {
 			}
 			estimatedItemSize={200}
 			ListEmptyComponent={() => (
-				<Muted className="text-center">No data yet</Muted>
+				<Muted className="text-center">{t`No data yet`}</Muted>
 			)}
 			ItemSeparatorComponent={() => <View className="h-2" />}
 			contentContainerClassName="pt-6"
@@ -188,23 +189,23 @@ function BeanProfileCard(profile: BeanProfileProps) {
 
 				<CardContent className="py-1 gap-2">
 					<View className="flex-row justify-between">
-						<Text className="text-muted-foreground">Producer</Text>
+						<Text className="text-muted-foreground">{t`Producer`}</Text>
 						<Text className="text-foreground">{profile.producer}</Text>
 					</View>
 					<View className="flex-row justify-between">
-						<Text className="text-muted-foreground">Farm</Text>
+						<Text className="text-muted-foreground">{t`Farm`}</Text>
 						<Text className="text-foreground">{profile.farm}</Text>
 					</View>
 					<View className="flex-row justify-between">
-						<Text className="text-muted-foreground">Varietal</Text>
+						<Text className="text-muted-foreground">{t`Varietal`}</Text>
 						<Text className="text-foreground">{profile.variety}</Text>
 					</View>
 					<View className="flex-row justify-between">
-						<Text className="text-muted-foreground">Process</Text>
+						<Text className="text-muted-foreground">{t`Process`}</Text>
 						<Text className="text-foreground">{profile.process}</Text>
 					</View>
 					<View className="flex-row justify-between">
-						<Text className="text-muted-foreground">Elevation (masl)</Text>
+						<Text className="text-muted-foreground">{t`Elevation (masl)`}</Text>
 						<Text className="text-foreground">{profile.elevation}</Text>
 					</View>
 				</CardContent>
