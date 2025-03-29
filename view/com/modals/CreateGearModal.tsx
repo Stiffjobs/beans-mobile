@@ -26,6 +26,7 @@ import { useCreateGear } from '~/state/queries/gears';
 import { useCallback } from 'react';
 import { ErrorMessage } from '~/components/ErrorMessage';
 import { X } from '~/lib/icons';
+import { gearTypeOptions } from '~/utils/labels';
 
 export const snapPoints = ['fullscreen'];
 const SELECT_PORTAL_HOST = 'select-gear-portal';
@@ -85,9 +86,9 @@ export function Component() {
 										</SelectTrigger>
 										<SelectContent portalHost={SELECT_PORTAL_HOST}>
 											<SelectGroup>
-												{Object.entries(GEAR_TYPE).map(([key, value]) => (
-													<SelectItem key={key} value={value} label={key}>
-														{key}
+												{gearTypeOptions.map(({ label, value }) => (
+													<SelectItem key={value} value={value} label={label}>
+														{label}
 													</SelectItem>
 												))}
 											</SelectGroup>
