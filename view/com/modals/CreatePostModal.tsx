@@ -49,6 +49,8 @@ import { useListBeanProfiles } from '~/state/queries/bean_profiles';
 import { ChevronDown } from '~/lib/icons/ChevronDown';
 import { ImagePlus } from '~/lib/icons/ImagePlus';
 import { X } from '~/lib/icons';
+import { t } from '@lingui/core/macro';
+import { Trans } from '@lingui/react/macro';
 
 const CUSTOM_PORTAL_HOST_NAME = 'modal-select';
 const CUSTOM_PORTAL_DIALOG = 'dialog';
@@ -66,6 +68,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			beanProfile: '' as Id<'bean_profiles'>,
 			beverageWeight: '',
 			brewTemperature: '',
+			waterIn: '',
 			filterPaper: '',
 			filterPaperId: '' as Id<'gears'>,
 			grinder: '',
@@ -175,11 +178,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			<View className="flex flex-row justify-between p-4 items-center  bg-background">
 				{isSecondPage ? (
 					<Button onPress={() => handleScrollPage(0)} size="sm" variant="ghost">
-						<Text>Prev</Text>
+						<Text>{t`Prev`}</Text>
 					</Button>
 				) : (
 					<Button onPress={closeModal} variant={'ghost'} size="sm">
-						<Text className="text-destructive">Cancel</Text>
+						<Text className="text-destructive">{t`Cancel`}</Text>
 					</Button>
 				)}
 				<Text>{activePage + 1} / 2</Text>
@@ -191,7 +194,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								onPress={() => form.handleSubmit()}
 								size="sm"
 							>
-								<Text>Post</Text>
+								<Text>{t`Post`}</Text>
 							</Button>
 						)}
 					</form.Subscribe>
@@ -201,7 +204,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						variant={'secondary'}
 						onPress={() => handleScrollPage(1)}
 					>
-						<Text>Next</Text>
+						<Text>{t`Next`}</Text>
 					</Button>
 				)}
 			</View>
@@ -215,23 +218,25 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			>
 				<KeyboardAwareScrollView key={1}>
 					<View className="flex-1 px-10 mt-6 mb-20 gap-2">
-						<Label>Created on</Label>
+						<Label>{t`Created on`}</Label>
 						<H4>{selectedDate}</H4>
-						<Text className="text-sm text-muted-foreground mb-2">
-							Fields marked with <Text className="text-destructive">*</Text> are
-							required
-						</Text>
+						<Trans>
+							<Text className="text-sm text-muted-foreground mb-2">
+								Fields marked with <Text className="text-destructive">*</Text>{' '}
+								are required
+							</Text>
+						</Trans>
 						<form.Field name="beanProfile">
 							{field => {
 								return (
 									<>
-										<RequiredLabel>Bean profile</RequiredLabel>
+										<RequiredLabel>{t`Bean profile`}</RequiredLabel>
 										<Pressable onPressIn={onOpenBeanProfileListDialog}>
 											<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 												<Text className="native:text-lg text-sm text-foreground">
 													{fetchBeanProfiles?.data?.find(
 														e => e._id === field.state.value
-													)?.origin ?? 'Select a bean profile'}
+													)?.origin ?? t`Select a bean profile`}
 												</Text>
 												<ChevronDown
 													size={16}
@@ -252,14 +257,10 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="roastLevel">
 							{field => (
 								<>
-									<RequiredLabel>Roast level</RequiredLabel>
+									<RequiredLabel>{t`Roast level`}</RequiredLabel>
 									<SelectRoastLevel
 										portalHost={CUSTOM_PORTAL_HOST_NAME}
-										placeholder="Select a roast level"
-										options={Object.values(RoastLevelEnum).map(value => ({
-											label: value,
-											value: value,
-										}))}
+										placeholder={t`Select a roast level`}
 										onChange={field.handleChange}
 									/>
 									<ErrorMessage
@@ -278,22 +279,18 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										const ratio = parseFloat(form.getFieldValue('ratio'));
 										const coffeeIn = parseFloat(e.value);
 										if (!coffeeIn) return;
-										const beverageWeight = coffeeIn * ratio;
-										if (isNaN(beverageWeight)) return;
-										form.setFieldValue(
-											'beverageWeight',
-											beverageWeight.toString()
-										);
+										const waterIn = coffeeIn * ratio;
+										if (isNaN(waterIn)) return;
+										form.setFieldValue('waterIn', waterIn.toString());
 									},
 								}}
 							>
 								{field => (
 									<View className="flex-1">
-										<RequiredLabel>Coffee in (g)</RequiredLabel>
+										<RequiredLabel>{t`Coffee in (g)`}</RequiredLabel>
 										<Input
 											numberOfLines={1}
 											value={field.state.value}
-											keyboardType="number-pad"
 											onChangeText={field.handleChange}
 										/>
 										<ErrorMessage
@@ -312,21 +309,17 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										const coffeeIn = parseFloat(form.getFieldValue('coffeeIn'));
 										const ratio = parseFloat(e.value);
 										if (!coffeeIn) return;
-										const beverageWeight = coffeeIn * ratio;
-										if (isNaN(beverageWeight)) return;
-										form.setFieldValue(
-											'beverageWeight',
-											beverageWeight.toString()
-										);
+										const waterIn = coffeeIn * ratio;
+										if (isNaN(waterIn)) return;
+										form.setFieldValue('waterIn', waterIn.toString());
 									},
 								}}
 							>
 								{field => (
 									<View className="flex-1">
-										<RequiredLabel>Ratio</RequiredLabel>
+										<RequiredLabel>{t`Ratio`}</RequiredLabel>
 										<Input
 											numberOfLines={1}
-											keyboardType="number-pad"
 											value={field.state.value}
 											onChangeText={field.handleChange}
 										/>
@@ -343,23 +336,40 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							selector={state => [state.values.coffeeIn, state.values.ratio]}
 						>
 							{([coffeeIn, ratio]) => {
-								const beverageWeight = parseFloat(coffeeIn) * parseFloat(ratio);
+								const waterIn = parseFloat(coffeeIn) * parseFloat(ratio);
 								return (
 									<>
-										<Label>Beverage weight(g)</Label>
+										<Label>{t`Water in (g)`}</Label>
 										<Input
 											editable={false}
 											editableShowPrimary
-											value={beverageWeight ? beverageWeight.toString() : ''}
+											value={waterIn ? waterIn.toFixed(2).toString() : ''}
 										/>
 									</>
 								);
 							}}
 						</form.Subscribe>
+						<form.Field name="beverageWeight">
+							{field => (
+								<>
+									<Label>{t`Beverage weight (g)`}</Label>
+									<Input
+										numberOfLines={1}
+										value={field.state.value}
+										onChangeText={field.handleChange}
+									/>
+									<ErrorMessage
+										message={field.state.meta.errors
+											.map(e => e?.message)
+											.join(', ')}
+									/>
+								</>
+							)}
+						</form.Field>
 						<form.Field name="brewTemperature">
 							{field => (
 								<>
-									<RequiredLabel>Brew temperature (°C)</RequiredLabel>
+									<RequiredLabel>{t`Brew temperature (°C)`}</RequiredLabel>
 									<Input
 										numberOfLines={1}
 										value={field.state.value}
@@ -377,9 +387,9 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="brewerId">
 							{field => (
 								<>
-									<RequiredLabel>Brewer</RequiredLabel>
+									<RequiredLabel>{t`Brewer`}</RequiredLabel>
 									<SelectComponent
-										placeholder="Select your brewers"
+										placeholder={t`Select your brewers`}
 										portalHost={CUSTOM_PORTAL_HOST_NAME}
 										onChange={field.handleChange}
 										options={brewers}
@@ -395,9 +405,9 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="filterPaperId">
 							{field => (
 								<>
-									<RequiredLabel>Filter paper</RequiredLabel>
+									<RequiredLabel>{t`Filter paper`}</RequiredLabel>
 									<SelectComponent
-										placeholder="Select your filter paper"
+										placeholder={t`Select your filter paper`}
 										portalHost={CUSTOM_PORTAL_HOST_NAME}
 										options={filterPapers}
 										onChange={field.handleChange}
@@ -413,9 +423,9 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="grinderId">
 							{field => (
 								<>
-									<RequiredLabel>Grinder</RequiredLabel>
+									<RequiredLabel>{t`Grinder`}</RequiredLabel>
 									<SelectComponent
-										placeholder="Select your grinder"
+										placeholder={t`Select your grinder`}
 										portalHost={CUSTOM_PORTAL_HOST_NAME}
 										options={grinders}
 										onChange={field.handleChange}
@@ -431,7 +441,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="grindSetting">
 							{field => (
 								<>
-									<RequiredLabel>Grind setting</RequiredLabel>
+									<RequiredLabel>{t`Grind setting`}</RequiredLabel>
 									<Input
 										value={field.state.value}
 										onChangeText={field.handleChange}
@@ -447,7 +457,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="bloomTime">
 							{field => (
 								<>
-									<RequiredLabel>Bloom time</RequiredLabel>
+									<RequiredLabel>{t`Bloom time`}</RequiredLabel>
 									<TimeMaskInput
 										value={field.state.value}
 										onChange={field.handleChange}
@@ -463,7 +473,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="totalDrawdownTime">
 							{field => (
 								<>
-									<RequiredLabel>Total drawdown time</RequiredLabel>
+									<RequiredLabel>{t`Total drawdown time`}</RequiredLabel>
 									<TimeMaskInput
 										value={field.state.value}
 										onChange={field.handleChange}
@@ -479,7 +489,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="brewingWater">
 							{field => (
 								<>
-									<Label>Brewing water (ppm)</Label>
+									<Label>{t`Brewing water (ppm)`}</Label>
 									<Input
 										numberOfLines={1}
 										value={field.state.value}
@@ -496,7 +506,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="methodName">
 							{field => (
 								<>
-									<Label>Preparation</Label>
+									<Label>{t`Preparation`}</Label>
 									<Input
 										value={field.state.value}
 										onChangeText={field.handleChange}
@@ -512,7 +522,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="otherTools">
 							{field => (
 								<>
-									<Label>Other tools</Label>
+									<Label>{t`Other tools`}</Label>
 									<Input
 										value={field.state.value}
 										onChangeText={field.handleChange}
@@ -528,7 +538,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="flavor">
 							{field => (
 								<>
-									<Label>Flavor</Label>
+									<Label>{t`Flavor`}</Label>
 									<Input
 										value={field.state.value}
 										onChangeText={field.handleChange}
@@ -544,7 +554,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="tds">
 							{field => (
 								<>
-									<Label>TDS</Label>
+									<Label>{t`TDS`}</Label>
 									<Slider
 										minimumValue={1.0}
 										maximumValue={2.0}
@@ -577,7 +587,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<form.Field name="ey">
 							{field => (
 								<>
-									<Label>Extraction Yield (%)</Label>
+									<Label>{t`Extraction Yield (%)`}</Label>
 									<H4>{field.state.value?.toFixed(2)}%</H4>
 									<ErrorMessage
 										message={field.state.meta.errors
@@ -606,7 +616,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								</>
 							)}
 						</form.Field>
-						<Label>Images</Label>
+						<Label>{t`Images`}</Label>
 						<Gallery
 							dispatch={dispatch}
 							images={state.embed?.media?.images ?? []}
@@ -614,14 +624,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						<Button variant={'outline'} onPress={onOpenLibrary}>
 							<View className="flex-row items-center gap-2">
 								<ImagePlus className="text-primary size-6" />
-								<Text>Select Images</Text>
+								<Text>{t`Select Images`}</Text>
 							</View>
 						</Button>
 						<View className="h-5" />
 						<Dialog>
 							<DialogTrigger asChild>
 								<Button variant="destructive">
-									<Text>Discard post</Text>
+									<Text>{t`Discard post`}</Text>
 								</Button>
 							</DialogTrigger>
 							<DialogContent
@@ -629,18 +639,18 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								className="sm:max-w-[425px]"
 							>
 								<DialogHeader>
-									<DialogTitle>Discard Post</DialogTitle>
+									<DialogTitle>{t`Discard Post`}</DialogTitle>
 									<DialogDescription>
-										Are you sure to discard this post?
+										{t`Are you sure to discard this post?`}
 									</DialogDescription>
 								</DialogHeader>
 								<DialogFooter>
 									<Button onPress={closeModal} variant="destructive">
-										<Text>Discard</Text>
+										<Text>{t`Discard`}</Text>
 									</Button>
 									<DialogClose asChild>
 										<Button>
-											<Text>Cancel</Text>
+											<Text>{t`Cancel`}</Text>
 										</Button>
 									</DialogClose>
 								</DialogFooter>
