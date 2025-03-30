@@ -28,7 +28,7 @@ export const list = query({
 			.query('gears')
 			.withIndex('by_owner', q => q.eq('owner', user._id))
 			.collect();
-		return gears;
+		return gears.sort((a, b) => a.name.localeCompare(b.name));
 	},
 });
 
