@@ -85,6 +85,11 @@ msgstr "Discard Post"
 msgid "Elevation (masl)"
 msgstr "Elevation (masl)"
 
+#. placeholder {0}: error.message
+#: state/queries/gears/index.ts:32
+msgid "Error: {0}"
+msgstr "Error: {0}"
+
 #: utils/labels.tsx:5
 msgid "Extra Light"
 msgstr "Extra Light"
@@ -150,6 +155,7 @@ msgstr "Medium Light"
 msgid "Next"
 msgstr "Next"
 
+#: components/BeanProfileListDialog/index.tsx:44
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:147
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:161
 msgid "No data yet"

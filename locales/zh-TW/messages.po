@@ -87,6 +87,11 @@ msgstr "捨棄貼文"
 msgid "Elevation (masl)"
 msgstr ""
 
+#. placeholder {0}: error.message
+#: state/queries/gears/index.ts:32
+msgid "Error: {0}"
+msgstr ""
+
 #: utils/labels.tsx:5
 msgid "Extra Light"
 msgstr "極淺焙"
@@ -152,6 +157,7 @@ msgstr "中淺焙"
 msgid "Next"
 msgstr "下一步"
 
+#: components/BeanProfileListDialog/index.tsx:44
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:147
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:161
 msgid "No data yet"
