@@ -13,19 +13,19 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: view/com/modals/CreatePostModal.tsx:223
+#: view/com/modals/CreatePostModal.tsx:225
 msgid "<0>Fields marked with <1>*</1> are required</0>"
 msgstr "<0>標示 <1>*</1> 為必填欄位</0>"
 
-#: view/com/modals/CreatePostModal.tsx:644
+#: view/com/modals/CreatePostModal.tsx:652
 msgid "Are you sure to discard this post?"
 msgstr "確定要捨棄這篇貼文嗎？"
 
-#: view/com/modals/CreatePostModal.tsx:233
+#: view/com/modals/CreatePostModal.tsx:235
 msgid "Bean profile"
 msgstr "咖啡豆資訊"
 
-#: view/com/modals/CreatePostModal.tsx:355
+#: view/com/modals/CreatePostModal.tsx:363
 msgid "Beverage weight (g)"
 msgstr ""
 
@@ -33,20 +33,20 @@ msgstr ""
 #~ msgid "Beverage weight(g)"
 #~ msgstr "咖啡液重(g)"
 
-#: view/com/modals/CreatePostModal.tsx:460
+#: view/com/modals/CreatePostModal.tsx:468
 msgid "Bloom time"
 msgstr "悶蒸時間"
 
-#: view/com/modals/CreatePostModal.tsx:372
+#: view/com/modals/CreatePostModal.tsx:380
 msgid "Brew temperature (°C)"
 msgstr "沖煮溫度 (°C)"
 
-#: view/com/modals/CreatePostModal.tsx:390
-#: utils/labels.tsx:14
+#: view/com/modals/CreatePostModal.tsx:398
+#: utils/labels.tsx:17
 msgid "Brewer"
 msgstr "濾杯"
 
-#: view/com/modals/CreatePostModal.tsx:492
+#: view/com/modals/CreatePostModal.tsx:500
 msgid "Brewing water (ppm)"
 msgstr "沖煮水質 (ppm)"
 
@@ -54,32 +54,32 @@ msgstr "沖煮水質 (ppm)"
 msgid "Calendar"
 msgstr "紀錄"
 
-#: view/com/modals/CreatePostModal.tsx:185
-#: view/com/modals/CreatePostModal.tsx:653
+#: view/com/modals/CreatePostModal.tsx:187
+#: view/com/modals/CreatePostModal.tsx:661
 msgid "Cancel"
 msgstr "取消"
 
-#: view/com/modals/CreatePostModal.tsx:290
+#: view/com/modals/CreatePostModal.tsx:292
 msgid "Coffee in (g)"
 msgstr "咖啡粉重(g)"
 
-#: view/com/modals/CreatePostModal.tsx:221
+#: view/com/modals/CreatePostModal.tsx:223
 msgid "Created on"
 msgstr ""
 
-#: utils/labels.tsx:9
+#: utils/labels.tsx:10
 msgid "Dark"
 msgstr "深焙"
 
-#: view/com/modals/CreatePostModal.tsx:649
+#: view/com/modals/CreatePostModal.tsx:657
 msgid "Discard"
 msgstr "捨棄"
 
-#: view/com/modals/CreatePostModal.tsx:634
+#: view/com/modals/CreatePostModal.tsx:642
 msgid "Discard post"
 msgstr "捨棄貼文"
 
-#: view/com/modals/CreatePostModal.tsx:642
+#: view/com/modals/CreatePostModal.tsx:650
 msgid "Discard Post"
 msgstr "捨棄貼文"
 
@@ -87,11 +87,11 @@ msgstr "捨棄貼文"
 msgid "Elevation (masl)"
 msgstr ""
 
-#: utils/labels.tsx:4
+#: utils/labels.tsx:5
 msgid "Extra Light"
 msgstr "極淺焙"
 
-#: view/com/modals/CreatePostModal.tsx:590
+#: view/com/modals/CreatePostModal.tsx:598
 msgid "Extraction Yield (%)"
 msgstr "萃取率 (%)"
 
@@ -103,11 +103,11 @@ msgstr ""
 msgid "Feed"
 msgstr "動態"
 
-#: view/com/modals/CreatePostModal.tsx:408
+#: view/com/modals/CreatePostModal.tsx:416
 msgid "Filter paper"
 msgstr "濾紙"
 
-#: utils/labels.tsx:15
+#: utils/labels.tsx:18
 msgid "Filter Paper"
 msgstr "濾紙"
 
@@ -115,40 +115,40 @@ msgstr "濾紙"
 msgid "Finished"
 msgstr ""
 
-#: view/com/modals/CreatePostModal.tsx:541
+#: view/com/modals/CreatePostModal.tsx:549
 msgid "Flavor"
 msgstr "風味"
 
-#: view/com/modals/CreatePostModal.tsx:444
+#: view/com/modals/CreatePostModal.tsx:452
 msgid "Grind setting"
 msgstr "研磨刻度"
 
-#: view/com/modals/CreatePostModal.tsx:426
-#: utils/labels.tsx:13
+#: view/com/modals/CreatePostModal.tsx:434
+#: utils/labels.tsx:16
 msgid "Grinder"
 msgstr "磨豆機"
 
-#: view/com/modals/CreatePostModal.tsx:619
+#: view/com/modals/CreatePostModal.tsx:627
 msgid "Images"
 msgstr "照片"
 
-#: utils/labels.tsx:5
+#: utils/labels.tsx:6
 msgid "Light"
 msgstr "淺焙"
 
-#: utils/labels.tsx:7
+#: utils/labels.tsx:8
 msgid "Medium"
 msgstr "中焙"
 
-#: utils/labels.tsx:8
+#: utils/labels.tsx:9
 msgid "Medium Dark"
 msgstr "中深焙"
 
-#: utils/labels.tsx:6
+#: utils/labels.tsx:7
 msgid "Medium Light"
 msgstr "中淺焙"
 
-#: view/com/modals/CreatePostModal.tsx:207
+#: view/com/modals/CreatePostModal.tsx:209
 msgid "Next"
 msgstr "下一步"
 
@@ -157,19 +157,19 @@ msgstr "下一步"
 msgid "No data yet"
 msgstr ""
 
-#: view/com/modals/CreatePostModal.tsx:525
+#: view/com/modals/CreatePostModal.tsx:533
 msgid "Other tools"
 msgstr "其他器具"
 
-#: view/com/modals/CreatePostModal.tsx:197
+#: view/com/modals/CreatePostModal.tsx:199
 msgid "Post"
 msgstr "發布"
 
-#: view/com/modals/CreatePostModal.tsx:509
+#: view/com/modals/CreatePostModal.tsx:517
 msgid "Preparation"
 msgstr "準備工作"
 
-#: view/com/modals/CreatePostModal.tsx:181
+#: view/com/modals/CreatePostModal.tsx:183
 msgid "Prev"
 msgstr "上一步"
 
@@ -181,35 +181,35 @@ msgstr ""
 msgid "Producer"
 msgstr ""
 
-#: view/com/modals/CreatePostModal.tsx:320
+#: view/com/modals/CreatePostModal.tsx:323
 msgid "Ratio"
 msgstr "比例"
 
-#: view/com/modals/CreatePostModal.tsx:260
+#: view/com/modals/CreatePostModal.tsx:262
 msgid "Roast level"
 msgstr "烘焙度"
 
-#: view/com/modals/CreatePostModal.tsx:239
+#: view/com/modals/CreatePostModal.tsx:241
 msgid "Select a bean profile"
 msgstr "選擇咖啡豆"
 
-#: view/com/modals/CreatePostModal.tsx:263
+#: view/com/modals/CreatePostModal.tsx:265
 msgid "Select a roast level"
 msgstr "選擇烘焙度"
 
-#: view/com/modals/CreatePostModal.tsx:627
+#: view/com/modals/CreatePostModal.tsx:635
 msgid "Select Images"
 msgstr "選擇照片"
 
-#: view/com/modals/CreatePostModal.tsx:392
+#: view/com/modals/CreatePostModal.tsx:400
 msgid "Select your brewers"
 msgstr "選擇沖煮器具"
 
-#: view/com/modals/CreatePostModal.tsx:410
+#: view/com/modals/CreatePostModal.tsx:418
 msgid "Select your filter paper"
 msgstr "選擇濾紙"
 
-#: view/com/modals/CreatePostModal.tsx:428
+#: view/com/modals/CreatePostModal.tsx:436
 msgid "Select your grinder"
 msgstr "選擇磨豆機"
 
@@ -217,11 +217,11 @@ msgstr "選擇磨豆機"
 msgid "Sign In"
 msgstr ""
 
-#: view/com/modals/CreatePostModal.tsx:557
+#: view/com/modals/CreatePostModal.tsx:565
 msgid "TDS"
 msgstr "萃取濃度"
 
-#: view/com/modals/CreatePostModal.tsx:476
+#: view/com/modals/CreatePostModal.tsx:484
 msgid "Total drawdown time"
 msgstr "總沖煮時間"
 
@@ -233,6 +233,6 @@ msgstr ""
 msgid "Varietal"
 msgstr ""
 
-#: view/com/modals/CreatePostModal.tsx:342
+#: view/com/modals/CreatePostModal.tsx:350
 msgid "Water in (g)"
 msgstr ""

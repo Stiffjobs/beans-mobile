@@ -11,19 +11,19 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#: view/com/modals/CreatePostModal.tsx:223
+#: view/com/modals/CreatePostModal.tsx:225
 msgid "<0>Fields marked with <1>*</1> are required</0>"
 msgstr "<0>Fields marked with <1>*</1> are required</0>"
 
-#: view/com/modals/CreatePostModal.tsx:644
+#: view/com/modals/CreatePostModal.tsx:652
 msgid "Are you sure to discard this post?"
 msgstr "Are you sure to discard this post?"
 
-#: view/com/modals/CreatePostModal.tsx:233
+#: view/com/modals/CreatePostModal.tsx:235
 msgid "Bean profile"
 msgstr "Bean profile"
 
-#: view/com/modals/CreatePostModal.tsx:355
+#: view/com/modals/CreatePostModal.tsx:363
 msgid "Beverage weight (g)"
 msgstr "Beverage weight (g)"
 
@@ -31,20 +31,20 @@ msgstr "Beverage weight (g)"
 #~ msgid "Beverage weight(g)"
 #~ msgstr "Beverage weight(g)"
 
-#: view/com/modals/CreatePostModal.tsx:460
+#: view/com/modals/CreatePostModal.tsx:468
 msgid "Bloom time"
 msgstr "Bloom time"
 
-#: view/com/modals/CreatePostModal.tsx:372
+#: view/com/modals/CreatePostModal.tsx:380
 msgid "Brew temperature (°C)"
 msgstr "Brew temperature (°C)"
 
-#: view/com/modals/CreatePostModal.tsx:390
-#: utils/labels.tsx:14
+#: view/com/modals/CreatePostModal.tsx:398
+#: utils/labels.tsx:17
 msgid "Brewer"
 msgstr "Brewer"
 
-#: view/com/modals/CreatePostModal.tsx:492
+#: view/com/modals/CreatePostModal.tsx:500
 msgid "Brewing water (ppm)"
 msgstr "Brewing water (ppm)"
 
@@ -52,32 +52,32 @@ msgstr "Brewing water (ppm)"
 msgid "Calendar"
 msgstr "Calendar"
 
-#: view/com/modals/CreatePostModal.tsx:185
-#: view/com/modals/CreatePostModal.tsx:653
+#: view/com/modals/CreatePostModal.tsx:187
+#: view/com/modals/CreatePostModal.tsx:661
 msgid "Cancel"
 msgstr "Cancel"
 
-#: view/com/modals/CreatePostModal.tsx:290
+#: view/com/modals/CreatePostModal.tsx:292
 msgid "Coffee in (g)"
 msgstr "Coffee in (g)"
 
-#: view/com/modals/CreatePostModal.tsx:221
+#: view/com/modals/CreatePostModal.tsx:223
 msgid "Created on"
 msgstr "Created on"
 
-#: utils/labels.tsx:9
+#: utils/labels.tsx:10
 msgid "Dark"
 msgstr "Dark"
 
-#: view/com/modals/CreatePostModal.tsx:649
+#: view/com/modals/CreatePostModal.tsx:657
 msgid "Discard"
 msgstr "Discard"
 
-#: view/com/modals/CreatePostModal.tsx:634
+#: view/com/modals/CreatePostModal.tsx:642
 msgid "Discard post"
 msgstr "Discard post"
 
-#: view/com/modals/CreatePostModal.tsx:642
+#: view/com/modals/CreatePostModal.tsx:650
 msgid "Discard Post"
 msgstr "Discard Post"
 
@@ -85,11 +85,11 @@ msgstr "Discard Post"
 msgid "Elevation (masl)"
 msgstr "Elevation (masl)"
 
-#: utils/labels.tsx:4
+#: utils/labels.tsx:5
 msgid "Extra Light"
 msgstr "Extra Light"
 
-#: view/com/modals/CreatePostModal.tsx:590
+#: view/com/modals/CreatePostModal.tsx:598
 msgid "Extraction Yield (%)"
 msgstr "Extraction Yield (%)"
 
@@ -101,11 +101,11 @@ msgstr "Farm"
 msgid "Feed"
 msgstr "Feed"
 
-#: view/com/modals/CreatePostModal.tsx:408
+#: view/com/modals/CreatePostModal.tsx:416
 msgid "Filter paper"
 msgstr "Filter paper"
 
-#: utils/labels.tsx:15
+#: utils/labels.tsx:18
 msgid "Filter Paper"
 msgstr "Filter Paper"
 
@@ -113,40 +113,40 @@ msgstr "Filter Paper"
 msgid "Finished"
 msgstr "Finished"
 
-#: view/com/modals/CreatePostModal.tsx:541
+#: view/com/modals/CreatePostModal.tsx:549
 msgid "Flavor"
 msgstr "Flavor"
 
-#: view/com/modals/CreatePostModal.tsx:444
+#: view/com/modals/CreatePostModal.tsx:452
 msgid "Grind setting"
 msgstr "Grind setting"
 
-#: view/com/modals/CreatePostModal.tsx:426
-#: utils/labels.tsx:13
+#: view/com/modals/CreatePostModal.tsx:434
+#: utils/labels.tsx:16
 msgid "Grinder"
 msgstr "Grinder"
 
-#: view/com/modals/CreatePostModal.tsx:619
+#: view/com/modals/CreatePostModal.tsx:627
 msgid "Images"
 msgstr "Images"
 
-#: utils/labels.tsx:5
+#: utils/labels.tsx:6
 msgid "Light"
 msgstr "Light"
 
-#: utils/labels.tsx:7
+#: utils/labels.tsx:8
 msgid "Medium"
 msgstr "Medium"
 
-#: utils/labels.tsx:8
+#: utils/labels.tsx:9
 msgid "Medium Dark"
 msgstr "Medium Dark"
 
-#: utils/labels.tsx:6
+#: utils/labels.tsx:7
 msgid "Medium Light"
 msgstr "Medium Light"
 
-#: view/com/modals/CreatePostModal.tsx:207
+#: view/com/modals/CreatePostModal.tsx:209
 msgid "Next"
 msgstr "Next"
 
@@ -155,19 +155,19 @@ msgstr "Next"
 msgid "No data yet"
 msgstr "No data yet"
 
-#: view/com/modals/CreatePostModal.tsx:525
+#: view/com/modals/CreatePostModal.tsx:533
 msgid "Other tools"
 msgstr "Other tools"
 
-#: view/com/modals/CreatePostModal.tsx:197
+#: view/com/modals/CreatePostModal.tsx:199
 msgid "Post"
 msgstr "Post"
 
-#: view/com/modals/CreatePostModal.tsx:509
+#: view/com/modals/CreatePostModal.tsx:517
 msgid "Preparation"
 msgstr "Preparation"
 
-#: view/com/modals/CreatePostModal.tsx:181
+#: view/com/modals/CreatePostModal.tsx:183
 msgid "Prev"
 msgstr "Prev"
 
@@ -179,35 +179,35 @@ msgstr "Process"
 msgid "Producer"
 msgstr "Producer"
 
-#: view/com/modals/CreatePostModal.tsx:320
+#: view/com/modals/CreatePostModal.tsx:323
 msgid "Ratio"
 msgstr "Ratio"
 
-#: view/com/modals/CreatePostModal.tsx:260
+#: view/com/modals/CreatePostModal.tsx:262
 msgid "Roast level"
 msgstr "Roast level"
 
-#: view/com/modals/CreatePostModal.tsx:239
+#: view/com/modals/CreatePostModal.tsx:241
 msgid "Select a bean profile"
 msgstr "Select a bean profile"
 
-#: view/com/modals/CreatePostModal.tsx:263
+#: view/com/modals/CreatePostModal.tsx:265
 msgid "Select a roast level"
 msgstr "Select a roast level"
 
-#: view/com/modals/CreatePostModal.tsx:627
+#: view/com/modals/CreatePostModal.tsx:635
 msgid "Select Images"
 msgstr "Select Images"
 
-#: view/com/modals/CreatePostModal.tsx:392
+#: view/com/modals/CreatePostModal.tsx:400
 msgid "Select your brewers"
 msgstr "Select your brewers"
 
-#: view/com/modals/CreatePostModal.tsx:410
+#: view/com/modals/CreatePostModal.tsx:418
 msgid "Select your filter paper"
 msgstr "Select your filter paper"
 
-#: view/com/modals/CreatePostModal.tsx:428
+#: view/com/modals/CreatePostModal.tsx:436
 msgid "Select your grinder"
 msgstr "Select your grinder"
 
@@ -215,11 +215,11 @@ msgstr "Select your grinder"
 msgid "Sign In"
 msgstr "Sign In"
 
-#: view/com/modals/CreatePostModal.tsx:557
+#: view/com/modals/CreatePostModal.tsx:565
 msgid "TDS"
 msgstr "TDS"
 
-#: view/com/modals/CreatePostModal.tsx:476
+#: view/com/modals/CreatePostModal.tsx:484
 msgid "Total drawdown time"
 msgstr "Total drawdown time"
 
@@ -231,6 +231,6 @@ msgstr "Unfinished"
 msgid "Varietal"
 msgstr "Varietal"
 
-#: view/com/modals/CreatePostModal.tsx:342
+#: view/com/modals/CreatePostModal.tsx:350
 msgid "Water in (g)"
 msgstr "Water in (g)"

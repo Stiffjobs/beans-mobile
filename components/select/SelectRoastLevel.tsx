@@ -7,7 +7,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '~/components/ui/select';
-import { roastLevelOptions } from '~/utils/labels';
+import { getRoastLevelOptions } from '~/utils/labels';
 export function SelectRoastLevel({
 	placeholder,
 	value,
@@ -40,7 +40,7 @@ export function SelectRoastLevel({
 				className="w-[250px]"
 			>
 				<SelectGroup>
-					{roastLevelOptions.map(option => (
+					{getRoastLevelOptions().map(option => (
 						<SelectItem
 							key={option.value}
 							label={option.label}
