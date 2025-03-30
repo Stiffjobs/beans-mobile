@@ -51,6 +51,8 @@ import { ImagePlus } from '~/lib/icons/ImagePlus';
 import { X } from '~/lib/icons';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import MaskInput from 'react-native-mask-input';
+import { ratioMaskRegex, timeMaskInputClassName } from '~/lib/utils';
 
 const CUSTOM_PORTAL_HOST_NAME = 'modal-select';
 const CUSTOM_PORTAL_DIALOG = 'dialog';
@@ -279,7 +281,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										const ratio = parseFloat(form.getFieldValue('ratio'));
 										const coffeeIn = parseFloat(e.value);
 										if (!coffeeIn) return;
-										const waterIn = coffeeIn * ratio;
+										const waterIn = Math.round(coffeeIn * ratio);
 										if (isNaN(waterIn)) return;
 										form.setFieldValue('waterIn', waterIn.toString());
 									},
@@ -290,6 +292,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										<RequiredLabel>{t`Coffee in (g)`}</RequiredLabel>
 										<Input
 											numberOfLines={1}
+											keyboardType="numeric"
 											value={field.state.value}
 											onChangeText={field.handleChange}
 										/>
@@ -309,7 +312,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										const coffeeIn = parseFloat(form.getFieldValue('coffeeIn'));
 										const ratio = parseFloat(e.value);
 										if (!coffeeIn) return;
-										const waterIn = coffeeIn * ratio;
+										const waterIn = Math.round(coffeeIn * ratio);
 										if (isNaN(waterIn)) return;
 										form.setFieldValue('waterIn', waterIn.toString());
 									},
@@ -318,10 +321,13 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								{field => (
 									<View className="flex-1">
 										<RequiredLabel>{t`Ratio`}</RequiredLabel>
-										<Input
-											numberOfLines={1}
-											value={field.state.value}
+										<MaskInput
 											onChangeText={field.handleChange}
+											value={field.state.value}
+											mask={ratioMaskRegex}
+											placeholder="00.00"
+											keyboardType="numeric"
+											className={timeMaskInputClassName}
 										/>
 										<ErrorMessage
 											message={field.state.meta.errors
@@ -336,14 +342,16 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							selector={state => [state.values.coffeeIn, state.values.ratio]}
 						>
 							{([coffeeIn, ratio]) => {
-								const waterIn = parseFloat(coffeeIn) * parseFloat(ratio);
+								const waterIn = Math.round(
+									parseFloat(coffeeIn) * parseFloat(ratio)
+								);
 								return (
 									<>
 										<Label>{t`Water in (g)`}</Label>
 										<Input
 											editable={false}
 											editableShowPrimary
-											value={waterIn ? waterIn.toFixed(2).toString() : ''}
+											value={waterIn ? waterIn.toString() : ''}
 										/>
 									</>
 								);

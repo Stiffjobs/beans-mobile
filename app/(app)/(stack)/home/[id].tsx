@@ -112,6 +112,7 @@ export default function PostDetailsPage() {
 					<H4>Brewing Parameters</H4>
 					<DetailItem label="Coffee In (g)" value={data?.coffeeIn} />
 					<DetailItem label="Ratio" value={data?.ratio?.replace('/', ':')} />
+					<DetailItem label="Water In (g)" value={data?.waterIn} />
 					<DetailItem
 						label="Beverage Weight (g)"
 						value={data?.beverageWeight}

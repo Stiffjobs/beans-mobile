@@ -14,7 +14,7 @@ import { z } from 'zod';
 import { TimeMaskInput } from '../time/TimeMaskInput';
 import Slider from '@react-native-community/slider';
 import { SelectRoastLevel } from '~/components/select/SelectRoastLevel';
-import { GEAR_TYPE, RoastLevelEnum } from '~/lib/constants';
+import { GEAR_TYPE } from '~/lib/constants';
 import { useModalControls } from '~/state/modals';
 import { Button } from '~/components/ui/button';
 import { WindowOverlay } from '../util/WindowOverlay';
@@ -35,6 +35,8 @@ import { ChevronDown } from '~/lib/icons/ChevronDown';
 import { SelectComponent } from '~/components/select/Select';
 import { useListGears } from '~/state/queries/gears';
 import { X } from '~/lib/icons';
+import MaskInput from 'react-native-mask-input';
+import { ratioMaskRegex, timeMaskInputClassName } from '~/lib/utils';
 
 export const snapPoints = ['fullscreen'];
 type FormFields = z.infer<typeof editPostSchema>;
@@ -212,7 +214,7 @@ export function Component({ id }: { id: string }) {
 										const ratio = parseFloat(form.getFieldValue('ratio'));
 										const coffeeIn = parseFloat(e.value);
 										if (!coffeeIn) return;
-										const waterIn = coffeeIn * ratio;
+										const waterIn = Math.round(coffeeIn * ratio);
 										if (isNaN(waterIn)) return;
 										form.setFieldValue('waterIn', waterIn.toString());
 									},
@@ -224,6 +226,7 @@ export function Component({ id }: { id: string }) {
 										<Input
 											numberOfLines={1}
 											onChangeText={field.handleChange}
+											keyboardType="numeric"
 											value={field.state.value}
 										/>
 										<ErrorMessage
@@ -242,7 +245,7 @@ export function Component({ id }: { id: string }) {
 										const coffeeIn = parseFloat(form.getFieldValue('coffeeIn'));
 										const ratio = parseFloat(e.value);
 										if (!coffeeIn) return;
-										const waterIn = coffeeIn * ratio;
+										const waterIn = Math.round(coffeeIn * ratio);
 										if (isNaN(waterIn)) return;
 										form.setFieldValue('waterIn', waterIn.toString());
 									},
@@ -251,10 +254,13 @@ export function Component({ id }: { id: string }) {
 								{field => (
 									<View className="flex-1">
 										<RequiredLabel>Ratio</RequiredLabel>
-										<Input
-											numberOfLines={1}
+										<MaskInput
 											onChangeText={field.handleChange}
 											value={field.state.value}
+											mask={ratioMaskRegex}
+											placeholder="00.00"
+											keyboardType="numeric"
+											className={timeMaskInputClassName}
 										/>
 										<ErrorMessage
 											message={field.state.meta.errors
@@ -269,14 +275,16 @@ export function Component({ id }: { id: string }) {
 							selector={state => [state.values.coffeeIn, state.values.ratio]}
 						>
 							{([coffeeIn, ratio]) => {
-								const waterIn = parseFloat(coffeeIn) * parseFloat(ratio);
+								const waterIn = Math.round(
+									parseFloat(coffeeIn) * parseFloat(ratio)
+								);
 								return (
 									<>
 										<Label>Water in (g)</Label>
 										<Input
 											editable={false}
 											editableShowPrimary
-											value={waterIn ? waterIn.toFixed(2).toString() : ''}
+											value={waterIn ? waterIn.toString() : ''}
 										/>
 									</>
 								);
