@@ -1,5 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { createPostSchema, editPostSchema } from '~/lib/schemas';
+import {
+	createPostSchema,
+	editPostSchema,
+	likePostSchema,
+	unlikePostSchema,
+} from '~/lib/schemas';
 import { z } from 'zod';
 import {
 	useMutation as useConvexMutation,
@@ -108,3 +113,67 @@ export const useEditPost = ({
 		},
 	});
 };
+
+type LikePostFormFields = z.infer<typeof likePostSchema>;
+export function useLikePost() {
+	const mutation = useConvexMutation(api.posts.likePost).withOptimisticUpdate(
+		(localStore, args) => {
+			const { postId } = args;
+			const hasLiked = localStore.getQuery(api.users.hasLikedPost, {
+				postId: postId as Id<'posts'>,
+			});
+			if (!hasLiked) {
+				localStore.setQuery(
+					api.users.hasLikedPost,
+					{
+						postId: postId as Id<'posts'>,
+					},
+					true
+				);
+			}
+		}
+	);
+	return useMutation({
+		mutationFn: async (values: LikePostFormFields) => {
+			await mutation({
+				postId: values.postId as Id<'posts'>,
+			});
+		},
+		onSuccess: () => {},
+		onError: error => {
+			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
+		},
+	});
+}
+
+type UnlikePostFormFields = z.infer<typeof unlikePostSchema>;
+export function useUnlikePost() {
+	const mutation = useConvexMutation(api.posts.unlikePost).withOptimisticUpdate(
+		(localStore, args) => {
+			const { postId } = args;
+			const hasLiked = localStore.getQuery(api.users.hasLikedPost, {
+				postId: postId as Id<'posts'>,
+			});
+			if (hasLiked) {
+				localStore.setQuery(
+					api.users.hasLikedPost,
+					{
+						postId: postId as Id<'posts'>,
+					},
+					false
+				);
+			}
+		}
+	);
+	return useMutation({
+		mutationFn: async (values: UnlikePostFormFields) => {
+			await mutation({
+				postId: values.postId as Id<'posts'>,
+			});
+		},
+		onSuccess: () => {},
+		onError: error => {
+			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
+		},
+	});
+}

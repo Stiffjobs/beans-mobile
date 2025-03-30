@@ -7,7 +7,26 @@ export default defineSchema({
 		description: v.optional(v.string()),
 		avatar: v.optional(v.id('_storage')),
 		tokenIdentifier: v.string(),
+		followersCount: v.optional(v.number()),
+		followingCount: v.optional(v.number()),
+		postsCount: v.optional(v.number()),
 	}).index('by_token', ['tokenIdentifier']),
+	likes: defineTable({
+		userId: v.id('users'),
+		postId: v.id('posts'),
+		createdAt: v.string(),
+	})
+		.index('by_user', ['userId'])
+		.index('by_post', ['postId'])
+		.index('unique_like', ['userId', 'postId']),
+	follows: defineTable({
+		followerId: v.id('users'),
+		followingId: v.id('users'),
+		createdAt: v.string(),
+	})
+		.index('by_follower', ['followerId'])
+		.index('by_following', ['followingId'])
+		.index('unique_follow', ['followerId', 'followingId']),
 	posts: defineTable({
 		author: v.id('users'),
 		createdDate: v.string(),
@@ -43,6 +62,7 @@ export default defineSchema({
 		flavor: v.optional(v.string()),
 		tds: v.optional(v.number()),
 		ey: v.optional(v.number()),
+		likesCount: v.optional(v.number()),
 	}).index('by_author', ['author']),
 	post_images: defineTable({
 		postId: v.id('posts'),

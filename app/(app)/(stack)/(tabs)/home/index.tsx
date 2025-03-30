@@ -4,6 +4,7 @@ import {
 	View,
 	FlatList,
 	RefreshControl,
+	GestureResponderEvent,
 } from 'react-native';
 import { useModalControls } from '~/state/modals';
 import { Calendar, DateData } from 'react-native-calendars';
@@ -12,7 +13,12 @@ import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Loader } from '~/components/Loader';
-import { useFetchFeed, useListPosts } from '~/state/queries/post';
+import {
+	useFetchFeed,
+	useLikePost,
+	useListPosts,
+	useUnlikePost,
+} from '~/state/queries/post';
 import {
 	Dispatch,
 	SetStateAction,
@@ -44,6 +50,11 @@ import { FAB } from '~/components/FAB';
 import { BrewingData } from '~/lib/types';
 import { timeAgo } from '~/utils/time';
 import { useLingui } from '@lingui/react/macro';
+import { Id } from '~/convex/_generated/dataModel';
+import { Heart } from 'lucide-react-native';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '~/convex/_generated/api';
+import { FeedPost } from '~/convex/types';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -133,34 +144,62 @@ function FeedScreen() {
 					}
 				}}
 				renderItem={({ item }) => {
-					return (
-						<Pressable
-							onPress={() => router.navigate(`/home/${item.post._id}`)}
-						>
-							<View className="p-4 bg-background rounded-md">
-								<View className="flex-row items-center gap-2">
-									<UserAvatar size="sm" avatar={item.author.avatarUrl} />
-									<Text>{item.author?.name}</Text>
-								</View>
-								{item.beanProfile ? (
-									<Text>
-										{`${item.beanProfile.roaster} ${item.beanProfile.origin} ${item.beanProfile.farm} ${item.beanProfile.process} ${item.beanProfile.variety}`}
-									</Text>
-								) : (
-									<Text>{item.post.bean}</Text>
-								)}
-								<Text>{item.brewerDetails?.name ?? item.post.brewer}</Text>
-								<Text className="text-muted-foreground text-right">
-									{timeAgo(item.post._creationTime)}
-								</Text>
-							</View>
-						</Pressable>
-					);
+					return <FeedItem item={item} />;
 				}}
 			/>
 		</View>
 	);
 }
+
+function FeedItem({ item }: { item: FeedPost }) {
+	const hasLiked = useQuery(api.users.hasLikedPost, { postId: item.post._id });
+	const handleLike = useCallback(() => {
+		if (hasLiked) {
+			unlikePost.mutate({ postId: item.post._id });
+		} else {
+			likePost.mutate({ postId: item.post._id });
+		}
+	}, [hasLiked, item.post._id]);
+	const likePost = useLikePost();
+	const unlikePost = useUnlikePost();
+
+	return (
+		<Pressable onPress={() => router.navigate(`/home/${item.post._id}`)}>
+			<View className="p-4 bg-background rounded-md">
+				<View className="flex-row items-center gap-2">
+					<UserAvatar size="sm" avatar={item.author.avatarUrl} />
+					<Text>{item.author?.name}</Text>
+				</View>
+				{item.beanProfile ? (
+					<Text>
+						{`${item.beanProfile.roaster} ${item.beanProfile.origin} ${item.beanProfile.farm} ${item.beanProfile.process} ${item.beanProfile.variety}`}
+					</Text>
+				) : (
+					<Text>{item.post.bean}</Text>
+				)}
+				<Text>{item.brewerDetails?.name ?? item.post.brewer}</Text>
+				<View className="flex-row justify-between items-center">
+					<Pressable onPress={handleLike} hitSlop={8}>
+						<View className="flex-row items-center gap-1">
+							<Heart
+								className={
+									hasLiked
+										? 'text-red-500 fill-red-500'
+										: 'text-muted-foreground fill-background'
+								}
+								size={20}
+							/>
+						</View>
+					</Pressable>
+					<Text className="text-muted-foreground">
+						{timeAgo(item.post._creationTime)}
+					</Text>
+				</View>
+			</View>
+		</Pressable>
+	);
+}
+
 type Route = {
 	key: string;
 	title: string;
@@ -186,6 +225,7 @@ const renderTabBar = (
 		</BlockDrawerGesture>
 	);
 };
+
 export default function HomeScreen() {
 	const { openModal } = useModalControls();
 	const [selectedDate, setSelectedDate] = useState<string>(
@@ -254,6 +294,7 @@ export default function HomeScreen() {
 		</View>
 	);
 }
+
 function BrewingCard({ data }: { data: BrewingData }) {
 	return (
 		<Pressable onPress={() => router.navigate(`/home/${data._id}`)}>

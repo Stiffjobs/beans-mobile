@@ -9,7 +9,7 @@ export interface GearData {
 	settings?: string;
 }
 
-export interface BrewingData {
+export type BrewingData = {
 	_creationTime: number;
 	_id: string;
 	author: string;
@@ -41,7 +41,7 @@ export interface BrewingData {
 	brewerDetails?: BrewerDetails | null;
 	grinderDetails?: GrinderDetails | null;
 	filterPaperDetails?: FilterPaperDetails | null;
-}
+};
 
 export type BrewerDetails = Doc<'gears'>;
 export type GrinderDetails = Doc<'gears'>;

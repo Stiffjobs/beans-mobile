@@ -7,6 +7,7 @@ import {
 import { UserJSON } from '@clerk/backend';
 import { v, Validator } from 'convex/values';
 import { DataModel } from './_generated/dataModel';
+import { Id } from './_generated/dataModel';
 
 export const current = query({
 	args: {},
@@ -122,5 +123,161 @@ export const getAvatarUrl = query({
 			return await ctx.storage.getUrl(user.avatar);
 		}
 		return null;
+	},
+});
+
+export const followUser = mutation({
+	args: {
+		userIdToFollow: v.id('users'),
+	},
+	async handler(ctx, args) {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error('Unauthorized');
+		}
+
+		// Get the current user
+		const user = await ctx.db
+			.query('users')
+			.withIndex('by_token', q =>
+				q.eq('tokenIdentifier', identity.tokenIdentifier)
+			)
+			.first();
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		// Check if already following
+		const existingFollow = await ctx.db
+			.query('follows')
+			.withIndex('unique_follow', q =>
+				q.eq('followerId', user._id).eq('followingId', args.userIdToFollow)
+			)
+			.first();
+
+		if (existingFollow) {
+			throw new Error('Already following');
+		}
+
+		// Create follow relationship
+		await ctx.db.insert('follows', {
+			followerId: user._id,
+			followingId: args.userIdToFollow,
+			createdAt: new Date().toISOString(),
+		});
+
+		// Update follower and following counts
+		await ctx.db.patch(user._id, {
+			followingCount: (user.followingCount ?? 0) + 1,
+		});
+
+		const userToFollow = await ctx.db.get(args.userIdToFollow);
+		if (!userToFollow) {
+			throw new Error('User to follow not found');
+		}
+
+		await ctx.db.patch(args.userIdToFollow, {
+			followersCount: (userToFollow.followersCount ?? 0) + 1,
+		});
+
+		return { success: true };
+	},
+});
+
+export const unfollowUser = mutation({
+	args: {
+		userIdToUnfollow: v.id('users'),
+	},
+	async handler(ctx, args) {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) {
+			throw new Error('Unauthorized');
+		}
+
+		// Get the current user
+		const user = await ctx.db
+			.query('users')
+			.withIndex('by_token', q =>
+				q.eq('tokenIdentifier', identity.tokenIdentifier)
+			)
+			.first();
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		// Find and delete the follow relationship
+		const existingFollow = await ctx.db
+			.query('follows')
+			.withIndex('unique_follow', q =>
+				q.eq('followerId', user._id).eq('followingId', args.userIdToUnfollow)
+			)
+			.first();
+
+		if (!existingFollow) {
+			throw new Error('Not following');
+		}
+
+		await ctx.db.delete(existingFollow._id);
+
+		// Update follower and following counts
+		await ctx.db.patch(user._id, {
+			followingCount: Math.max(0, (user.followingCount ?? 1) - 1),
+		});
+
+		const userToUnfollow = await ctx.db.get(args.userIdToUnfollow);
+		if (!userToUnfollow) {
+			throw new Error('User to unfollow not found');
+		}
+
+		await ctx.db.patch(args.userIdToUnfollow, {
+			followersCount: Math.max(0, (userToUnfollow.followersCount ?? 1) - 1),
+		});
+
+		return { success: true };
+	},
+});
+
+export const isFollowing = query({
+	args: {
+		userId: v.id('users'),
+	},
+	async handler(ctx, args) {
+		const identity = await ctx.auth.getUserIdentity();
+		if (!identity) return false;
+
+		const user = await ctx.db
+			.query('users')
+			.withIndex('by_token', q =>
+				q.eq('tokenIdentifier', identity.tokenIdentifier)
+			)
+			.first();
+		if (!user) return false;
+
+		const follow = await ctx.db
+			.query('follows')
+			.withIndex('unique_follow', q =>
+				q.eq('followerId', user._id).eq('followingId', args.userId)
+			)
+			.first();
+
+		return !!follow;
+	},
+});
+
+export const hasLikedPost = query({
+	args: {
+		postId: v.id('posts'),
+	},
+	async handler(ctx, args) {
+		const user = await getCurrentUserOrThrow(ctx);
+
+		const like = await ctx.db
+			.query('likes')
+			.withIndex('unique_like', q =>
+				q.eq('userId', user._id).eq('postId', args.postId)
+			)
+			.first();
+
+		return !!like;
 	},
 });

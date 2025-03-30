@@ -95,3 +95,11 @@ export const createBeanProfileSchema = z.object({
 });
 
 export const editBeanProfileSchema = createBeanProfileSchema;
+
+export const likePostSchema = z.object({
+	postId: z
+		.custom<Id<'posts'>>()
+		.refine(id => id.length > 0, 'Post ID is required'),
+});
+
+export const unlikePostSchema = likePostSchema;

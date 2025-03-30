@@ -2,6 +2,7 @@ import { ConvexError, v } from 'convex/values';
 import { mutation, query, QueryCtx } from './_generated/server';
 import { getCurrentUserOrThrow } from './users';
 import { paginationOptsValidator } from 'convex/server';
+import { Id } from './_generated/dataModel';
 
 export const createPost = mutation({
 	args: {
@@ -281,5 +282,78 @@ export const updatePost = mutation({
 		await ctx.db.patch(id, {
 			...postData,
 		});
+	},
+});
+
+export const likePost = mutation({
+	args: {
+		postId: v.id('posts'),
+	},
+	async handler(ctx, args) {
+		const user = await getCurrentUserOrThrow(ctx);
+
+		const existingLike = await ctx.db
+			.query('likes')
+			.withIndex('unique_like', q =>
+				q.eq('userId', user._id).eq('postId', args.postId)
+			)
+			.first();
+
+		if (existingLike) {
+			throw new Error('Already liked');
+		}
+
+		// Create like
+		await ctx.db.insert('likes', {
+			userId: user._id,
+			postId: args.postId,
+			createdAt: new Date().toISOString(),
+		});
+
+		// Increment post likes count
+		const post = await ctx.db.get(args.postId);
+		if (!post) {
+			throw new Error('Post not found');
+		}
+
+		await ctx.db.patch(args.postId, {
+			likesCount: (post.likesCount ?? 0) + 1,
+		});
+
+		return { success: true };
+	},
+});
+
+export const unlikePost = mutation({
+	args: {
+		postId: v.id('posts'),
+	},
+	async handler(ctx, args) {
+		const user = await getCurrentUserOrThrow(ctx);
+		// Find and delete the like
+		const existingLike = await ctx.db
+			.query('likes')
+			.withIndex('unique_like', q =>
+				q.eq('userId', user._id).eq('postId', args.postId)
+			)
+			.first();
+
+		if (!existingLike) {
+			throw new Error('Like not found');
+		}
+
+		await ctx.db.delete(existingLike._id);
+
+		// Decrement post likes count
+		const post = await ctx.db.get(args.postId);
+		if (!post) {
+			throw new Error('Post not found');
+		}
+
+		await ctx.db.patch(args.postId, {
+			likesCount: Math.max(0, (post.likesCount ?? 1) - 1),
+		});
+
+		return { success: true };
 	},
 });

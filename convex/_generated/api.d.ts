@@ -14,6 +14,7 @@ import type * as http from "../http.js";
 import type * as migrations from "../migrations.js";
 import type * as posts from "../posts.js";
 import type * as trigger from "../trigger.js";
+import type * as types from "../types.js";
 import type * as users from "../users.js";
 
 import type {
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   migrations: typeof migrations;
   posts: typeof posts;
   trigger: typeof trigger;
+  types: typeof types;
   users: typeof users;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
