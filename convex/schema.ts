@@ -4,8 +4,8 @@ import { v } from 'convex/values';
 export default defineSchema({
 	users: defineTable({
 		name: v.string(),
-		description: v.optional(v.string()),
 		avatar: v.optional(v.id('_storage')),
+		bio: v.optional(v.string()),
 		tokenIdentifier: v.string(),
 		followersCount: v.optional(v.number()),
 		followingCount: v.optional(v.number()),

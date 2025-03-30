@@ -30,7 +30,7 @@ export function Component({ user }: { user: User }) {
 		resolver: zodResolver(updateProfileSchema),
 		defaultValues: {
 			name: user.name,
-			description: user.description ?? '',
+			bio: user.bio ?? '',
 		},
 	});
 	const [newUserAvatar, setNewUserAvatar] = useState<CroppedImage | null>();
@@ -118,15 +118,13 @@ export function Component({ user }: { user: User }) {
 						/>
 						<Controller
 							control={form.control}
-							name={'description'}
+							name={'bio'}
 							render={({ field: { onChange, value } }) => (
 								<>
-									<Label>Description</Label>
+									<Label>Bio</Label>
 									<Textarea value={value} onChangeText={onChange} />
-									{form.formState.errors.description && (
-										<ErrorMessage
-											message={form.formState.errors.description.message}
-										/>
+									{form.formState.errors.bio && (
+										<ErrorMessage message={form.formState.errors.bio.message} />
 									)}
 								</>
 							)}

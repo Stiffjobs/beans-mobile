@@ -86,11 +86,11 @@ export const updateProfile = mutation({
 		),
 		name: v.optional(v.string()),
 		isRemoveAvatar: v.boolean(),
-		description: v.optional(v.string()),
+		bio: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
 		const user = await getCurrentUserOrThrow(ctx);
-		const { avatar, name, description, isRemoveAvatar } = args;
+		const { avatar, name, bio, isRemoveAvatar } = args;
 		const attributes: Partial<DataModel['users']['document']> = {};
 		if (avatar) {
 			attributes.avatar = avatar.storageId;
@@ -108,8 +108,8 @@ export const updateProfile = mutation({
 		if (name) {
 			attributes.name = name;
 		}
-		if (description) {
-			attributes.description = description;
+		if (bio) {
+			attributes.bio = bio;
 		}
 		await ctx.db.patch(user._id, attributes);
 	},
