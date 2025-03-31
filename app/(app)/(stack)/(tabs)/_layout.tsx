@@ -1,5 +1,4 @@
 import React from 'react';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 
 import Colors from '@/constants/Colors';
@@ -8,14 +7,7 @@ import { useClientOnlyValue } from '@/components/useClientOnlyValue';
 import { Hamburger } from '~/view/com/util/Hamburger';
 import { AnimatedBeans, CoffeeBean } from '~/view/com/icons/SvgIcons';
 import { TabBarAnimatedIcon } from '~/view/com/icons/StyledIcons';
-
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-	name: React.ComponentProps<typeof FontAwesome>['name'];
-	color: string;
-}) {
-	return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
+import { t } from '@lingui/core/macro';
 
 export default function TabLayout() {
 	const colorScheme = useColorScheme();
@@ -36,7 +28,7 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="home"
 				options={{
-					title: 'Home',
+					title: t`Home`,
 					headerTitle: () => <CoffeeBean className="w-8 h-8" />,
 					tabBarIcon: ({ color, focused }) => (
 						<TabBarAnimatedIcon name="House" color={color} focused={focused} />
@@ -46,7 +38,7 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="beans"
 				options={{
-					title: 'Beans',
+					title: t`Beans`,
 					tabBarIcon: ({ color, focused }) => (
 						<AnimatedBeans color={color} focused={focused} />
 					),
@@ -55,7 +47,7 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="gears"
 				options={{
-					title: 'Gears',
+					title: t`Gears`,
 					tabBarIcon: ({ color, focused }) => (
 						<TabBarAnimatedIcon
 							name="Warehouse"
@@ -68,7 +60,13 @@ export default function TabLayout() {
 			<Tabs.Screen
 				name="profile"
 				options={{
-					title: 'Profile',
+					title: t`Profile`,
+					headerTitleAlign: 'left',
+					headerTitleStyle: {
+						fontSize: 24,
+						fontWeight: '600',
+					},
+					headerLeft: undefined,
 					tabBarIcon: ({ color, focused }) => (
 						<TabBarAnimatedIcon
 							name="CircleUserRound"
