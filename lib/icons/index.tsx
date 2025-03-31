@@ -10,8 +10,12 @@ import { House } from './House';
 import { Warehouse } from './Warehouse';
 import { User } from './User';
 import { Plus } from './Plus';
+import { Link2 } from './Link2';
+import { Link } from './Link';
 export {
 	ImagePlus,
+	Link,
+	Link2,
 	ChevronLeft,
 	Ellipsis,
 	ChevronRight,
