@@ -23,6 +23,10 @@ msgstr "Are you sure to discard this post?"
 msgid "Bean profile"
 msgstr "Bean profile"
 
+#: app/(app)/(stack)/(tabs)/_layout.tsx:41
+msgid "Beans"
+msgstr "Beans"
+
 #: view/com/modals/CreatePostModal.tsx:363
 msgid "Beverage weight (g)"
 msgstr "Beverage weight (g)"
@@ -30,6 +34,10 @@ msgstr "Beverage weight (g)"
 #: view/com/modals/CreatePostModal.tsx:349
 #~ msgid "Beverage weight(g)"
 #~ msgstr "Beverage weight(g)"
+
+#: view/com/modals/EditProfile.tsx:148
+msgid "Bio"
+msgstr "Bio"
 
 #: view/com/modals/CreatePostModal.tsx:468
 msgid "Bloom time"
@@ -48,10 +56,11 @@ msgstr "Brewer"
 msgid "Brewing water (ppm)"
 msgstr "Brewing water (ppm)"
 
-#: app/(app)/(stack)/(tabs)/home/index.tsx:230
+#: app/(app)/(stack)/(tabs)/home/index.tsx:201
 msgid "Calendar"
 msgstr "Calendar"
 
+#: view/com/modals/EditProfile.tsx:84
 #: view/com/modals/CreatePostModal.tsx:187
 #: view/com/modals/CreatePostModal.tsx:661
 msgid "Cancel"
@@ -81,7 +90,16 @@ msgstr "Discard post"
 msgid "Discard Post"
 msgstr "Discard Post"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:208
+#: view/com/modals/EditProfile.tsx:115
+msgid "Display Name"
+msgstr "Display Name"
+
+#: view/com/modals/EditProfile.tsx:86
+#: components/ProfileInfo.tsx:56
+msgid "Edit Profile"
+msgstr "Edit Profile"
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:180
 msgid "Elevation (masl)"
 msgstr "Elevation (masl)"
 
@@ -98,11 +116,11 @@ msgstr "Extra Light"
 msgid "Extraction Yield (%)"
 msgstr "Extraction Yield (%)"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:196
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:168
 msgid "Farm"
 msgstr "Farm"
 
-#: app/(app)/(stack)/(tabs)/home/index.tsx:229
+#: app/(app)/(stack)/(tabs)/home/index.tsx:200
 msgid "Feed"
 msgstr "Feed"
 
@@ -114,13 +132,17 @@ msgstr "Filter paper"
 msgid "Filter Paper"
 msgstr "Filter Paper"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:75
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:47
 msgid "Finished"
 msgstr "Finished"
 
 #: view/com/modals/CreatePostModal.tsx:549
 msgid "Flavor"
 msgstr "Flavor"
+
+#: app/(app)/(stack)/(tabs)/_layout.tsx:50
+msgid "Gears"
+msgstr "Gears"
 
 #: view/com/modals/CreatePostModal.tsx:452
 msgid "Grind setting"
@@ -130,6 +152,10 @@ msgstr "Grind setting"
 #: utils/labels.tsx:16
 msgid "Grinder"
 msgstr "Grinder"
+
+#: app/(app)/(stack)/(tabs)/_layout.tsx:31
+msgid "Home"
+msgstr "Home"
 
 #: view/com/modals/CreatePostModal.tsx:627
 msgid "Images"
@@ -156,8 +182,8 @@ msgid "Next"
 msgstr "Next"
 
 #: components/BeanProfileListDialog/index.tsx:44
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:147
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:161
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:119
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:133
 msgid "No data yet"
 msgstr "No data yet"
 
@@ -169,6 +195,10 @@ msgstr "Other tools"
 msgid "Post"
 msgstr "Post"
 
+#: components/ProfileTabViews.tsx:13
+msgid "Posts"
+msgstr "Posts"
+
 #: view/com/modals/CreatePostModal.tsx:517
 msgid "Preparation"
 msgstr "Preparation"
@@ -177,13 +207,17 @@ msgstr "Preparation"
 msgid "Prev"
 msgstr "Prev"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:204
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:176
 msgid "Process"
 msgstr "Process"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:192
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:164
 msgid "Producer"
 msgstr "Producer"
+
+#: app/(app)/(stack)/(tabs)/_layout.tsx:63
+msgid "Profile"
+msgstr "Profile"
 
 #: view/com/modals/CreatePostModal.tsx:323
 msgid "Ratio"
@@ -192,6 +226,10 @@ msgstr "Ratio"
 #: view/com/modals/CreatePostModal.tsx:262
 msgid "Roast level"
 msgstr "Roast level"
+
+#: view/com/modals/EditProfile.tsx:98
+msgid "Save"
+msgstr "Save"
 
 #: view/com/modals/CreatePostModal.tsx:241
 msgid "Select a bean profile"
@@ -217,7 +255,7 @@ msgstr "Select your filter paper"
 msgid "Select your grinder"
 msgstr "Select your grinder"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:128
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:100
 msgid "Sign In"
 msgstr "Sign In"
 
@@ -225,18 +263,26 @@ msgstr "Sign In"
 msgid "TDS"
 msgstr "TDS"
 
+#: view/com/modals/EditProfile.tsx:153
+msgid "Tell us about yourself"
+msgstr "Tell us about yourself"
+
 #: view/com/modals/CreatePostModal.tsx:484
 msgid "Total drawdown time"
 msgstr "Total drawdown time"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:74
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:46
 msgid "Unfinished"
 msgstr "Unfinished"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:200
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:172
 msgid "Varietal"
 msgstr "Varietal"
 
 #: view/com/modals/CreatePostModal.tsx:350
 msgid "Water in (g)"
 msgstr "Water in (g)"
+
+#: view/com/modals/EditProfile.tsx:131
+msgid "Website"
+msgstr "Website"

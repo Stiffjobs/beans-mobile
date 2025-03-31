@@ -25,6 +25,10 @@ msgstr "確定要捨棄這篇貼文嗎？"
 msgid "Bean profile"
 msgstr "咖啡豆資訊"
 
+#: app/(app)/(stack)/(tabs)/_layout.tsx:41
+msgid "Beans"
+msgstr ""
+
 #: view/com/modals/CreatePostModal.tsx:363
 msgid "Beverage weight (g)"
 msgstr ""
@@ -32,6 +36,10 @@ msgstr ""
 #: view/com/modals/CreatePostModal.tsx:349
 #~ msgid "Beverage weight(g)"
 #~ msgstr "咖啡液重(g)"
+
+#: view/com/modals/EditProfile.tsx:148
+msgid "Bio"
+msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:468
 msgid "Bloom time"
@@ -50,10 +58,11 @@ msgstr "濾杯"
 msgid "Brewing water (ppm)"
 msgstr "沖煮水質 (ppm)"
 
-#: app/(app)/(stack)/(tabs)/home/index.tsx:230
+#: app/(app)/(stack)/(tabs)/home/index.tsx:201
 msgid "Calendar"
 msgstr "紀錄"
 
+#: view/com/modals/EditProfile.tsx:84
 #: view/com/modals/CreatePostModal.tsx:187
 #: view/com/modals/CreatePostModal.tsx:661
 msgid "Cancel"
@@ -83,7 +92,16 @@ msgstr "捨棄貼文"
 msgid "Discard Post"
 msgstr "捨棄貼文"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:208
+#: view/com/modals/EditProfile.tsx:115
+msgid "Display Name"
+msgstr ""
+
+#: view/com/modals/EditProfile.tsx:86
+#: components/ProfileInfo.tsx:56
+msgid "Edit Profile"
+msgstr ""
+
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:180
 msgid "Elevation (masl)"
 msgstr ""
 
@@ -100,11 +118,11 @@ msgstr "極淺焙"
 msgid "Extraction Yield (%)"
 msgstr "萃取率 (%)"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:196
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:168
 msgid "Farm"
 msgstr ""
 
-#: app/(app)/(stack)/(tabs)/home/index.tsx:229
+#: app/(app)/(stack)/(tabs)/home/index.tsx:200
 msgid "Feed"
 msgstr "動態"
 
@@ -116,13 +134,17 @@ msgstr "濾紙"
 msgid "Filter Paper"
 msgstr "濾紙"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:75
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:47
 msgid "Finished"
 msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:549
 msgid "Flavor"
 msgstr "風味"
+
+#: app/(app)/(stack)/(tabs)/_layout.tsx:50
+msgid "Gears"
+msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:452
 msgid "Grind setting"
@@ -132,6 +154,10 @@ msgstr "研磨刻度"
 #: utils/labels.tsx:16
 msgid "Grinder"
 msgstr "磨豆機"
+
+#: app/(app)/(stack)/(tabs)/_layout.tsx:31
+msgid "Home"
+msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:627
 msgid "Images"
@@ -158,8 +184,8 @@ msgid "Next"
 msgstr "下一步"
 
 #: components/BeanProfileListDialog/index.tsx:44
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:147
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:161
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:119
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:133
 msgid "No data yet"
 msgstr ""
 
@@ -171,6 +197,10 @@ msgstr "其他器具"
 msgid "Post"
 msgstr "發布"
 
+#: components/ProfileTabViews.tsx:13
+msgid "Posts"
+msgstr ""
+
 #: view/com/modals/CreatePostModal.tsx:517
 msgid "Preparation"
 msgstr "準備工作"
@@ -179,12 +209,16 @@ msgstr "準備工作"
 msgid "Prev"
 msgstr "上一步"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:204
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:176
 msgid "Process"
 msgstr ""
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:192
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:164
 msgid "Producer"
+msgstr ""
+
+#: app/(app)/(stack)/(tabs)/_layout.tsx:63
+msgid "Profile"
 msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:323
@@ -194,6 +228,10 @@ msgstr "比例"
 #: view/com/modals/CreatePostModal.tsx:262
 msgid "Roast level"
 msgstr "烘焙度"
+
+#: view/com/modals/EditProfile.tsx:98
+msgid "Save"
+msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:241
 msgid "Select a bean profile"
@@ -219,7 +257,7 @@ msgstr "選擇濾紙"
 msgid "Select your grinder"
 msgstr "選擇磨豆機"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:128
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:100
 msgid "Sign In"
 msgstr ""
 
@@ -227,18 +265,26 @@ msgstr ""
 msgid "TDS"
 msgstr "萃取濃度"
 
+#: view/com/modals/EditProfile.tsx:153
+msgid "Tell us about yourself"
+msgstr ""
+
 #: view/com/modals/CreatePostModal.tsx:484
 msgid "Total drawdown time"
 msgstr "總沖煮時間"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:74
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:46
 msgid "Unfinished"
 msgstr ""
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:200
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:172
 msgid "Varietal"
 msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:350
 msgid "Water in (g)"
+msgstr ""
+
+#: view/com/modals/EditProfile.tsx:131
+msgid "Website"
 msgstr ""

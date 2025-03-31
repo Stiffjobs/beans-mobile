@@ -29,8 +29,9 @@ export const useUpdateProfile = ({ onSuccess }: { onSuccess?: () => void }) => {
 			await mutation({
 				avatar: uploadedImage,
 				name: values.name,
-				description: values.description,
+				bio: values.bio,
 				isRemoveAvatar: values.isRemove,
+				website: values.website,
 			});
 		},
 		onSuccess: () => {

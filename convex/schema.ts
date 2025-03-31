@@ -6,6 +6,7 @@ export default defineSchema({
 		name: v.string(),
 		avatar: v.optional(v.id('_storage')),
 		bio: v.optional(v.string()),
+		website: v.optional(v.string()),
 		tokenIdentifier: v.string(),
 		followersCount: v.optional(v.number()),
 		followingCount: v.optional(v.number()),

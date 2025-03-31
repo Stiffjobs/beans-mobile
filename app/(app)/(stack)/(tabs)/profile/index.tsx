@@ -4,11 +4,12 @@ import { Authenticated, Unauthenticated } from 'convex/react';
 import { Link, Stack } from 'expo-router';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
-import React, { useState } from 'react';
+import React from 'react';
 import { Hamburger } from '~/view/com/util/Hamburger';
+import { ProfileTabViews } from '~/components/ProfileTabViews';
 export default function ProfileScreen() {
 	return (
-		<View className="flex-1 items-center justify-center">
+		<View className="flex-1">
 			<Authenticated>
 				<Stack.Screen
 					options={{
@@ -16,6 +17,7 @@ export default function ProfileScreen() {
 					}}
 				/>
 				<ProfileInfo />
+				<ProfileTabViews />
 			</Authenticated>
 			<Unauthenticated>
 				<Link asChild href={'/signin'}>
