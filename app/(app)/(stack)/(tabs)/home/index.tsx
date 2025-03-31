@@ -13,12 +13,7 @@ import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Loader } from '~/components/Loader';
-import {
-	useFetchFeed,
-	useLikePost,
-	useListPosts,
-	useUnlikePost,
-} from '~/state/queries/post';
+import { useFetchFeed, useListPosts } from '~/state/queries/post';
 import {
 	Dispatch,
 	SetStateAction,
@@ -29,32 +24,19 @@ import {
 import { formatDate, formatDateToString } from '~/lib/utils';
 import { useCalendarTheme } from '~/hooks/useCalendarTheme';
 import {
-	Card,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-	CardContent,
-	CardFooter,
-} from '~/components/ui/card';
-import {
 	NavigationState,
 	SceneRendererProps,
 	TabDescriptor,
 	TabView,
 } from 'react-native-tab-view';
 import { CustomTabBar } from '~/view/com/pager/TabBar';
-import { UserAvatar } from '~/view/com/util/UserAvatar';
 import { ScrollView } from 'react-native-gesture-handler';
 import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
 import { FAB } from '~/components/FAB';
-import { BrewingData } from '~/lib/types';
-import { timeAgo } from '~/utils/time';
 import { useLingui } from '@lingui/react/macro';
-import { Id } from '~/convex/_generated/dataModel';
-import { Heart } from 'lucide-react-native';
-import { useMutation, useQuery } from 'convex/react';
-import { api } from '~/convex/_generated/api';
+import { PostFeedItem } from '~/view/com/posts/PostFeedItem';
 import { FeedPost } from '~/convex/types';
+import { BrewingCard } from '~/view/com/posts/BrewingCard';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -64,8 +46,8 @@ function CalendarScreen({
 	setSelectedDate: Dispatch<SetStateAction<string>>;
 }) {
 	const fetchListPosts = useListPosts();
-	const markedDates = fetchListPosts.data?.reduce((acc, post) => {
-		const date = post.createdDate;
+	const markedDates = fetchListPosts.data?.reduce((acc, item) => {
+		const date = item.post.createdDate;
 		return {
 			...acc,
 			[date]: { marked: true },
@@ -93,9 +75,9 @@ function CalendarScreen({
 				}}
 			/>
 			{fetchListPosts.data?.map(
-				post =>
-					formatDate(post._creationTime) === selectedDate && (
-						<BrewingCard key={post._id} data={post} />
+				item =>
+					formatDate(item.post._creationTime) === selectedDate && (
+						<BrewingCard key={item.post._id} feedPost={item} />
 					)
 			)}
 		</ScrollView>
@@ -143,60 +125,9 @@ function FeedScreen() {
 						);
 					}
 				}}
-				renderItem={({ item }) => {
-					return <FeedItem item={item} />;
-				}}
+				renderItem={({ item }) => <PostFeedItem item={item} />}
 			/>
 		</View>
-	);
-}
-
-function FeedItem({ item }: { item: FeedPost }) {
-	const hasLiked = useQuery(api.users.hasLikedPost, { postId: item.post._id });
-	const handleLike = useCallback(() => {
-		if (hasLiked) {
-			unlikePost.mutate({ postId: item.post._id });
-		} else {
-			likePost.mutate({ postId: item.post._id });
-		}
-	}, [hasLiked, item.post._id]);
-	const likePost = useLikePost();
-	const unlikePost = useUnlikePost();
-
-	return (
-		<Pressable onPress={() => router.navigate(`/home/${item.post._id}`)}>
-			<View className="p-4 bg-background rounded-md">
-				<View className="flex-row items-center gap-2">
-					<UserAvatar size="sm" avatar={item.author.avatarUrl} />
-					<Text>{item.author?.name}</Text>
-				</View>
-				{item.beanProfile ? (
-					<Text>
-						{`${item.beanProfile.roaster} ${item.beanProfile.origin} ${item.beanProfile.farm} ${item.beanProfile.process} ${item.beanProfile.variety}`}
-					</Text>
-				) : (
-					<Text>{item.post.bean}</Text>
-				)}
-				<Text>{item.brewerDetails?.name ?? item.post.brewer}</Text>
-				<View className="flex-row justify-between items-center">
-					<Pressable onPress={handleLike} hitSlop={8}>
-						<View className="flex-row items-center gap-1">
-							<Heart
-								className={
-									hasLiked
-										? 'text-red-500 fill-red-500'
-										: 'text-muted-foreground fill-background'
-								}
-								size={20}
-							/>
-						</View>
-					</Pressable>
-					<Text className="text-muted-foreground">
-						{timeAgo(item.post._creationTime)}
-					</Text>
-				</View>
-			</View>
-		</Pressable>
 	);
 }
 
@@ -292,50 +223,5 @@ export default function HomeScreen() {
 				</View>
 			</Unauthenticated>
 		</View>
-	);
-}
-
-function BrewingCard({ data }: { data: BrewingData }) {
-	return (
-		<Pressable onPress={() => router.navigate(`/home/${data._id}`)}>
-			<Card className="mx-4 my-2">
-				<CardHeader className="pb-2">
-					<View className="flex-row justify-between items-center">
-						<View className="flex-1">
-							{data.beanProfile ? (
-								<CardTitle className="text-primary">
-									{`${data.beanProfile?.roaster} ${data.beanProfile?.origin} ${data.beanProfile?.farm} ${data.beanProfile?.process} ${data.beanProfile?.variety}`}
-								</CardTitle>
-							) : (
-								<CardTitle className="text-primary">{data.bean}</CardTitle>
-							)}
-							<CardDescription>
-								{data.brewerDetails?.name ?? data.brewer}
-							</CardDescription>
-						</View>
-						<Text className="text-gray-500 dark:text-gray-400">
-							{data.totalDrawdownTime}
-						</Text>
-					</View>
-				</CardHeader>
-
-				<CardContent className="py-2">
-					<View className="flex-row justify-between mb-2">
-						<Text className="text-gray-600 dark:text-gray-400">
-							{data.coffeeIn}g / {data.beverageWeight}g
-						</Text>
-						<Text className="text-gray-600 dark:text-gray-400">
-							{data.brewTemperature}°C
-						</Text>
-					</View>
-				</CardContent>
-
-				<CardFooter className="pt-0">
-					<Text className=" text-secondary-foreground  text-sm">
-						{data.methodName} · {data.grinder} ({data.grindSetting})
-					</Text>
-				</CardFooter>
-			</Card>
-		</Pressable>
 	);
 }
