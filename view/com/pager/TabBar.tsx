@@ -1,5 +1,13 @@
 import { cssInterop } from 'nativewind';
 import { TabBar } from 'react-native-tab-view';
+import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
+import {
+	NavigationState,
+	Route,
+	SceneRendererProps,
+	TabDescriptor,
+	TabView,
+} from 'react-native-tab-view';
 
 export const CustomTabBar = cssInterop(TabBar, {
 	className: {
@@ -24,3 +32,24 @@ export const CustomTabBar = cssInterop(TabBar, {
 		},
 	},
 });
+
+export const renderTabBar = (
+	props: SceneRendererProps & {
+		navigationState: NavigationState<Route>;
+		options: Record<string, TabDescriptor<Route>> | undefined;
+	}
+) => {
+	const { options, ...rest } = props;
+	return (
+		<BlockDrawerGesture>
+			<CustomTabBar
+				className="bg-background"
+				tabStyle={{ width: 'auto' }}
+				activeClassName="text-primary"
+				inactiveClassName="text-primary/50"
+				indicatorClassName="bg-primary/75"
+				{...rest}
+			/>
+		</BlockDrawerGesture>
+	);
+};
