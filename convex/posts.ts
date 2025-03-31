@@ -78,12 +78,18 @@ export const list = query({
 			.query('posts')
 			.withIndex('by_author', q => q.eq('author', userId._id))
 			.collect();
-		const postWithBeanProfile = await Promise.all(
+
+		const postWithDetails = await Promise.all(
 			posts.map(async post => {
+				const author = await ctx.db.get(post.author);
+				if (!author) throw new ConvexError('Author not found');
+
 				let beanProfile = null;
 				let filterPaperDetails = null;
 				let grinderDetails = null;
 				let brewerDetails = null;
+				let avatar = null;
+
 				if (post.beanProfile) {
 					beanProfile = await ctx.db.get(post.beanProfile);
 				}
@@ -96,17 +102,37 @@ export const list = query({
 				if (post.brewerId) {
 					brewerDetails = await ctx.db.get(post.brewerId);
 				}
+				if (author.avatar) {
+					avatar = await ctx.storage.getUrl(author.avatar);
+				}
+
+				const images = await ctx.db
+					.query('post_images')
+					.withIndex('by_post', q => q.eq('postId', post._id))
+					.collect();
+				const imagesUrl = await Promise.all(
+					images.map(async image => {
+						const url = await ctx.storage.getUrl(image.storageId);
+						return url;
+					})
+				);
+
 				return {
-					...post,
+					post,
+					author: {
+						...author,
+						avatarUrl: avatar,
+					},
 					beanProfile,
 					filterPaperDetails,
 					grinderDetails,
 					brewerDetails,
+					images: imagesUrl.filter(e => e !== null),
 				};
 			})
 		);
 
-		return postWithBeanProfile;
+		return postWithDetails;
 	},
 });
 

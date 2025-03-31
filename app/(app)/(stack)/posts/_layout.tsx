@@ -9,7 +9,6 @@ export default () => {
 				headerLeft: () => <HeaderBack />,
 			}}
 		>
-			<Stack.Screen name="settings" />
 			<Stack.Screen
 				name="[id]"
 				options={{

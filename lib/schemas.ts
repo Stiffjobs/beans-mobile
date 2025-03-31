@@ -69,7 +69,8 @@ export const editPostSchema = createPostSchema.omit({
 
 export const updateProfileSchema = z.object({
 	name: z.string().min(3, 'Name must be at least 3 characters').optional(),
-	bio: z.string().optional(),
+	bio: z.string().max(80, 'Bio must be less than 80 characters').optional(),
+	website: z.string().url('Please enter a valid URL').optional(),
 });
 
 export const createGearSchema = z.object({
