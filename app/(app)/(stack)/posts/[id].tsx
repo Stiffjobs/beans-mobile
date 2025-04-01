@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Link, Stack, useLocalSearchParams } from 'expo-router';
 import { View, ScrollView, FlatList, Pressable } from 'react-native';
 import { Loader } from '~/components/Loader';
 import { useGetPostById } from '~/state/queries/post';
@@ -13,14 +13,23 @@ import {
 } from '~/components/DetailsDialog';
 import { useModalControls } from '~/state/modals';
 import { useGetCurrentUser } from '~/state/queries/auth';
-import { H3, H4 } from '~/components/ui/typography';
+import { H4 } from '~/components/ui/typography';
 import { Ellipsis } from '~/lib/icons/Ellipsis';
+import { UserAvatar } from '~/view/com/util/UserAvatar';
+import {
+	useFollowUser,
+	useIsFollowingThisUser,
+	useUnfollowUser,
+} from '~/state/queries/users';
+import { Id } from '~/convex/_generated/dataModel';
+import { t } from '@lingui/core/macro';
 
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const [viewImageIndex, setViewImageIndex] = useState(0);
 	const [visible, setVisible] = useState(false);
 	const { data, isLoading } = useGetPostById(id);
+	const fetchIsFollowing = useIsFollowingThisUser(data?.author._id);
 	const detailsDialogControl = useDetailsDialogControl();
 	const { openModal } = useModalControls();
 	const currentUser = useGetCurrentUser();
@@ -28,6 +37,16 @@ export default function PostDetailsPage() {
 		detailsDialogControl.open();
 	}, [detailsDialogControl]);
 	const isOwner = data?.author === currentUser.data?._id;
+	const followUser = useFollowUser();
+	const unfollowUser = useUnfollowUser();
+
+	const handleFollow = useCallback(async () => {
+		await followUser.mutateAsync(data?.author._id as Id<'users'>);
+	}, [followUser.mutateAsync, data?.author._id]);
+
+	const handleUnfollow = useCallback(async () => {
+		await unfollowUser.mutateAsync(data?.author._id as Id<'users'>);
+	}, [unfollowUser.mutateAsync, data?.author._id]);
 
 	const openEditPostModal = useCallback(() => {
 		openModal({
@@ -44,6 +63,7 @@ export default function PostDetailsPage() {
 		);
 	}
 	const urls = data?.images.filter(e => e !== null) ?? [];
+	const isMe = data?.author._id === currentUser.data?._id;
 
 	return (
 		<ScrollView className="flex-1  p-4 gap-4">
@@ -57,13 +77,42 @@ export default function PostDetailsPage() {
 						) : null,
 				}}
 			/>
-			<View className="px-4 flex-1 gap-4">
+			<View className="px-2 flex-1 gap-4">
+				<View className="flex-row items-center justify-between">
+					<Link push asChild href={`/profiles/${data?.author._id}`}>
+						<Pressable>
+							<View className="flex-row items-center gap-2">
+								<UserAvatar size="sm" avatar={data?.author.avatarUrl} />
+								<Text className="font-bold">{data?.author?.name}</Text>
+							</View>
+						</Pressable>
+					</Link>
+					{!isMe &&
+						(fetchIsFollowing.data ? (
+							<Button
+								onPress={handleUnfollow}
+								size={'sm'}
+								weight={'semibold'}
+								variant={'muted'}
+							>
+								<Text className="text-sm font-semibold text-muted-foreground">
+									{t`Following`}
+								</Text>
+							</Button>
+						) : (
+							<Button onPress={handleFollow} size={'sm'} weight={'semibold'}>
+								<Text className="text-sm font-semibold text-background">
+									{t`Follow`}
+								</Text>
+							</Button>
+						))}
+				</View>
 				{data?.beanProfile ? (
-					<H3>
+					<Text className="text-2xl font-semibold">
 						{`${data?.beanProfile?.roaster} ${data?.beanProfile?.origin} ${data?.beanProfile?.farm} ${data?.beanProfile?.process} ${data?.beanProfile?.variety}`}
-					</H3>
+					</Text>
 				) : (
-					<H3>{data?.bean}</H3>
+					<Text className="text-2xl font-semibold">{data?.bean}</Text>
 				)}
 				<FlatList
 					data={urls}
