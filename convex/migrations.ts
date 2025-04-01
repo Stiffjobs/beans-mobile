@@ -2,8 +2,7 @@ import { Migrations } from '@convex-dev/migrations';
 import { components, internal } from './_generated/api';
 import { DataModel } from './_generated/dataModel';
 import { DatabaseReader, DatabaseWriter } from './_generated/server';
-import { GEAR_TYPE } from '../lib/constants';
-
+import { GEAR_TYPE } from './constant';
 export const migrations = new Migrations<DataModel>(components.migrations);
 
 export const migrationForFilterPaperId = migrations.define({
