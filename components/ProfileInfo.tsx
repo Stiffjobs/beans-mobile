@@ -8,6 +8,7 @@ import { useModalControls } from '~/state/modals';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
 import { t } from '@lingui/core/macro';
 import { Link2 } from '~/lib/icons';
+import { Muted } from './ui/typography';
 
 export default function ProfileInfo() {
 	const currentUser = useGetCurrentUser();
@@ -24,6 +25,8 @@ export default function ProfileInfo() {
 			user: currentUser.data!,
 		});
 	};
+	const followersCount = currentUser.data?.followersCount ?? 0;
+	const followingCount = currentUser.data?.followingCount ?? 0;
 
 	return (
 		<View className="gap-4 w-full px-4">
@@ -47,6 +50,20 @@ export default function ProfileInfo() {
 							</Text>
 						</Pressable>
 					)}
+					<View className="flex items-center gap-4 flex-row my-4">
+						{followersCount > 0 && (
+							<View className="flex items-center gap-1 flex-row">
+								<Text className="text-sm font-extrabold">{followersCount}</Text>
+								<Muted className="text-sm font-extrabold">Followers</Muted>
+							</View>
+						)}
+						{followingCount > 0 && (
+							<View className="flex items-center gap-1 flex-row">
+								<Text className="text-sm font-extrabold">{followingCount}</Text>
+								<Muted className="text-sm font-extrabold">Following</Muted>
+							</View>
+						)}
+					</View>
 				</View>
 				<UserAvatar avatar={currentUser.data?.avatar} />
 			</View>
