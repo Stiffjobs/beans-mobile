@@ -77,6 +77,7 @@ export const list = query({
 		const posts = await ctx.db
 			.query('posts')
 			.withIndex('by_author', q => q.eq('author', userId._id))
+			.order('desc')
 			.collect();
 
 		const postWithDetails = await Promise.all(
@@ -144,6 +145,7 @@ export const listByUserId = query({
 		const posts = await ctx.db
 			.query('posts')
 			.withIndex('by_author', q => q.eq('author', args.userId))
+			.order('desc')
 			.collect();
 
 		const postWithDetails = await Promise.all(
