@@ -7,7 +7,6 @@ import {
 import { UserJSON } from '@clerk/backend';
 import { v, Validator } from 'convex/values';
 import { DataModel } from './_generated/dataModel';
-import { Id } from './_generated/dataModel';
 
 export const current = query({
 	args: {},
@@ -23,6 +22,19 @@ export const current = query({
 	},
 });
 
+export const getUserById = query({
+	args: { userId: v.id('users') },
+	handler: async (ctx, args) => {
+		const thisUser = await ctx.db.get(args.userId);
+		if (thisUser?.avatar) {
+			return {
+				...thisUser,
+				avatar: await ctx.storage.getUrl(thisUser?.avatar),
+			};
+		}
+		return thisUser;
+	},
+});
 export const upsertFromClerk = internalMutation({
 	args: { data: v.any() as Validator<UserJSON> }, // no runtime validation, trust Clerk
 	async handler(ctx, { data }) {
@@ -135,22 +147,7 @@ export const followUser = mutation({
 		userIdToFollow: v.id('users'),
 	},
 	async handler(ctx, args) {
-		const identity = await ctx.auth.getUserIdentity();
-		if (!identity) {
-			throw new Error('Unauthorized');
-		}
-
-		// Get the current user
-		const user = await ctx.db
-			.query('users')
-			.withIndex('by_token', q =>
-				q.eq('tokenIdentifier', identity.tokenIdentifier)
-			)
-			.first();
-		if (!user) {
-			throw new Error('User not found');
-		}
-
+		const user = await getCurrentUserOrThrow(ctx);
 		// Check if already following
 		const existingFollow = await ctx.db
 			.query('follows')
@@ -193,23 +190,7 @@ export const unfollowUser = mutation({
 		userIdToUnfollow: v.id('users'),
 	},
 	async handler(ctx, args) {
-		const identity = await ctx.auth.getUserIdentity();
-		if (!identity) {
-			throw new Error('Unauthorized');
-		}
-
-		// Get the current user
-		const user = await ctx.db
-			.query('users')
-			.withIndex('by_token', q =>
-				q.eq('tokenIdentifier', identity.tokenIdentifier)
-			)
-			.first();
-		if (!user) {
-			throw new Error('User not found');
-		}
-
-		// Find and delete the follow relationship
+		const user = await getCurrentUserOrThrow(ctx);
 		const existingFollow = await ctx.db
 			.query('follows')
 			.withIndex('unique_follow', q =>
@@ -243,24 +224,15 @@ export const unfollowUser = mutation({
 
 export const isFollowing = query({
 	args: {
-		userId: v.id('users'),
+		authorId: v.id('users'),
 	},
 	async handler(ctx, args) {
-		const identity = await ctx.auth.getUserIdentity();
-		if (!identity) return false;
-
-		const user = await ctx.db
-			.query('users')
-			.withIndex('by_token', q =>
-				q.eq('tokenIdentifier', identity.tokenIdentifier)
-			)
-			.first();
-		if (!user) return false;
+		const currentUser = await getCurrentUserOrThrow(ctx);
 
 		const follow = await ctx.db
 			.query('follows')
 			.withIndex('unique_follow', q =>
-				q.eq('followerId', user._id).eq('followingId', args.userId)
+				q.eq('followerId', currentUser._id).eq('followingId', args.authorId)
 			)
 			.first();
 

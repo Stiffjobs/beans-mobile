@@ -136,6 +136,73 @@ export const list = query({
 	},
 });
 
+export const listByUserId = query({
+	args: {
+		userId: v.id('users'),
+	},
+	handler: async (ctx, args) => {
+		const posts = await ctx.db
+			.query('posts')
+			.withIndex('by_author', q => q.eq('author', args.userId))
+			.collect();
+
+		const postWithDetails = await Promise.all(
+			posts.map(async post => {
+				const author = await ctx.db.get(post.author);
+				if (!author) throw new ConvexError('Author not found');
+
+				let beanProfile = null;
+				let filterPaperDetails = null;
+				let grinderDetails = null;
+				let brewerDetails = null;
+				let avatar = null;
+
+				if (post.beanProfile) {
+					beanProfile = await ctx.db.get(post.beanProfile);
+				}
+				if (post.filterPaperId) {
+					filterPaperDetails = await ctx.db.get(post.filterPaperId);
+				}
+				if (post.grinderId) {
+					grinderDetails = await ctx.db.get(post.grinderId);
+				}
+				if (post.brewerId) {
+					brewerDetails = await ctx.db.get(post.brewerId);
+				}
+				if (author.avatar) {
+					avatar = await ctx.storage.getUrl(author.avatar);
+				}
+
+				const images = await ctx.db
+					.query('post_images')
+					.withIndex('by_post', q => q.eq('postId', post._id))
+					.collect();
+				const imagesUrl = await Promise.all(
+					images.map(async image => {
+						const url = await ctx.storage.getUrl(image.storageId);
+						return url;
+					})
+				);
+
+				return {
+					post,
+					author: {
+						...author,
+						avatarUrl: avatar,
+					},
+					beanProfile,
+					filterPaperDetails,
+					grinderDetails,
+					brewerDetails,
+					images: imagesUrl.filter(e => e !== null),
+				};
+			})
+		);
+
+		return postWithDetails;
+	},
+});
+
 export const feed = query({
 	args: { paginationOpts: paginationOptsValidator, refreshKey: v.number() },
 	handler: async (ctx, args) => {
@@ -211,6 +278,7 @@ export const getPostById = query({
 	},
 	handler: async (ctx, args) => {
 		const post = await ctx.db.get(args.id);
+		if (!post) throw new ConvexError('Post not found');
 		let beanProfile = null;
 		let filterPaperDetails = null;
 		let grinderDetails = null;
@@ -227,6 +295,11 @@ export const getPostById = query({
 		if (post?.brewerId) {
 			brewerDetails = await ctx.db.get(post?.brewerId);
 		}
+		const author = await ctx.db.get(post.author);
+		let avatar = null;
+		if (author?.avatar) {
+			avatar = await ctx.storage.getUrl(author?.avatar);
+		}
 		const images = await ctx.db
 			.query('post_images')
 			.withIndex('by_post', q => q.eq('postId', args.id))
@@ -242,6 +315,10 @@ export const getPostById = query({
 			beanProfile: beanProfile,
 			images: imagesUrl,
 			filterPaperDetails,
+			author: {
+				...author,
+				avatarUrl: avatar,
+			},
 			grinderDetails,
 			brewerDetails,
 		};

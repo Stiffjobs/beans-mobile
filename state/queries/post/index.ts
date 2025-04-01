@@ -177,3 +177,9 @@ export function useUnlikePost() {
 		},
 	});
 }
+
+export function useListPostsByUserId(userId: string) {
+	return useQuery(
+		convexQuery(api.posts.listByUserId, { userId: userId as Id<'users'> })
+	);
+}
