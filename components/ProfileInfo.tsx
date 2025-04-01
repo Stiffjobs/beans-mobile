@@ -6,10 +6,8 @@ import { useGetCurrentUser, useSignOut } from '~/state/queries/auth';
 import { Text } from './ui/text';
 import { useModalControls } from '~/state/modals';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
-import { TextWithLinks } from './ui/text-with-links';
-import { H2, H4 } from './ui/typography';
 import { t } from '@lingui/core/macro';
-import { Link, Link2 } from '~/lib/icons';
+import { Link2 } from '~/lib/icons';
 
 export default function ProfileInfo() {
 	const currentUser = useGetCurrentUser();

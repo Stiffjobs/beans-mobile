@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { HeaderBack } from '~/components/HeaderBack';
+import { t } from '@lingui/core/macro';
 
 export default () => {
 	return (
@@ -12,7 +13,7 @@ export default () => {
 			<Stack.Screen
 				name="[id]"
 				options={{
-					headerTitle: 'Details',
+					headerTitle: t`Post`,
 				}}
 			/>
 		</Stack>
