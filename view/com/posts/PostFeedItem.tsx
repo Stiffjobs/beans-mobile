@@ -28,7 +28,7 @@ export function PostFeedItem({
 	const unlikePost = useUnlikePost();
 
 	return (
-		<Link asChild href={`/posts/${item.post._id}`}>
+		<Link push asChild href={`/posts/${item.post._id}`}>
 			<Pressable>
 				<View className="p-4 bg-background rounded-md">
 					<View className="flex-row items-center gap-2">
