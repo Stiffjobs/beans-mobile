@@ -50,7 +50,7 @@ msgid "Brew temperature (°C)"
 msgstr "沖煮溫度 (°C)"
 
 #: view/com/modals/CreatePostModal.tsx:398
-#: utils/labels.tsx:17
+#: utils/labels.ts:17
 msgid "Brewer"
 msgstr "濾杯"
 
@@ -76,7 +76,7 @@ msgstr "咖啡粉重(g)"
 msgid "Created on"
 msgstr ""
 
-#: utils/labels.tsx:10
+#: utils/labels.ts:10
 msgid "Dark"
 msgstr "深焙"
 
@@ -110,7 +110,7 @@ msgstr ""
 msgid "Error: {0}"
 msgstr ""
 
-#: utils/labels.tsx:5
+#: utils/labels.ts:5
 msgid "Extra Light"
 msgstr "極淺焙"
 
@@ -130,7 +130,7 @@ msgstr "動態"
 msgid "Filter paper"
 msgstr "濾紙"
 
-#: utils/labels.tsx:18
+#: utils/labels.ts:18
 msgid "Filter Paper"
 msgstr "濾紙"
 
@@ -161,7 +161,7 @@ msgid "Grind setting"
 msgstr "研磨刻度"
 
 #: view/com/modals/CreatePostModal.tsx:434
-#: utils/labels.tsx:16
+#: utils/labels.ts:16
 msgid "Grinder"
 msgstr "磨豆機"
 
@@ -173,19 +173,19 @@ msgstr ""
 msgid "Images"
 msgstr "照片"
 
-#: utils/labels.tsx:6
+#: utils/labels.ts:6
 msgid "Light"
 msgstr "淺焙"
 
-#: utils/labels.tsx:8
+#: utils/labels.ts:8
 msgid "Medium"
 msgstr "中焙"
 
-#: utils/labels.tsx:9
+#: utils/labels.ts:9
 msgid "Medium Dark"
 msgstr "中深焙"
 
-#: utils/labels.tsx:7
+#: utils/labels.ts:7
 msgid "Medium Light"
 msgstr "中淺焙"
 

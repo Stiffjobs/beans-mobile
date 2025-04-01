@@ -48,7 +48,7 @@ msgid "Brew temperature (°C)"
 msgstr "Brew temperature (°C)"
 
 #: view/com/modals/CreatePostModal.tsx:398
-#: utils/labels.tsx:17
+#: utils/labels.ts:17
 msgid "Brewer"
 msgstr "Brewer"
 
@@ -74,7 +74,7 @@ msgstr "Coffee in (g)"
 msgid "Created on"
 msgstr "Created on"
 
-#: utils/labels.tsx:10
+#: utils/labels.ts:10
 msgid "Dark"
 msgstr "Dark"
 
@@ -108,7 +108,7 @@ msgstr "Elevation (masl)"
 msgid "Error: {0}"
 msgstr "Error: {0}"
 
-#: utils/labels.tsx:5
+#: utils/labels.ts:5
 msgid "Extra Light"
 msgstr "Extra Light"
 
@@ -128,7 +128,7 @@ msgstr "Feed"
 msgid "Filter paper"
 msgstr "Filter paper"
 
-#: utils/labels.tsx:18
+#: utils/labels.ts:18
 msgid "Filter Paper"
 msgstr "Filter Paper"
 
@@ -159,7 +159,7 @@ msgid "Grind setting"
 msgstr "Grind setting"
 
 #: view/com/modals/CreatePostModal.tsx:434
-#: utils/labels.tsx:16
+#: utils/labels.ts:16
 msgid "Grinder"
 msgstr "Grinder"
 
@@ -171,19 +171,19 @@ msgstr "Home"
 msgid "Images"
 msgstr "Images"
 
-#: utils/labels.tsx:6
+#: utils/labels.ts:6
 msgid "Light"
 msgstr "Light"
 
-#: utils/labels.tsx:8
+#: utils/labels.ts:8
 msgid "Medium"
 msgstr "Medium"
 
-#: utils/labels.tsx:9
+#: utils/labels.ts:9
 msgid "Medium Dark"
 msgstr "Medium Dark"
 
-#: utils/labels.tsx:7
+#: utils/labels.ts:7
 msgid "Medium Light"
 msgstr "Medium Light"
 
