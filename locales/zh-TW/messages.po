@@ -97,7 +97,7 @@ msgid "Display Name"
 msgstr ""
 
 #: view/com/modals/EditProfile.tsx:86
-#: components/ProfileInfo.tsx:56
+#: components/ProfileInfo.tsx:71
 msgid "Edit Profile"
 msgstr ""
 
@@ -141,6 +141,16 @@ msgstr ""
 #: view/com/modals/CreatePostModal.tsx:549
 msgid "Flavor"
 msgstr "風味"
+
+#: app/(app)/(stack)/profiles/[id].tsx:96
+#: app/(app)/(stack)/posts/[id].tsx:105
+msgid "Follow"
+msgstr ""
+
+#: app/(app)/(stack)/profiles/[id].tsx:92
+#: app/(app)/(stack)/posts/[id].tsx:99
+msgid "Following"
+msgstr ""
 
 #: app/(app)/(stack)/(tabs)/_layout.tsx:50
 msgid "Gears"
@@ -194,10 +204,12 @@ msgid "Other tools"
 msgstr "其他器具"
 
 #: view/com/modals/CreatePostModal.tsx:199
+#: app/(app)/(stack)/posts/_layout.tsx:16
 msgid "Post"
 msgstr "發布"
 
-#: components/ProfileTabViews.tsx:13
+#: components/ProfileTabViews.tsx:12
+#: app/(app)/(stack)/profiles/[id].tsx:31
 msgid "Posts"
 msgstr ""
 

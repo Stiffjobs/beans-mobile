@@ -95,7 +95,7 @@ msgid "Display Name"
 msgstr "Display Name"
 
 #: view/com/modals/EditProfile.tsx:86
-#: components/ProfileInfo.tsx:56
+#: components/ProfileInfo.tsx:71
 msgid "Edit Profile"
 msgstr "Edit Profile"
 
@@ -139,6 +139,16 @@ msgstr "Finished"
 #: view/com/modals/CreatePostModal.tsx:549
 msgid "Flavor"
 msgstr "Flavor"
+
+#: app/(app)/(stack)/profiles/[id].tsx:96
+#: app/(app)/(stack)/posts/[id].tsx:105
+msgid "Follow"
+msgstr "Follow"
+
+#: app/(app)/(stack)/profiles/[id].tsx:92
+#: app/(app)/(stack)/posts/[id].tsx:99
+msgid "Following"
+msgstr "Following"
 
 #: app/(app)/(stack)/(tabs)/_layout.tsx:50
 msgid "Gears"
@@ -192,10 +202,12 @@ msgid "Other tools"
 msgstr "Other tools"
 
 #: view/com/modals/CreatePostModal.tsx:199
+#: app/(app)/(stack)/posts/_layout.tsx:16
 msgid "Post"
 msgstr "Post"
 
-#: components/ProfileTabViews.tsx:13
+#: components/ProfileTabViews.tsx:12
+#: app/(app)/(stack)/profiles/[id].tsx:31
 msgid "Posts"
 msgstr "Posts"
 
