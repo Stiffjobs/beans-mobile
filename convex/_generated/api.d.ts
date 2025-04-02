@@ -13,6 +13,7 @@ import type * as constant from "../constant.js";
 import type * as gears from "../gears.js";
 import type * as http from "../http.js";
 import type * as migrations from "../migrations.js";
+import type * as post_comments from "../post_comments.js";
 import type * as posts from "../posts.js";
 import type * as trigger from "../trigger.js";
 import type * as types from "../types.js";
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   gears: typeof gears;
   http: typeof http;
   migrations: typeof migrations;
+  post_comments: typeof post_comments;
   posts: typeof posts;
   trigger: typeof trigger;
   types: typeof types;

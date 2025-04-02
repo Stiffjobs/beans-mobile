@@ -88,4 +88,14 @@ export default defineSchema({
 		description: v.optional(v.string()),
 		finished: v.boolean(),
 	}).index('by_owner', ['owner']),
+	post_comments: defineTable({
+		postId: v.id('posts'),
+		userId: v.id('users'),
+		content: v.string(),
+		createdAt: v.string(),
+		likesCount: v.optional(v.number()),
+	})
+		.index('by_post', ['postId'])
+		.index('by_user', ['userId'])
+		.index('by_post_time', ['postId', 'createdAt']),
 });

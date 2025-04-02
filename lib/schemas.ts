@@ -104,3 +104,16 @@ export const likePostSchema = z.object({
 });
 
 export const unlikePostSchema = likePostSchema;
+
+export const createPostCommentSchema = z.object({
+	postId: z
+		.custom<Id<'posts'>>()
+		.refine(id => id.length > 0, 'Post ID is required'),
+	content: z.string().min(1, 'Comment is required'),
+});
+
+export const deletePostCommentSchema = z.object({
+	commentId: z
+		.custom<Id<'post_comments'>>()
+		.refine(id => id.length > 0, 'Comment ID is required'),
+});
