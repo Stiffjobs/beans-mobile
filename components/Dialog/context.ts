@@ -13,6 +13,8 @@ export const Context = React.createContext<DialogContextProps>({
 	isNativeDialog: false,
 	disableDrag: false,
 	setDisableDrag: () => {},
+	index: 0,
+	snapPoints: BottomSheetSnapPoint.Hidden,
 });
 
 export function useDialogContext() {
@@ -28,10 +30,10 @@ export function useDialogControl(): DialogOuterProps['control'] {
 	const id = React.useId();
 	const control = React.useRef<DialogControlRefProps>({
 		open: () => {},
+		toIndex: () => {},
 		close: () => {},
 	});
 	const { activeDialogs } = useDialogStateContext();
-
 	React.useEffect(() => {
 		activeDialogs.current.set(id, control);
 		return () => {
@@ -45,6 +47,9 @@ export function useDialogControl(): DialogOuterProps['control'] {
 			ref: control,
 			open: () => {
 				control.current.open();
+			},
+			toIndex: index => {
+				control.current.toIndex(index);
 			},
 			close: cb => {
 				control.current.close(cb);

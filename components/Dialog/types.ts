@@ -8,11 +8,13 @@ export enum BottomSheetSnapPoint {
 	Quarter,
 	Partial,
 	Full,
+	Comments,
 }
 export type DialogControlRefProps = {
 	open: (
 		options?: DialogControlOpenOptions & Partial<GestureResponderEvent>
 	) => void;
+	toIndex: (index: number) => void;
 	close: (callback?: () => void) => void;
 };
 
@@ -25,8 +27,11 @@ export type DialogControlProps = DialogControlRefProps & {
 export interface DialogOuterProps {
 	control: DialogControlProps;
 	containsList?: boolean;
+	addShadow?: boolean;
+	hideBackdrop?: boolean;
 	snapPoints?: BottomSheetSnapPoint;
 	onClose?: () => void;
+	onAnimte?: (fromIndex: number, toIndex: number) => void;
 }
 
 export interface DialogInnerProps {
@@ -40,6 +45,8 @@ export type DialogContextProps = {
 	isNativeDialog: boolean;
 	disableDrag: boolean;
 	setDisableDrag: React.Dispatch<React.SetStateAction<boolean>>;
+	index: number;
+	snapPoints: BottomSheetSnapPoint;
 };
 
 export type DialogControlOpenOptions = {

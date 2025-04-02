@@ -1,4 +1,4 @@
-import React, { useCallback, useImperativeHandle } from 'react';
+import React, { useCallback, useImperativeHandle, useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -30,6 +30,7 @@ const SNAPPOINTS = {
 	[BottomSheetSnapPoint.Quarter]: ['30%'],
 	[BottomSheetSnapPoint.Partial]: ['50%'],
 	[BottomSheetSnapPoint.Full]: ['90%'],
+	[BottomSheetSnapPoint.Comments]: ['10%', '100%'],
 };
 let NativewindModal = cssInterop(BottomSheetModal, {
 	backgroundClassName: {
@@ -42,6 +43,9 @@ let NativewindModal = cssInterop(BottomSheetModal, {
 export function Outer({
 	children,
 	control,
+	hideBackdrop = false,
+	onAnimte,
+	addShadow = false,
 	snapPoints = BottomSheetSnapPoint.Partial,
 	containsList = false,
 }: React.PropsWithChildren<DialogOuterProps>) {
@@ -49,6 +53,20 @@ export function Outer({
 	const { setDialogIsOpen } = useDialogStateControlContext();
 	const closeCallbacks = React.useRef<(() => void)[]>([]);
 	const [disableDrag, setDisableDrag] = React.useState(false);
+	const [index, setIndex] = React.useState(0);
+
+	const handleIndexChange = React.useCallback(
+		(index: number) => {
+			// If index is -1 (attempting to close) and we're in Comments mode
+			// Force snap back to the minimum height (index 0)
+			if (index === -1 && snapPoints === BottomSheetSnapPoint.Comments) {
+				ref.current?.snapToIndex(0);
+				return;
+			}
+			setIndex(index);
+		},
+		[snapPoints]
+	);
 
 	const callQueuedCallbacks = React.useCallback(() => {
 		for (const cb of closeCallbacks.current) {
@@ -83,13 +101,20 @@ export function Outer({
 		},
 		[]
 	);
+	const toIndex = React.useCallback<DialogControlProps['toIndex']>(
+		(index: number) => {
+			ref.current?.snapToIndex(index);
+		},
+		[]
+	);
 	useImperativeHandle(
 		control.ref,
 		() => ({
 			open,
 			close,
+			toIndex,
 		}),
-		[open, close]
+		[open, close, toIndex]
 	);
 
 	const context = React.useMemo(
@@ -98,71 +123,81 @@ export function Outer({
 			isNativeDialog: true,
 			disableDrag,
 			setDisableDrag,
+			index,
+			snapPoints,
 		}),
-		[close, disableDrag, setDisableDrag]
+		[close, disableDrag, setDisableDrag, index, snapPoints]
 	);
 	const reduceMotion = useReducedMotion();
+	const insets = useSafeAreaInsets();
+	const enableDismissOnClose = snapPoints !== BottomSheetSnapPoint.Comments;
 
 	const renderHandle = useCallback(
 		(props: BottomSheetHandleProps) => <Handle {...props} />,
 		[]
 	);
+	const shadowStyle = addShadow
+		? {
+				shadowColor: '#000',
+				shadowOffset: {
+					width: 0,
+					height: 5,
+				},
+				shadowOpacity: 0.34,
+				shadowRadius: 6.27,
+
+				elevation: 10,
+			}
+		: {};
 
 	return (
 		<NativewindModal
-			backdropComponent={Backdrop}
+			backdropComponent={hideBackdrop ? null : Backdrop}
+			style={shadowStyle}
 			handleComponent={renderHandle}
 			animateOnMount={!reduceMotion}
 			keyboardBehavior="interactive"
+			topInset={insets.top}
+			enableDismissOnClose={enableDismissOnClose}
+			enableOverDrag={false}
 			keyboardBlurBehavior="restore"
 			containerComponent={renderContainerComponent}
 			backgroundClassName="bg-background"
 			android_keyboardInputMode="adjustPan"
 			enableDynamicSizing={false}
+			onAnimate={onAnimte}
 			ref={ref}
-			overDragResistanceFactor={containsList ? 0 : undefined}
+			onChange={handleIndexChange}
+			overDragResistanceFactor={containsList ? 0 : 2.5}
 			snapPoints={SNAPPOINTS[snapPoints]}
 		>
-			<Context.Provider value={context}>
-				<View className="bg-background">{children}</View>
-			</Context.Provider>
+			<Context.Provider value={context}>{children}</Context.Provider>
 		</NativewindModal>
 	);
 }
 
-export function Inner({ children, style, header }: DialogInnerProps) {
-	const insets = useSafeAreaInsets();
+export function Inner({ children }: DialogInnerProps) {
 	return (
-		<BottomSheetView
-			className="pt-6 px-5"
-			style={[
-				{
-					paddingBottom: insets.bottom,
-				},
-				style,
-			]}
-		>
+		<BottomSheetView className="bg-background px-4 flex-1 pb-safe">
 			{children}
 		</BottomSheetView>
 	);
 }
-export function ScrollableInner({ children, style, header }: DialogInnerProps) {
-	const insets = useSafeAreaInsets();
+export function ScrollableInner({ children }: DialogInnerProps) {
 	return (
-		<BottomSheetScrollView className={'bg-background'}>
+		<BottomSheetScrollView
+			contentContainerClassName={'px-4'}
+			className={'bg-background'}
+		>
 			{children}
 		</BottomSheetScrollView>
 	);
 }
 
 export function Handle(props: BottomSheetHandleProps) {
-	const { close } = useDialogContext();
-
 	return (
 		<View className="rounded-t-2xl w-full items-center z-10 bg-background py-2">
-			<Pressable onPress={() => close()}>
-				<View className="rounded-sm w-9 h-1 self-center bg-gray-500 dark:bg-gray-400 opacity-50" />
-			</Pressable>
+			<View className="rounded-sm w-9 h-1 self-center bg-gray-500 dark:bg-gray-400 opacity-50" />
 		</View>
 	);
 }

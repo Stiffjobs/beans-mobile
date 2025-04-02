@@ -1,7 +1,17 @@
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
-import { View, ScrollView, FlatList, Pressable } from 'react-native';
+import {
+	View,
+	ScrollView,
+	FlatList,
+	Pressable,
+	useWindowDimensions,
+} from 'react-native';
 import { Loader } from '~/components/Loader';
-import { useGetPostById } from '~/state/queries/post';
+import {
+	useGetPostById,
+	useLikePost,
+	useUnlikePost,
+} from '~/state/queries/post';
 import { Image } from 'expo-image';
 import { Text } from '~/components/ui/text';
 import { useCallback, useState } from 'react';
@@ -23,6 +33,12 @@ import {
 } from '~/state/queries/users';
 import { Id } from '~/convex/_generated/dataModel';
 import { t } from '@lingui/core/macro';
+import {
+	useCommentsDialogControl,
+	CommentsDialog,
+} from '~/components/CommentsDialog';
+import { useQuery } from 'convex/react';
+import { api } from '~/convex/_generated/api';
 
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -36,9 +52,11 @@ export default function PostDetailsPage() {
 	const openDetailsDialog = useCallback(() => {
 		detailsDialogControl.open();
 	}, [detailsDialogControl]);
-	const isOwner = data?.author === currentUser.data?._id;
 	const followUser = useFollowUser();
 	const unfollowUser = useUnfollowUser();
+	const urls = data?.images.filter(e => e !== null) ?? [];
+	const isMe = data?.author._id === currentUser.data?._id;
+	const commentsDialogControl = useCommentsDialogControl();
 
 	const handleFollow = useCallback(async () => {
 		await followUser.mutateAsync(data?.author._id as Id<'users'>);
@@ -47,6 +65,18 @@ export default function PostDetailsPage() {
 	const handleUnfollow = useCallback(async () => {
 		await unfollowUser.mutateAsync(data?.author._id as Id<'users'>);
 	}, [unfollowUser.mutateAsync, data?.author._id]);
+	const hasLiked = useQuery(api.users.hasLikedPost, {
+		postId: id as Id<'posts'>,
+	});
+	const handleLike = useCallback(() => {
+		if (hasLiked) {
+			unlikePost.mutate({ postId: id as Id<'posts'> });
+		} else {
+			likePost.mutate({ postId: id as Id<'posts'> });
+		}
+	}, [hasLiked, id]);
+	const likePost = useLikePost();
+	const unlikePost = useUnlikePost();
 
 	const openEditPostModal = useCallback(() => {
 		openModal({
@@ -62,15 +92,15 @@ export default function PostDetailsPage() {
 			</View>
 		);
 	}
-	const urls = data?.images.filter(e => e !== null) ?? [];
-	const isMe = data?.author._id === currentUser.data?._id;
-
 	return (
-		<ScrollView className="flex-1  p-4 gap-4">
+		<ScrollView
+			className="flex-1 p-4 gap-4"
+			contentContainerClassName="pb-[30%]"
+		>
 			<Stack.Screen
 				options={{
 					headerRight: () =>
-						isOwner ? (
+						isMe ? (
 							<Button onPress={openDetailsDialog} size="icon" variant="ghost">
 								<Ellipsis />
 							</Button>
@@ -224,16 +254,26 @@ export default function PostDetailsPage() {
 					))}
 				</View>
 			)}
-			<View className="h-8" />
 			<ImageView
 				images={urls.map(e => ({ uri: e! }))}
 				visible={visible}
 				onRequestClose={() => setVisible(false)}
 				imageIndex={viewImageIndex}
 			/>
+			<CommentsDialog
+				control={commentsDialogControl}
+				params={{
+					type: 'comments',
+					postId: id,
+				}}
+			/>
 			<DetailsDialog
 				control={detailsDialogControl}
-				params={{ type: 'post-details', openModal: openEditPostModal, isOwner }}
+				params={{
+					type: 'post-details',
+					openModal: openEditPostModal,
+					isOwner: isMe,
+				}}
 			/>
 		</ScrollView>
 	);
