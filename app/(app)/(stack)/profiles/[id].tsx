@@ -59,8 +59,8 @@ export default function ProfileDetailsPage() {
 	);
 	return (
 		<View className="flex-1 gap-4 px-4">
-			<View className="items-center justify-between flex flex-row ">
-				<View>
+			<View className="items-start justify-between flex flex-row ">
+				<View className="flex-1 gap-2">
 					<Text className="text-2xl font-bold text-foreground">
 						{fetchUserById.data?.name}
 					</Text>
@@ -79,6 +79,9 @@ export default function ProfileDetailsPage() {
 							</Text>
 						</Pressable>
 					)}
+					<Text className="text-secondary-foreground font-semibold">
+						{fetchUserById.data?.bio}
+					</Text>
 				</View>
 				<UserAvatar avatar={fetchUserById.data?.avatar} />
 			</View>
