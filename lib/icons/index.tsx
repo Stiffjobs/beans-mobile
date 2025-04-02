@@ -12,9 +12,11 @@ import { User } from './User';
 import { Plus } from './Plus';
 import { Link2 } from './Link2';
 import { Link } from './Link';
+import { Send } from './Send';
 export {
 	ImagePlus,
 	Link,
+	Send,
 	Link2,
 	ChevronLeft,
 	Ellipsis,
