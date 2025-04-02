@@ -17,6 +17,10 @@ msgstr ""
 msgid "<0>Fields marked with <1>*</1> are required</0>"
 msgstr "<0>標示 <1>*</1> 為必填欄位</0>"
 
+#: components/CommentsDialog/index.tsx:157
+msgid "Add a comment..."
+msgstr ""
+
 #: view/com/modals/CreatePostModal.tsx:652
 msgid "Are you sure to discard this post?"
 msgstr "確定要捨棄這篇貼文嗎？"
@@ -72,6 +76,11 @@ msgstr "取消"
 msgid "Coffee in (g)"
 msgstr "咖啡粉重(g)"
 
+#. placeholder {0}: fetchCommentsQuery.data?.length
+#: components/CommentsDialog/index.tsx:104
+msgid "Comments ({0})"
+msgstr ""
+
 #: view/com/modals/CreatePostModal.tsx:223
 msgid "Created on"
 msgstr ""
@@ -106,6 +115,9 @@ msgid "Elevation (masl)"
 msgstr ""
 
 #. placeholder {0}: error.message
+#: state/queries/post_comments/index.ts:35
+#: state/queries/post_comments/index.ts:48
+#: state/queries/post/index.ts:177
 #: state/queries/gears/index.ts:32
 msgid "Error: {0}"
 msgstr ""
@@ -142,13 +154,13 @@ msgstr ""
 msgid "Flavor"
 msgstr "風味"
 
-#: app/(app)/(stack)/profiles/[id].tsx:96
-#: app/(app)/(stack)/posts/[id].tsx:105
+#: app/(app)/(stack)/profiles/[id].tsx:99
+#: app/(app)/(stack)/posts/[id].tsx:126
 msgid "Follow"
 msgstr ""
 
-#: app/(app)/(stack)/profiles/[id].tsx:92
-#: app/(app)/(stack)/posts/[id].tsx:99
+#: app/(app)/(stack)/profiles/[id].tsx:95
+#: app/(app)/(stack)/posts/[id].tsx:120
 msgid "Following"
 msgstr ""
 
@@ -192,6 +204,10 @@ msgstr "中淺焙"
 #: view/com/modals/CreatePostModal.tsx:209
 msgid "Next"
 msgstr "下一步"
+
+#: components/CommentsDialog/index.tsx:117
+msgid "No comments yet"
+msgstr ""
 
 #: components/BeanProfileListDialog/index.tsx:44
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:119
