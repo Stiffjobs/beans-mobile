@@ -62,7 +62,6 @@ function CommentsDialogInner(
 	const fetchCommentsQuery = useFetchPostComments(props.params.postId);
 	const { index } = Dialog.useDialogContext();
 	const [isFocused, setIsFocused] = useState(false);
-	const insets = useSafeAreaInsets();
 
 	const form = useForm({
 		defaultValues: {
@@ -105,7 +104,7 @@ function CommentsDialogInner(
 		<Dialog.Inner className={cn(isFocused ? 'pb-2' : 'pb-safe')}>
 			<TouchableOpacity onPress={handleExpandAndCollapse}>
 				<View className="flex-row items-center justify-between">
-					<Text className="text-2xl font-bold">{t`Comments (${fetchCommentsQuery.data?.length})`}</Text>
+					<Text className="text-2xl font-bold">{t`Comments (${fetchCommentsQuery.data?.length ?? 0})`}</Text>
 					<Animated.View style={props.animatedStyle}>
 						<View className="rounded-full itemsecen bg-secondary p-2">
 							<X strokeWidth={3} className="text-primary size-5" />
@@ -118,7 +117,11 @@ function CommentsDialogInner(
 					className="flex-1"
 					ListEmptyComponent={() => (
 						<View className="flex-1 items-center justify-center">
-							<Text>{t`No comments yet`}</Text>
+							{fetchCommentsQuery.isLoading ? (
+								<Loader />
+							) : (
+								<Text>{t`No comments yet`}</Text>
+							)}
 						</View>
 					)}
 					contentContainerClassName="pt-2"
