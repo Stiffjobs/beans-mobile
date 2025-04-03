@@ -17,13 +17,15 @@ import { Id } from '~/convex/_generated/dataModel';
 import { useForm } from '@tanstack/react-form';
 import { createPostCommentSchema } from '~/lib/schemas';
 import { z } from 'zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { t } from '@lingui/core/macro';
 import { Loader } from '../Loader';
 import { Send, X, ChevronLeft, Plus } from '~/lib/icons';
-import { TouchableOpacity } from '@gorhom/bottom-sheet';
+import { BottomSheetFlatList, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { BottomSheetInput } from '../input/Input';
 import { timeAgo } from '~/utils/time';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { cn } from '~/lib/utils';
 export { useDialogControl as useCommentsDialogControl } from '~/components/Dialog';
 
 export function CommentsDialog(props: CommentsDialogProps) {
@@ -59,6 +61,8 @@ function CommentsDialogInner(
 	const deleteCommentMutation = useDeletePostComment();
 	const fetchCommentsQuery = useFetchPostComments(props.params.postId);
 	const { index } = Dialog.useDialogContext();
+	const [isFocused, setIsFocused] = useState(false);
+	const insets = useSafeAreaInsets();
 
 	const form = useForm({
 		defaultValues: {
@@ -98,7 +102,7 @@ function CommentsDialogInner(
 	}
 
 	return (
-		<Dialog.Inner>
+		<Dialog.Inner className={cn(isFocused ? 'pb-2' : 'pb-safe')}>
 			<TouchableOpacity onPress={handleExpandAndCollapse}>
 				<View className="flex-row items-center justify-between">
 					<Text className="text-2xl font-bold">{t`Comments (${fetchCommentsQuery.data?.length})`}</Text>
@@ -110,7 +114,7 @@ function CommentsDialogInner(
 				</View>
 			</TouchableOpacity>
 			<Animated.View style={props.animatedStyle} className="flex-1">
-				<FlatList
+				<BottomSheetFlatList
 					className="flex-1"
 					ListEmptyComponent={() => (
 						<View className="flex-1 items-center justify-center">
@@ -147,7 +151,7 @@ function CommentsDialogInner(
 				/>
 			</Animated.View>
 			<Animated.View style={props.animatedStyle}>
-				<View className="w-full flex-row items-center justify-between">
+				<View className="w-full py-2 flex-row items-center justify-between">
 					<form.Field name="comment">
 						{field => (
 							<BottomSheetInput
@@ -155,6 +159,8 @@ function CommentsDialogInner(
 								value={field.state.value}
 								onChangeText={field.handleChange}
 								placeholder={t`Add a comment...`}
+								onFocus={() => setIsFocused(true)}
+								onBlur={() => setIsFocused(false)}
 							/>
 						)}
 					</form.Field>

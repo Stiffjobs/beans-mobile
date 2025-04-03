@@ -38,6 +38,7 @@ export interface DialogInnerProps {
 	children: React.ReactNode;
 	style?: ViewStyle;
 	header?: React.ReactNode;
+	className?: string;
 }
 
 export type DialogContextProps = {

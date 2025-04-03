@@ -19,6 +19,7 @@ import { Context, useDialogContext } from './context';
 import { FullWindowOverlay } from 'react-native-screens';
 import { useReducedMotion } from 'react-native-reanimated';
 import { cssInterop } from 'nativewind';
+import { cn } from '~/lib/utils';
 export {
 	useDialogContext,
 	useDialogControl,
@@ -176,9 +177,9 @@ export function Outer({
 	);
 }
 
-export function Inner({ children }: DialogInnerProps) {
+export function Inner({ children, className }: DialogInnerProps) {
 	return (
-		<BottomSheetView className="bg-background px-4 flex-1 pb-safe">
+		<BottomSheetView className={cn('bg-background px-4 flex-1', className)}>
 			{children}
 		</BottomSheetView>
 	);
