@@ -7,7 +7,7 @@ import {
 	ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { ExpoRoot, Slot } from 'expo-router';
+import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useState } from 'react';
 import 'react-native-reanimated';
@@ -37,6 +37,7 @@ import { tokenCache } from '~/utils/cache';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Shell } from '~/view/shell';
 import { I18nProvider } from '~/utils/i18nProvider';
+import { PushNotificationManager } from '~/app/components/PushNotificationManager';
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 const convex = new ConvexReactClient(
 	process.env.EXPO_PUBLIC_CONVEX_URL as string
@@ -188,6 +189,7 @@ function RootLayoutNav({
 									</KeyboardProvider>
 								</GestureHandlerRootView>
 							</QueryClientProvider>
+							<PushNotificationManager />
 						</ConvexProviderWithClerk>
 					</I18nProvider>
 				</RootSiblingParent>
