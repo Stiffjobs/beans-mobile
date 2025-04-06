@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { SharedValue, useSharedValue } from 'react-native-reanimated';
 import { User } from '~/lib/auth/types';
 
 export interface CreatePostModal {
@@ -33,6 +34,11 @@ export interface EditBeanProfileModal {
 	id: string;
 }
 
+export interface CommentListModal {
+	name: 'comment-list';
+	postId: string;
+}
+
 export type Modal =
 	| CreatePostModal
 	| EditProfileModal
@@ -40,28 +46,37 @@ export type Modal =
 	| CreateGearModal
 	| EditGearModal
 	| CreateBeanProfileModal
-	| EditBeanProfileModal;
-
+	| EditBeanProfileModal
+	| CommentListModal;
 const ModalContext = React.createContext<{
 	isModalActive: boolean;
+	progress: SharedValue<number>;
 	activeModals: Modal[];
+	index: number;
 }>({
 	activeModals: [],
 	isModalActive: false,
+	// Don't call hooks in context default value
+	progress: { value: 0 } as SharedValue<number>,
+	index: 0,
 });
 
 const ModalControlContext = React.createContext<{
 	openModal: (modal: Modal) => void;
 	closeModal: () => boolean;
 	closeAllModals: () => boolean;
+	setIndex: (index: number) => void;
 }>({
 	openModal: () => {},
 	closeModal: () => false,
 	closeAllModals: () => false,
+	setIndex: () => {},
 });
 
 export function Provider({ children }: React.PropsWithChildren<{}>) {
 	const [activeModals, setActiveModals] = useState<Modal[]>([]);
+	const progress = useSharedValue(0);
+	const [index, setIndex] = useState(0);
 	const openModal = React.useCallback((modal: Modal) => {
 		setActiveModals(modals => [...modals, modal]);
 	}, []);
@@ -82,8 +97,10 @@ export function Provider({ children }: React.PropsWithChildren<{}>) {
 		() => ({
 			isModalActive: activeModals.length > 0,
 			activeModals,
+			progress,
+			index,
 		}),
-		[activeModals]
+		[activeModals, progress, index]
 	);
 
 	const methods = React.useMemo(
@@ -91,8 +108,9 @@ export function Provider({ children }: React.PropsWithChildren<{}>) {
 			openModal,
 			closeModal,
 			closeAllModals,
+			setIndex,
 		}),
-		[openModal, closeModal, closeAllModals]
+		[openModal, closeModal, closeAllModals, setIndex]
 	);
 	return (
 		<ModalContext.Provider value={state}>
