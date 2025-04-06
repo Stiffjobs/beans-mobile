@@ -1,31 +1,31 @@
 import * as Dialog from '~/components/Dialog';
-import { View, TextInput, FlatList, Image } from 'react-native';
+import { View, TextInput } from 'react-native';
 import Animated, {
+	useAnimatedKeyboard,
 	useAnimatedStyle,
 	useSharedValue,
 	withTiming,
 } from 'react-native-reanimated';
-import { Separator } from '../ui/separator';
 import { CommentsDialogProps } from './types';
 import {
 	useCreatePostComment,
 	useDeletePostComment,
 	useFetchPostComments,
 } from '~/state/queries/post_comments';
-import { Text, TextClassContext } from '~/components/ui/text';
+import { Text } from '~/components/ui/text';
 import { Id } from '~/convex/_generated/dataModel';
 import { useForm } from '@tanstack/react-form';
 import { createPostCommentSchema } from '~/lib/schemas';
-import { z } from 'zod';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { t } from '@lingui/core/macro';
 import { Loader } from '../Loader';
-import { Send, X, ChevronLeft, Plus } from '~/lib/icons';
+import { Send, X, Reply } from '~/lib/icons';
 import { BottomSheetFlatList, TouchableOpacity } from '@gorhom/bottom-sheet';
-import { BottomSheetInput } from '../input/Input';
+import { Input } from '../input/Input';
 import { timeAgo } from '~/utils/time';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { cn } from '~/lib/utils';
+import { CommentContent } from './CommentContent';
+import { UserAvatar } from '~/view/com/util/UserAvatar';
 export { useDialogControl as useCommentsDialogControl } from '~/components/Dialog';
 
 export function CommentsDialog(props: CommentsDialogProps) {
@@ -62,21 +62,26 @@ function CommentsDialogInner(
 	const fetchCommentsQuery = useFetchPostComments(props.params.postId);
 	const { index } = Dialog.useDialogContext();
 	const [isFocused, setIsFocused] = useState(false);
+	const [comment, setComment] = useState('');
 
+	const keyboard = useAnimatedKeyboard();
+	const translateStyle = useAnimatedStyle(() => {
+		return {
+			transform: [{ translateY: -keyboard.height.value }],
+		};
+	});
 	const form = useForm({
 		defaultValues: {
-			comment: '',
+			content: '',
 		},
 		validators: {
-			onSubmit: z.object({
-				comment: z.string().min(1),
-			}),
+			onSubmit: createPostCommentSchema,
 		},
 		onSubmit: async ({ value, formApi }) => {
-			if (value.comment.trim()) {
+			if (value.content.trim()) {
 				await createCommentMutation.mutateAsync({
 					postId: props.params.postId as Id<'posts'>,
-					content: value.comment,
+					content: value.content,
 				});
 				formApi.reset();
 			}
@@ -90,6 +95,13 @@ function CommentsDialogInner(
 	};
 	const handleExpandAndCollapse = () => {
 		props.control.toIndex(index === 0 ? 1 : 0);
+	};
+	const inputRef = useRef<TextInput>(null);
+
+	const handleReplyToComment = (username: string | undefined) => {
+		const newContent = comment + `@${username} `;
+		setComment(newContent);
+		inputRef.current?.focus();
 	};
 
 	if (fetchCommentsQuery.isLoading) {
@@ -130,49 +142,51 @@ function CommentsDialogInner(
 					keyExtractor={item => item._id}
 					renderItem={({ item }) => {
 						return (
-							<View className="">
-								<View className="flex-row">
-									<View className="h-10 w-10 rounded-full bg-muted overflow-hidden mr-3">
-										{item.user?.avatar && (
-											<Image
-												source={{ uri: item.user.avatar }}
-												className="h-full w-full"
-											/>
-										)}
-									</View>
+							<View className="flex flex-row items-center">
+								<View className="flex-row gap-2">
+									<UserAvatar avatar={item.user?.avatar} size="sm" />
 									<View className="bg-secondary p-2 rounded-lg">
 										<View className="flex-row items-center gap-1">
 											<Text className="font-semibold">{item.user?.name}</Text>
 											<Text className="text-muted-foreground">{`• ${timeAgo(item._creationTime)}`}</Text>
 										</View>
-										<Text className="mt-1">{item.content}</Text>
+										<View className="mt-1">
+											<CommentContent content={item.content} />
+										</View>
 									</View>
 								</View>
+								<TouchableOpacity
+									onPress={() => handleReplyToComment(item.user?.name)}
+								>
+									<View className="flex items-center ml-2 justify-center bg-muted rounded-full p-2">
+										<Reply
+											strokeWidth={3}
+											className="text-muted-foreground size-4"
+										/>
+									</View>
+								</TouchableOpacity>
 							</View>
 						);
 					}}
 				/>
 			</Animated.View>
-			<Animated.View style={props.animatedStyle}>
+			<Animated.View style={[props.animatedStyle, translateStyle]}>
 				<View className="w-full py-2 flex-row items-center justify-between">
-					<form.Field name="comment">
-						{field => (
-							<BottomSheetInput
-								className="flex-1 rounded-xl"
-								value={field.state.value}
-								onChangeText={field.handleChange}
-								placeholder={t`Add a comment...`}
-								onFocus={() => setIsFocused(true)}
-								onBlur={() => setIsFocused(false)}
-							/>
-						)}
-					</form.Field>
-					<form.Subscribe selector={state => [state.values.comment]}>
-						{([comment]) =>
-							comment.length > 0 && (
+					<Input
+						className="flex-1 rounded-xl"
+						ref={inputRef}
+						value={comment}
+						onChangeText={setComment}
+						placeholder={t`Add a comment...`}
+						// onFocus={() => setIsFocused(true)}
+						// onBlur={() => setIsFocused(false)}
+					/>
+					<form.Subscribe selector={state => [state.values.content]}>
+						{([content]) =>
+							content.length > 0 && (
 								<TouchableOpacity onPress={form.handleSubmit}>
-									<View className="p-2 items-center justify-center">
-										<Send className="text-coffee" />
+									<View className="p-2 items-center ml-2 justify-center rounded-full bg-primary">
+										<Send className="text-primary-foreground size-6" />
 									</View>
 								</TouchableOpacity>
 							)
