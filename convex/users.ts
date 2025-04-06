@@ -257,3 +257,32 @@ export const hasLikedPost = query({
 		return !!like;
 	},
 });
+
+export const getFollowers = query({
+	args: {},
+	async handler(ctx, args) {
+		const user = await getCurrentUserOrThrow(ctx);
+		const followers = await ctx.db
+			.query('follows')
+			.withIndex('by_following', q => q.eq('followingId', user._id))
+			.collect();
+
+		// Get user details for each follower
+		const followersWithDetails = await Promise.all(
+			followers.map(async follow => {
+				const user = await ctx.db.get(follow.followerId);
+				if (!user) return null;
+				const avatar = user.avatar
+					? await ctx.storage.getUrl(user.avatar)
+					: null;
+				return {
+					_id: user._id,
+					name: user.name,
+					avatar,
+				};
+			})
+		);
+
+		return followersWithDetails.filter(Boolean);
+	},
+});
