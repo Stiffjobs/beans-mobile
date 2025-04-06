@@ -28,14 +28,14 @@ export const useCreatePost = () => {
 	return useMutation({
 		mutationFn: async (values: CreatePostFormFields) => {
 			const storageIds = await Promise.all(
-				values.images.map(async (e) => {
+				values.images.map(async e => {
 					const ids = await uploadToStorage({
 						path: e.path,
 						uploadUrl: await getUploadUrl(),
 						mime: e.mime,
 					});
 					return ids;
-				}),
+				})
 			);
 
 			await mutation({
@@ -47,7 +47,7 @@ export const useCreatePost = () => {
 			Toast.show('Post created successfully', 'CheckCheck', 'success');
 			closeModal();
 		},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 			console.error(error);
 		},
@@ -61,7 +61,7 @@ export const useListPosts = () => {
 
 export const useGetPostById = (id: string) => {
 	return useQuery(
-		convexQuery(api.posts.getPostById, { id: id as Id<'posts'> }),
+		convexQuery(api.posts.getPostById, { id: id as Id<'posts'> })
 	);
 };
 
@@ -69,7 +69,7 @@ export const useFetchFeed = ({ refreshKey }: { refreshKey: number }) => {
 	return useConvexPaginatedQuery(
 		api.posts.feed,
 		{ refreshKey },
-		{ initialNumItems: 10 },
+		{ initialNumItems: 10 }
 	);
 };
 
@@ -83,7 +83,7 @@ export const useDeletePost = (id: string) => {
 			Toast.show('Post deleted successfully', 'CircleAlert', 'success');
 			router.back();
 		},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -109,7 +109,7 @@ export const useEditPost = ({
 			Toast.show('Post updated successfully', 'CircleCheck', 'success');
 			onSuccess?.();
 		},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -129,10 +129,10 @@ export function useLikePost() {
 					{
 						postId: postId as Id<'posts'>,
 					},
-					true,
+					true
 				);
 			}
-		},
+		}
 	);
 	return useMutation({
 		mutationFn: async (values: LikePostFormFields) => {
@@ -141,7 +141,7 @@ export function useLikePost() {
 			});
 		},
 		onSuccess: () => {},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -161,10 +161,10 @@ export function useUnlikePost() {
 					{
 						postId: postId as Id<'posts'>,
 					},
-					false,
+					false
 				);
 			}
-		},
+		}
 	);
 	return useMutation({
 		mutationFn: async (values: UnlikePostFormFields) => {
@@ -173,7 +173,7 @@ export function useUnlikePost() {
 			});
 		},
 		onSuccess: () => {},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(t`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -181,6 +181,10 @@ export function useUnlikePost() {
 
 export function useListPostsByUserId(userId: string) {
 	return useQuery(
-		convexQuery(api.posts.listByUserId, { userId: userId as Id<'users'> }),
+		convexQuery(api.posts.listByUserId, { userId: userId as Id<'users'> })
 	);
+}
+
+export function useFetchFollowers() {
+	return useQuery(convexQuery(api.users.getFollowers, {}));
 }
