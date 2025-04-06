@@ -30,9 +30,9 @@ export function usePushNotifications() {
 		}
 
 		if (!Device.isDevice) {
-			handleRegistrationError(
-				t`Must use physical device for push notifications`
-			);
+			// handleRegistrationError(
+			// 	t`Must use physical device for push notifications`,
+			// );
 			return;
 		}
 
@@ -68,7 +68,7 @@ export function usePushNotifications() {
 
 			return token;
 		};
-		const { error, data } = await tryCatch(promise());
+		const { error } = await tryCatch(promise());
 
 		if (error) {
 			handleRegistrationError(t`Failed to get push token: ${error}`);
