@@ -30,7 +30,7 @@ export default function ProfileInfo() {
 
 	return (
 		<View className="gap-4 w-full px-4">
-			<View className="items-center justify-between flex flex-row ">
+			<View className="items-start justify-between flex flex-row ">
 				<View>
 					<Text className="text-2xl font-bold text-foreground">
 						{currentUser.data?.name}
@@ -64,6 +64,9 @@ export default function ProfileInfo() {
 							</View>
 						)}
 					</View>
+					<Text className="text-secondary-foreground font-semibold">
+						{currentUser.data?.bio}
+					</Text>
 				</View>
 				<UserAvatar avatar={currentUser.data?.avatar} />
 			</View>
