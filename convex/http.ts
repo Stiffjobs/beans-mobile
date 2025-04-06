@@ -3,6 +3,7 @@ import { httpAction } from './_generated/server';
 import { internal } from './_generated/api';
 import type { WebhookEvent } from '@clerk/backend';
 import { Webhook } from 'svix';
+import { helloWorld } from './notification_httpActions';
 
 const http = httpRouter();
 
@@ -50,5 +51,11 @@ async function validateRequest(req: Request): Promise<WebhookEvent | null> {
 		return null;
 	}
 }
+
+http.route({
+	path: '/helloworld',
+	method: 'GET',
+	handler: helloWorld,
+});
 
 export default http;
