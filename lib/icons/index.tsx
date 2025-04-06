@@ -13,9 +13,11 @@ import { Plus } from './Plus';
 import { Link2 } from './Link2';
 import { Link } from './Link';
 import { Send } from './Send';
+import { Reply } from './Reply';
 export {
 	ImagePlus,
 	Link,
+	Reply,
 	Send,
 	Link2,
 	ChevronLeft,
