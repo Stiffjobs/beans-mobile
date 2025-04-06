@@ -15,7 +15,7 @@ msgstr ""
 msgid "<0>Fields marked with <1>*</1> are required</0>"
 msgstr "<0>Fields marked with <1>*</1> are required</0>"
 
-#: components/CommentsDialog/index.tsx:157
+#: components/CommentsDialog/index.tsx:230
 msgid "Add a comment..."
 msgstr "Add a comment..."
 
@@ -74,8 +74,8 @@ msgstr "Cancel"
 msgid "Coffee in (g)"
 msgstr "Coffee in (g)"
 
-#. placeholder {0}: fetchCommentsQuery.data?.length
-#: components/CommentsDialog/index.tsx:104
+#. placeholder {0}: fetchCommentsQuery.data?.length ?? 0
+#: components/CommentsDialog/index.tsx:158
 msgid "Comments ({0})"
 msgstr "Comments ({0})"
 
@@ -113,8 +113,8 @@ msgid "Elevation (masl)"
 msgstr "Elevation (masl)"
 
 #. placeholder {0}: error.message
-#: state/queries/post_comments/index.ts:35
-#: state/queries/post_comments/index.ts:48
+#: state/queries/post_comments/index.ts:71
+#: state/queries/post_comments/index.ts:84
 #: state/queries/post/index.ts:177
 #: state/queries/gears/index.ts:32
 msgid "Error: {0}"
@@ -127,6 +127,10 @@ msgstr "Extra Light"
 #: view/com/modals/CreatePostModal.tsx:598
 msgid "Extraction Yield (%)"
 msgstr "Extraction Yield (%)"
+
+#: app/hooks/usePushNotifications.ts:74
+msgid "Failed to get push token: {error}"
+msgstr "Failed to get push token: {error}"
 
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:168
 msgid "Farm"
@@ -153,12 +157,12 @@ msgid "Flavor"
 msgstr "Flavor"
 
 #: app/(app)/(stack)/profiles/[id].tsx:99
-#: app/(app)/(stack)/posts/[id].tsx:126
+#: app/(app)/(stack)/posts/[id].tsx:135
 msgid "Follow"
 msgstr "Follow"
 
 #: app/(app)/(stack)/profiles/[id].tsx:95
-#: app/(app)/(stack)/posts/[id].tsx:120
+#: app/(app)/(stack)/posts/[id].tsx:129
 msgid "Following"
 msgstr "Following"
 
@@ -203,7 +207,7 @@ msgstr "Medium Light"
 msgid "Next"
 msgstr "Next"
 
-#: components/CommentsDialog/index.tsx:117
+#: components/CommentsDialog/index.tsx:174
 msgid "No comments yet"
 msgstr "No comments yet"
 
@@ -216,6 +220,10 @@ msgstr "No data yet"
 #: view/com/modals/CreatePostModal.tsx:533
 msgid "Other tools"
 msgstr "Other tools"
+
+#: app/hooks/usePushNotifications.ts:47
+msgid "Permission not granted for push notifications"
+msgstr "Permission not granted for push notifications"
 
 #: view/com/modals/CreatePostModal.tsx:199
 #: app/(app)/(stack)/posts/_layout.tsx:16
@@ -246,6 +254,18 @@ msgstr "Producer"
 #: app/(app)/(stack)/(tabs)/_layout.tsx:63
 msgid "Profile"
 msgstr "Profile"
+
+#: app/hooks/usePushNotifications.ts:55
+msgid "Project ID not found"
+msgstr "Project ID not found"
+
+#: app/hooks/usePushNotifications.ts:19
+msgid "Push Notification Error"
+msgstr "Push Notification Error"
+
+#: app/hooks/usePushNotifications.ts:18
+msgid "Push Notification Error:"
+msgstr "Push Notification Error:"
 
 #: view/com/modals/CreatePostModal.tsx:323
 msgid "Ratio"
