@@ -1,9 +1,13 @@
 import * as Dialog from '~/components/Dialog';
 import { View, TextInput } from 'react-native';
 import Animated, {
+	Easing,
+	interpolate,
+	KeyboardState,
 	useAnimatedKeyboard,
 	useAnimatedStyle,
 	useSharedValue,
+	withSpring,
 	withTiming,
 } from 'react-native-reanimated';
 import { CommentsDialogProps } from './types';
@@ -14,7 +18,7 @@ import {
 } from '~/state/queries/post_comments';
 import { Text } from '~/components/ui/text';
 import { Id } from '~/convex/_generated/dataModel';
-import { useForm } from '@tanstack/react-form';
+import { useForm, useStore } from '@tanstack/react-form';
 import { createPostCommentSchema } from '~/lib/schemas';
 import { useEffect, useRef, useState } from 'react';
 import { t } from '@lingui/core/macro';
@@ -26,6 +30,12 @@ import { timeAgo } from '~/utils/time';
 import { cn } from '~/lib/utils';
 import { CommentContent } from './CommentContent';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
+import {
+	useKeyboardAnimation,
+	useKeyboardContext,
+	useReanimatedKeyboardAnimation,
+} from 'react-native-keyboard-controller';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export { useDialogControl as useCommentsDialogControl } from '~/components/Dialog';
 
 export function CommentsDialog(props: CommentsDialogProps) {
@@ -57,17 +67,18 @@ export function CommentsDialog(props: CommentsDialogProps) {
 function CommentsDialogInner(
 	props: CommentsDialogProps & { animatedStyle: { opacity: number } }
 ) {
+	const insets = useSafeAreaInsets();
 	const createCommentMutation = useCreatePostComment();
 	const deleteCommentMutation = useDeletePostComment();
 	const fetchCommentsQuery = useFetchPostComments(props.params.postId);
 	const { index } = Dialog.useDialogContext();
-	const [isFocused, setIsFocused] = useState(false);
-	const [comment, setComment] = useState('');
 
-	const keyboard = useAnimatedKeyboard();
+	const { height, progress } = useReanimatedKeyboardAnimation();
+
 	const translateStyle = useAnimatedStyle(() => {
 		return {
-			transform: [{ translateY: -keyboard.height.value }],
+			transform: [{ translateY: height.value }],
+			paddingBottom: interpolate(progress.value, [0, 1], [insets.bottom, 12]),
 		};
 	});
 	const form = useForm({
@@ -88,19 +99,28 @@ function CommentsDialogInner(
 		},
 	});
 
-	const handleDeleteComment = async (commentId: string) => {
-		await deleteCommentMutation.mutateAsync({
-			commentId: commentId as Id<'post_comments'>,
-		});
-	};
+	const content = useStore(form.store, state => state.values.content);
+	const showSendButtonStyle = useAnimatedStyle(() => {
+		const show = content.length > 0;
+		return {
+			opacity: withSpring(show ? 1 : 0, {
+				damping: 10,
+				stiffness: 100,
+				mass: 0.5,
+				velocity: 1,
+			}),
+			transform: [{ rotate: withSpring(show ? '0deg' : '45deg') }],
+		};
+	});
 	const handleExpandAndCollapse = () => {
 		props.control.toIndex(index === 0 ? 1 : 0);
 	};
 	const inputRef = useRef<TextInput>(null);
 
 	const handleReplyToComment = (username: string | undefined) => {
-		const newContent = comment + `@${username} `;
-		setComment(newContent);
+		form.setFieldValue('content', curr => {
+			return curr + `@${username} `;
+		});
 		inputRef.current?.focus();
 	};
 
@@ -113,7 +133,7 @@ function CommentsDialogInner(
 	}
 
 	return (
-		<Dialog.Inner className={cn(isFocused ? 'pb-2' : 'pb-safe')}>
+		<Dialog.Inner>
 			<TouchableOpacity onPress={handleExpandAndCollapse}>
 				<View className="flex-row items-center justify-between">
 					<Text className="text-2xl font-bold">{t`Comments (${fetchCommentsQuery.data?.length ?? 0})`}</Text>
@@ -171,27 +191,36 @@ function CommentsDialogInner(
 				/>
 			</Animated.View>
 			<Animated.View style={[props.animatedStyle, translateStyle]}>
-				<View className="w-full py-2 flex-row items-center justify-between">
-					<Input
-						className="flex-1 rounded-xl"
-						ref={inputRef}
-						value={comment}
-						onChangeText={setComment}
-						placeholder={t`Add a comment...`}
-						// onFocus={() => setIsFocused(true)}
-						// onBlur={() => setIsFocused(false)}
+				{/*NOTE: translate the Y with useAnimatedKeyboard */}
+				<View className="w-full p-2 px-3 rounded-xl border border-input flex-row items-center justify-between bg-background">
+					<form.Field
+						name="content"
+						children={field => {
+							return (
+								<Input
+									className="flex-1"
+									transparent
+									ref={inputRef}
+									value={field.state.value}
+									onChangeText={field.handleChange}
+									placeholder={t`Add a comment...`}
+								/>
+							);
+						}}
 					/>
-					<form.Subscribe selector={state => [state.values.content]}>
-						{([content]) =>
-							content.length > 0 && (
-								<TouchableOpacity onPress={form.handleSubmit}>
-									<View className="p-2 items-center ml-2 justify-center rounded-full bg-primary">
-										<Send className="text-primary-foreground size-6" />
-									</View>
-								</TouchableOpacity>
-							)
-						}
-					</form.Subscribe>
+					<TouchableOpacity onPress={form.handleSubmit}>
+						<Animated.View
+							style={showSendButtonStyle}
+							className={
+								'p-2 items-center ml-2 justify-center rounded-full bg-primary'
+							}
+						>
+							<Send
+								strokeWidth={3}
+								className="text-primary-foreground size-4"
+							/>
+						</Animated.View>
+					</TouchableOpacity>
 				</View>
 			</Animated.View>
 		</Dialog.Inner>
