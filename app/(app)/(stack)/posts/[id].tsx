@@ -1,4 +1,10 @@
-import { Link, Stack, useLocalSearchParams } from 'expo-router';
+import {
+	Link,
+	Stack,
+	useLocalSearchParams,
+	useSegments,
+	useFocusEffect,
+} from 'expo-router';
 import {
 	View,
 	ScrollView,
@@ -14,7 +20,7 @@ import {
 } from '~/state/queries/post';
 import { Image } from 'expo-image';
 import { Text } from '~/components/ui/text';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ImageView from 'react-native-image-viewing';
 import { Button } from '~/components/ui/button';
 import {
@@ -33,12 +39,9 @@ import {
 } from '~/state/queries/users';
 import { Id } from '~/convex/_generated/dataModel';
 import { t } from '@lingui/core/macro';
-import {
-	useCommentsDialogControl,
-	CommentsDialog,
-} from '~/components/CommentsDialog';
 import { useQuery } from 'convex/react';
 import { api } from '~/convex/_generated/api';
+import { useFetchPostComments } from '~/state/queries/post_comments';
 
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -56,7 +59,7 @@ export default function PostDetailsPage() {
 	const unfollowUser = useUnfollowUser();
 	const urls = data?.images.filter(e => e !== null) ?? [];
 	const isMe = data?.author._id === currentUser.data?._id;
-	const commentsDialogControl = useCommentsDialogControl();
+	useFetchPostComments(id as Id<'posts'>);
 
 	const handleFollow = useCallback(async () => {
 		await followUser.mutateAsync(data?.author._id as Id<'users'>);
@@ -84,6 +87,16 @@ export default function PostDetailsPage() {
 			id,
 		});
 	}, [openModal]);
+
+	//NOTE: open comment list modal when the page is focused
+	useFocusEffect(
+		useCallback(() => {
+			openModal({
+				name: 'comment-list',
+				postId: id as Id<'posts'>,
+			});
+		}, [openModal])
+	);
 
 	if (isLoading) {
 		return (
@@ -259,13 +272,6 @@ export default function PostDetailsPage() {
 				visible={visible}
 				onRequestClose={() => setVisible(false)}
 				imageIndex={viewImageIndex}
-			/>
-			<CommentsDialog
-				control={commentsDialogControl}
-				params={{
-					type: 'comments',
-					postId: id,
-				}}
 			/>
 			<DetailsDialog
 				control={detailsDialogControl}
