@@ -26,7 +26,7 @@ export const createPost = mutation({
 				timestamp: v.string(),
 				action: v.string(),
 				value: v.number(),
-			})
+			}),
 		),
 		brewingWater: v.optional(v.string()),
 		methodName: v.optional(v.string()),
@@ -41,7 +41,7 @@ export const createPost = mutation({
 			v.object({
 				storageId: v.id('_storage'),
 				contentType: v.string(),
-			})
+			}),
 		),
 	},
 	handler: async (ctx, args) => {
@@ -69,19 +69,19 @@ export const createPost = mutation({
 
 export const list = query({
 	args: {},
-	handler: async ctx => {
+	handler: async (ctx) => {
 		const userId = await getCurrentUserOrThrow(ctx);
 		if (!userId) {
 			throw new Error('Unauthorized');
 		}
 		const posts = await ctx.db
 			.query('posts')
-			.withIndex('by_author', q => q.eq('author', userId._id))
+			.withIndex('by_author', (q) => q.eq('author', userId._id))
 			.order('desc')
 			.collect();
 
 		const postWithDetails = await Promise.all(
-			posts.map(async post => {
+			posts.map(async (post) => {
 				const author = await ctx.db.get(post.author);
 				if (!author) throw new ConvexError('Author not found');
 
@@ -109,13 +109,13 @@ export const list = query({
 
 				const images = await ctx.db
 					.query('post_images')
-					.withIndex('by_post', q => q.eq('postId', post._id))
+					.withIndex('by_post', (q) => q.eq('postId', post._id))
 					.collect();
 				const imagesUrl = await Promise.all(
-					images.map(async image => {
+					images.map(async (image) => {
 						const url = await ctx.storage.getUrl(image.storageId);
 						return url;
-					})
+					}),
 				);
 
 				return {
@@ -128,9 +128,9 @@ export const list = query({
 					filterPaperDetails,
 					grinderDetails,
 					brewerDetails,
-					images: imagesUrl.filter(e => e !== null),
+					images: imagesUrl.filter((e) => e !== null),
 				};
-			})
+			}),
 		);
 
 		return postWithDetails;
@@ -144,12 +144,12 @@ export const listByUserId = query({
 	handler: async (ctx, args) => {
 		const posts = await ctx.db
 			.query('posts')
-			.withIndex('by_author', q => q.eq('author', args.userId))
+			.withIndex('by_author', (q) => q.eq('author', args.userId))
 			.order('desc')
 			.collect();
 
 		const postWithDetails = await Promise.all(
-			posts.map(async post => {
+			posts.map(async (post) => {
 				const author = await ctx.db.get(post.author);
 				if (!author) throw new ConvexError('Author not found');
 
@@ -177,13 +177,13 @@ export const listByUserId = query({
 
 				const images = await ctx.db
 					.query('post_images')
-					.withIndex('by_post', q => q.eq('postId', post._id))
+					.withIndex('by_post', (q) => q.eq('postId', post._id))
 					.collect();
 				const imagesUrl = await Promise.all(
-					images.map(async image => {
+					images.map(async (image) => {
 						const url = await ctx.storage.getUrl(image.storageId);
-						return url;
-					})
+						return url!;
+					}),
 				);
 
 				return {
@@ -196,9 +196,9 @@ export const listByUserId = query({
 					filterPaperDetails,
 					grinderDetails,
 					brewerDetails,
-					images: imagesUrl.filter(e => e !== null),
+					images: imagesUrl.filter((e) => e !== null),
 				};
-			})
+			}),
 		);
 
 		return postWithDetails;
@@ -214,7 +214,7 @@ export const feed = query({
 			.paginate(args.paginationOpts);
 
 		const postWithImages = await Promise.all(
-			postRows.page.map(async post => {
+			postRows.page.map(async (post) => {
 				const author = await ctx.db.get(post.author);
 				if (!author) throw new ConvexError('Author not found');
 				let beanProfile = null;
@@ -239,13 +239,13 @@ export const feed = query({
 				}
 				const images = await ctx.db
 					.query('post_images')
-					.withIndex('by_post', q => q.eq('postId', post._id))
+					.withIndex('by_post', (q) => q.eq('postId', post._id))
 					.collect();
 				const imagesUrl = await Promise.all(
-					images.map(async image => {
+					images.map(async (image) => {
 						const url = await ctx.storage.getUrl(image.storageId);
 						return url;
-					})
+					}),
 				);
 
 				return {
@@ -258,9 +258,9 @@ export const feed = query({
 					filterPaperDetails: filterPaperDetails,
 					grinderDetails: grinderDetails,
 					brewerDetails: brewerDetails,
-					images: imagesUrl.filter(e => e !== null),
+					images: imagesUrl.filter((e) => e !== null),
 				};
-			})
+			}),
 		);
 		return {
 			...postRows,
@@ -269,7 +269,7 @@ export const feed = query({
 	},
 });
 
-export const generateUploadUrl = mutation(async ctx => {
+export const generateUploadUrl = mutation(async (ctx) => {
 	await getCurrentUserOrThrow(ctx);
 	return await ctx.storage.generateUploadUrl();
 });
@@ -304,13 +304,13 @@ export const getPostById = query({
 		}
 		const images = await ctx.db
 			.query('post_images')
-			.withIndex('by_post', q => q.eq('postId', args.id))
+			.withIndex('by_post', (q) => q.eq('postId', args.id))
 			.collect();
 		const imagesUrl = await Promise.all(
-			images.map(async image => {
+			images.map(async (image) => {
 				const url = await ctx.storage.getUrl(image.storageId);
 				return url;
-			})
+			}),
 		);
 		return {
 			...post,
@@ -338,7 +338,7 @@ export const deletePost = mutation({
 		}
 		const postImages = await ctx.db
 			.query('post_images')
-			.withIndex('by_post', q => q.eq('postId', args.id))
+			.withIndex('by_post', (q) => q.eq('postId', args.id))
 			.collect();
 		for (const image of postImages) {
 			await ctx.storage.delete(image.storageId);
@@ -378,7 +378,7 @@ export const updatePost = mutation({
 				timestamp: v.string(),
 				action: v.string(),
 				value: v.number(),
-			})
+			}),
 		),
 	},
 	handler: async (ctx, args) => {
@@ -399,8 +399,8 @@ export const likePost = mutation({
 
 		const existingLike = await ctx.db
 			.query('likes')
-			.withIndex('unique_like', q =>
-				q.eq('userId', user._id).eq('postId', args.postId)
+			.withIndex('unique_like', (q) =>
+				q.eq('userId', user._id).eq('postId', args.postId),
 			)
 			.first();
 
@@ -438,8 +438,8 @@ export const unlikePost = mutation({
 		// Find and delete the like
 		const existingLike = await ctx.db
 			.query('likes')
-			.withIndex('unique_like', q =>
-				q.eq('userId', user._id).eq('postId', args.postId)
+			.withIndex('unique_like', (q) =>
+				q.eq('userId', user._id).eq('postId', args.postId),
 			)
 			.first();
 
