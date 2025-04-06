@@ -10,14 +10,18 @@
 
 import type * as bean_profiles from "../bean_profiles.js";
 import type * as constant from "../constant.js";
+import type * as device_tokens from "../device_tokens.js";
+import type * as env from "../env.js";
 import type * as gears from "../gears.js";
 import type * as http from "../http.js";
 import type * as migrations from "../migrations.js";
+import type * as notification_httpActions from "../notification_httpActions.js";
 import type * as post_comments from "../post_comments.js";
 import type * as posts from "../posts.js";
 import type * as trigger from "../trigger.js";
 import type * as types from "../types.js";
 import type * as users from "../users.js";
+import type * as utils from "../utils.js";
 
 import type {
   ApiFromModules,
@@ -35,14 +39,18 @@ import type {
 declare const fullApi: ApiFromModules<{
   bean_profiles: typeof bean_profiles;
   constant: typeof constant;
+  device_tokens: typeof device_tokens;
+  env: typeof env;
   gears: typeof gears;
   http: typeof http;
   migrations: typeof migrations;
+  notification_httpActions: typeof notification_httpActions;
   post_comments: typeof post_comments;
   posts: typeof posts;
   trigger: typeof trigger;
   types: typeof types;
   users: typeof users;
+  utils: typeof utils;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
