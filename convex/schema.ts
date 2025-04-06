@@ -94,8 +94,17 @@ export default defineSchema({
 		content: v.string(),
 		createdAt: v.string(),
 		likesCount: v.optional(v.number()),
+		mentions: v.optional(v.array(v.id('users'))),
 	})
 		.index('by_post', ['postId'])
 		.index('by_user', ['userId'])
 		.index('by_post_time', ['postId', 'createdAt']),
+	device_tokens: defineTable({
+		userId: v.id('users'),
+		token: v.string(),
+		platform: v.union(v.literal('ios'), v.literal('android')),
+	})
+		.index('by_user', ['userId'])
+		.index('by_token', ['token'])
+		.index('by_user_and_token', ['userId', 'token']),
 });
