@@ -181,29 +181,31 @@ function CommentsDialogInner(
 					keyExtractor={item => item._id}
 					renderItem={({ item }) => {
 						return (
-							<View className="flex flex-row items-center">
-								<View className="flex-row gap-2">
-									<UserAvatar avatar={item.user?.avatar} size="sm" />
-									<View className="bg-secondary p-2 rounded-lg">
-										<View className="flex-row items-center gap-1">
-											<Text className="font-semibold">{item.user?.name}</Text>
-											<Text className="text-muted-foreground">{`• ${timeAgo(item._creationTime)}`}</Text>
-										</View>
-										<View className="mt-1">
-											<CommentContent content={item.content} />
+							<View className="flex-row flex-1 gap-2">
+								<UserAvatar avatar={item.user?.avatar} size="sm" />
+								<View className="flex-1 flex-row items-center gap-2">
+									<View className="flex-shrink">
+										<View className="bg-secondary p-3 rounded-lg ">
+											<View className="flex-row items-center gap-1">
+												<Text className="font-semibold">{item.user?.name}</Text>
+												<Text className="text-muted-foreground">{`• ${timeAgo(item._creationTime)}`}</Text>
+											</View>
+											<View className="mt-1">
+												<CommentContent content={item.content} />
+											</View>
 										</View>
 									</View>
+									<TouchableOpacity
+										onPress={() => handleReplyToComment(item.user?.name)}
+									>
+										<View className="flex items-center justify-center bg-muted rounded-full p-2">
+											<Reply
+												strokeWidth={3}
+												className="text-muted-foreground size-4"
+											/>
+										</View>
+									</TouchableOpacity>
 								</View>
-								<TouchableOpacity
-									onPress={() => handleReplyToComment(item.user?.name)}
-								>
-									<View className="flex items-center ml-2 justify-center bg-muted rounded-full p-2">
-										<Reply
-											strokeWidth={3}
-											className="text-muted-foreground size-4"
-										/>
-									</View>
-								</TouchableOpacity>
 							</View>
 						);
 					}}
