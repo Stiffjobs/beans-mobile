@@ -1,10 +1,7 @@
 import * as Dialog from '~/components/Dialog';
 import { View, TextInput } from 'react-native';
 import Animated, {
-	Easing,
 	interpolate,
-	KeyboardState,
-	useAnimatedKeyboard,
 	useAnimatedStyle,
 	useSharedValue,
 	withSpring,
@@ -27,15 +24,13 @@ import { Send, X, Reply } from '~/lib/icons';
 import { BottomSheetFlatList, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { Input } from '../input/Input';
 import { timeAgo } from '~/utils/time';
-import { cn } from '~/lib/utils';
 import { CommentContent } from './CommentContent';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
-import {
-	useKeyboardAnimation,
-	useKeyboardContext,
-	useReanimatedKeyboardAnimation,
-} from 'react-native-keyboard-controller';
+import { MentionSuggestions } from './MentionSuggestions';
+import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFetchFollowers } from '~/state/queries/post';
+import { z } from 'zod';
 export { useDialogControl as useCommentsDialogControl } from '~/components/Dialog';
 
 export function CommentsDialog(props: CommentsDialogProps) {
@@ -71,7 +66,10 @@ function CommentsDialogInner(
 	const createCommentMutation = useCreatePostComment();
 	const deleteCommentMutation = useDeletePostComment();
 	const fetchCommentsQuery = useFetchPostComments(props.params.postId);
+	//NOTE: prefetch followers for mention suggestions
+	useFetchFollowers();
 	const { index } = Dialog.useDialogContext();
+	const [mentionSearch, setMentionSearch] = useState<string>('');
 
 	const { height, progress } = useReanimatedKeyboardAnimation();
 
@@ -84,11 +82,13 @@ function CommentsDialogInner(
 	const form = useForm({
 		defaultValues: {
 			content: '',
-		},
+			postId: props.params.postId as Id<'posts'>,
+		} as z.infer<typeof createPostCommentSchema>,
 		validators: {
 			onSubmit: createPostCommentSchema,
 		},
 		onSubmit: async ({ value, formApi }) => {
+			console.log('value', value);
 			if (value.content.trim()) {
 				await createCommentMutation.mutateAsync({
 					postId: props.params.postId as Id<'posts'>,
@@ -100,6 +100,25 @@ function CommentsDialogInner(
 	});
 
 	const content = useStore(form.store, state => state.values.content);
+
+	useEffect(() => {
+		const words = content.split(' ');
+		const lastWord = words[words.length - 1];
+		if (lastWord.startsWith('@')) {
+			setMentionSearch(lastWord);
+		} else {
+			setMentionSearch('');
+		}
+	}, [content]);
+
+	const handleSelectUser = (user: { name: string } | null) => {
+		if (!user) return;
+		const words = content.split(' ');
+		words[words.length - 1] = `@${user.name} `;
+		form.setFieldValue('content', words.join(' '));
+		setMentionSearch('');
+	};
+
 	const showSendButtonStyle = useAnimatedStyle(() => {
 		const show = content.length > 0;
 		return {
@@ -191,7 +210,12 @@ function CommentsDialogInner(
 				/>
 			</Animated.View>
 			<Animated.View style={[props.animatedStyle, translateStyle]}>
-				{/*NOTE: translate the Y with useAnimatedKeyboard */}
+				{mentionSearch && (
+					<MentionSuggestions
+						searchText={mentionSearch}
+						onSelectUser={handleSelectUser}
+					/>
+				)}
 				<View className="w-full p-2 px-3 rounded-xl border border-input flex-row items-center justify-between bg-background">
 					<form.Field
 						name="content"
