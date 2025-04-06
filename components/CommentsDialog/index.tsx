@@ -17,7 +17,8 @@ import { Text } from '~/components/ui/text';
 import { Id } from '~/convex/_generated/dataModel';
 import { useForm, useStore } from '@tanstack/react-form';
 import { createPostCommentSchema } from '~/lib/schemas';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { t } from '@lingui/core/macro';
 import { Loader } from '../Loader';
 import { Send, X, Reply } from '~/lib/icons';
@@ -31,14 +32,26 @@ import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFetchFollowers } from '~/state/queries/post';
 import { z } from 'zod';
+import { useSegments } from 'expo-router';
 export { useDialogControl as useCommentsDialogControl } from '~/components/Dialog';
 
 export function CommentsDialog(props: CommentsDialogProps) {
+	const segments = useSegments();
+
 	useEffect(() => {
-		if (props.control.ref) {
-			props.control.open();
+		// Close dialog if we navigate away from the post page
+		console.log('segments', segments[2]);
+		console.log('props.control.id', props.control.id);
+		if (segments[2] === 'posts') {
+			if (props.control.ref) {
+				props.control.open();
+			}
+		} else {
+			props.control.close();
+			console.log('close');
 		}
-	}, [props.control.ref]);
+	}, [segments, props.control.id]);
+
 	const fadeAnim = useSharedValue(0);
 	const animatedStyle = useAnimatedStyle(() => ({
 		opacity: fadeAnim.value,
@@ -184,7 +197,7 @@ function CommentsDialogInner(
 							<View className="flex-row flex-1 gap-2">
 								<UserAvatar avatar={item.user?.avatar} size="sm" />
 								<View className="flex-1 flex-row items-center gap-2">
-									<View className="flex-shrink">
+									<View className="shrink">
 										<View className="bg-secondary p-3 rounded-lg ">
 											<View className="flex-row items-center gap-1">
 												<Text className="font-semibold">{item.user?.name}</Text>
