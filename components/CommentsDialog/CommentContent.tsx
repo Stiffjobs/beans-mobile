@@ -1,5 +1,4 @@
 import { Text } from '~/components/ui/text';
-import { View } from 'react-native';
 
 type CommentContentProps = {
 	content: string;
