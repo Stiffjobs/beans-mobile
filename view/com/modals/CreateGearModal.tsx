@@ -15,7 +15,6 @@ import { Text } from '~/components/ui/text';
 import { useModalControls } from '~/state/modals';
 import { WindowOverlay } from '../util/WindowOverlay';
 import { PortalHost } from '@rn-primitives/portal';
-import { GEAR_TYPE } from '~/lib/constants';
 import { z } from 'zod';
 import { createGearSchema } from '~/lib/schemas';
 import { Controller, useForm } from 'react-hook-form';
