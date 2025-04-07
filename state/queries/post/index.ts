@@ -7,6 +7,7 @@ import {
 } from '~/lib/schemas';
 import { z } from 'zod';
 import {
+	optimisticallyUpdateValueInPaginatedQuery,
 	useMutation as useConvexMutation,
 	useQuery as useConvexQuery,
 } from 'convex/react';
@@ -119,10 +120,12 @@ type LikePostFormFields = z.infer<typeof likePostSchema>;
 export function useLikePost() {
 	const mutation = useConvexMutation(api.posts.likePost).withOptimisticUpdate(
 		(localStore, args) => {
-			const { postId } = args;
+			const { postId, refreshKey } = args;
+			// Update like status
 			const hasLiked = localStore.getQuery(api.users.hasLikedPost, {
 				postId: postId as Id<'posts'>,
 			});
+
 			if (!hasLiked) {
 				localStore.setQuery(
 					api.users.hasLikedPost,
@@ -132,12 +135,31 @@ export function useLikePost() {
 					true
 				);
 			}
+
+			optimisticallyUpdateValueInPaginatedQuery(
+				localStore,
+				api.posts.feed,
+				{ refreshKey },
+				curr => {
+					if (curr.post._id === postId) {
+						return {
+							...curr,
+							post: {
+								...curr.post,
+								likesCount: (curr.post.likesCount ?? 0) + 1,
+							},
+						};
+					}
+					return curr;
+				}
+			);
 		}
 	);
 	return useMutation({
-		mutationFn: async (values: LikePostFormFields) => {
+		mutationFn: async (values: LikePostFormFields & { refreshKey: number }) => {
 			await mutation({
 				postId: values.postId as Id<'posts'>,
+				refreshKey: values.refreshKey,
 			});
 		},
 		onSuccess: () => {},
@@ -151,7 +173,8 @@ type UnlikePostFormFields = z.infer<typeof unlikePostSchema>;
 export function useUnlikePost() {
 	const mutation = useConvexMutation(api.posts.unlikePost).withOptimisticUpdate(
 		(localStore, args) => {
-			const { postId } = args;
+			const { postId, refreshKey } = args;
+			// Update like status
 			const hasLiked = localStore.getQuery(api.users.hasLikedPost, {
 				postId: postId as Id<'posts'>,
 			});
@@ -164,12 +187,42 @@ export function useUnlikePost() {
 					false
 				);
 			}
+
+			/**
+			 * Updates the like count in the feed query when a user unlikes a post
+			 * Uses a helper function to optimistically update the paginated query before the server responds
+			 * Decrements the like count by 1, ensuring it never goes below 0
+			 * @param localStore - The local store instance for optimistic updates
+			 * @param api.posts.feed - The feed query to update
+			 * @param refreshKey - Key used to refresh the feed
+			 * @param curr - Current post item in the feed
+			 */
+			optimisticallyUpdateValueInPaginatedQuery(
+				localStore,
+				api.posts.feed,
+				{ refreshKey },
+				curr => {
+					if (curr.post._id === postId) {
+						return {
+							...curr,
+							post: {
+								...curr.post,
+								likesCount: Math.max(0, (curr.post.likesCount ?? 1) - 1),
+							},
+						};
+					}
+					return curr;
+				}
+			);
 		}
 	);
 	return useMutation({
-		mutationFn: async (values: UnlikePostFormFields) => {
+		mutationFn: async (
+			values: UnlikePostFormFields & { refreshKey: number }
+		) => {
 			await mutation({
 				postId: values.postId as Id<'posts'>,
+				refreshKey: values.refreshKey,
 			});
 		},
 		onSuccess: () => {},

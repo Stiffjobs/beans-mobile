@@ -1,5 +1,5 @@
 import { Link, router } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { FeedPost } from '~/convex/types';
 import { useLikePost, useUnlikePost } from '~/state/queries/post';
@@ -10,7 +10,6 @@ import { timeAgo } from '~/utils/time';
 import { useQuery } from 'convex/react';
 import { cn } from '~/lib/utils';
 import { Heart, MessageCircle } from '~/lib/icons';
-import { Muted } from '~/components/ui/typography';
 export function PostFeedItem({
 	item,
 	hideLike = false,
@@ -21,13 +20,16 @@ export function PostFeedItem({
 	const hasLiked = useQuery(api.users.hasLikedPost, { postId: item.post._id });
 	const handleLike = useCallback(() => {
 		if (hasLiked) {
-			unlikePost.mutate({ postId: item.post._id });
+			unlikePost.mutate({ postId: item.post._id, refreshKey: 0 });
 		} else {
-			likePost.mutate({ postId: item.post._id });
+			likePost.mutate({ postId: item.post._id, refreshKey: 0 });
 		}
 	}, [hasLiked, item.post._id]);
 	const likePost = useLikePost();
 	const unlikePost = useUnlikePost();
+	const postLikesCount = useMemo(() => {
+		return item.post.likesCount ?? 0;
+	}, [item.post.likesCount]);
 
 	return (
 		<Link push asChild href={`/posts/${item.post._id}`}>
@@ -50,18 +52,25 @@ export function PostFeedItem({
 							<View />
 						) : (
 							<View className="flex-row gap-4 flex-1">
-								<Pressable onPress={handleLike} hitSlop={8}>
-									<View className="flex-row items-center gap-1">
-										<Heart
-											className={cn(
-												'size-6',
-												hasLiked
-													? 'text-red-500 fill-red-500'
-													: 'text-muted-foreground fill-background'
-											)}
-										/>
-									</View>
-								</Pressable>
+								<View className="flex-row items-center gap-1">
+									<Pressable onPress={handleLike} hitSlop={8}>
+										<View className="flex-row items-center gap-1">
+											<Heart
+												className={cn(
+													'size-6',
+													hasLiked
+														? 'text-red-500 fill-red-500'
+														: 'text-muted-foreground fill-background'
+												)}
+											/>
+										</View>
+									</Pressable>
+									{postLikesCount > 0 && (
+										<Text className="font-semibold text-sm text-muted-foreground">
+											{postLikesCount}
+										</Text>
+									)}
+								</View>
 								<View className="flex-row items-center gap-1">
 									<MessageCircle className="size-6 text-muted-foreground" />
 									{item.comments.length > 0 && (
