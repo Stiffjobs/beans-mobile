@@ -49,7 +49,6 @@ export function ModalsContainer() {
 	useEffect(() => {
 		console.log('name', activeModal?.name);
 		if (isModalActive && snapPoints.length === 1) {
-			console.log('here close outside');
 			bottomSheetRef.current?.snapToIndex(0);
 		} else {
 			bottomSheetRef.current?.close();
