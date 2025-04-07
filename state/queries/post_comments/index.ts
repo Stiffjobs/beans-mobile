@@ -33,6 +33,7 @@ export function useCreatePostComment() {
 				postId: args.postId,
 			}) || [];
 		if (!currentUser) return;
+		console.log('post comment length', postComments.length);
 		try {
 			const now = Date.now();
 			const newComment = {
@@ -52,9 +53,24 @@ export function useCreatePostComment() {
 				mentionedUsers: [],
 				mentionData: [],
 			};
-			return postComments.length > 0
-				? [...postComments, newComment]
-				: [newComment];
+
+			if (postComments.length > 0) {
+				localStore.setQuery(
+					api.post_comments.list,
+					{
+						postId: args.postId,
+					},
+					[newComment, ...postComments]
+				);
+			} else {
+				localStore.setQuery(
+					api.post_comments.list,
+					{
+						postId: args.postId,
+					},
+					[newComment]
+				);
+			}
 		} catch (error) {
 			console.error('Error creating optimistic comment:', error);
 			throw error;
