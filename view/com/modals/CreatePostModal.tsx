@@ -44,6 +44,10 @@ import {
 	BeanProfileListDialog,
 	useBeanProfileListDialogControl,
 } from '~/components/BeanProfileListDialog';
+import {
+	GearSelectDialog,
+	useGearSelectDialogControl,
+} from '~/components/GearSelectDialog';
 import { Id } from '~/convex/_generated/dataModel';
 import { useListBeanProfiles } from '~/state/queries/bean_profiles';
 import { ChevronDown } from '~/lib/icons/ChevronDown';
@@ -100,7 +104,13 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 		},
 	});
 	const [state, dispatch] = useReducer(composerReducer, initialPostDraft);
+	const [gearType, setGearType] = React.useState<GEAR_TYPE | undefined>(
+		undefined
+	);
 	const beanProfileListDialogControl = useBeanProfileListDialogControl();
+	const brewerSelectDialogControl = useGearSelectDialogControl();
+	const grinderSelectDialogControl = useGearSelectDialogControl();
+	const filterPaperSelectDialogControl = useGearSelectDialogControl();
 
 	const [activePage, setActivePage] = React.useState(0);
 	const pagerRef = useRef<PagerView>(null);
@@ -111,6 +121,18 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 	const onOpenBeanProfileListDialog = useCallback(() => {
 		beanProfileListDialogControl.open();
 	}, [beanProfileListDialogControl]);
+
+	const onOpenBrewerSelectDialog = useCallback(() => {
+		brewerSelectDialogControl.open();
+	}, [brewerSelectDialogControl]);
+
+	const onOpenGrinderSelectDialog = useCallback(() => {
+		grinderSelectDialogControl.open();
+	}, [grinderSelectDialogControl]);
+
+	const onOpenFilterPaperSelectDialog = useCallback(() => {
+		filterPaperSelectDialogControl.open();
+	}, [filterPaperSelectDialogControl]);
 
 	const onOpenLibrary = React.useCallback(async () => {
 		if (!(await requestPhotoAccessIfNeeded())) {
@@ -133,30 +155,6 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 	}, [state.embed.media.images]);
 	const fetchGearList = useListGears();
 	const fetchBeanProfiles = useListBeanProfiles();
-	const brewers =
-		fetchGearList.data
-			?.filter(gear => gear.type === GEAR_TYPE.Brewer)
-			.map(e => ({
-				id: e._id,
-				label: e.name,
-				value: e.name,
-			})) ?? [];
-	const grinders =
-		fetchGearList.data
-			?.filter(gear => gear.type === GEAR_TYPE.Grinder)
-			.map(e => ({
-				label: e.name,
-				value: e.name,
-				id: e._id,
-			})) ?? [];
-	const filterPapers =
-		fetchGearList.data
-			?.filter(gear => gear.type === GEAR_TYPE['Filter paper'])
-			.map(e => ({
-				id: e._id,
-				label: e.name,
-				value: e.name,
-			})) ?? [];
 	const createPostMutation = useCreatePost();
 
 	const isSecondPage = activePage === 1;
@@ -396,16 +394,33 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							{field => (
 								<>
 									<RequiredLabel>{t`Brewer`}</RequiredLabel>
-									<SelectComponent
-										placeholder={t`Select your brewers`}
-										portalHost={CUSTOM_PORTAL_HOST_NAME}
-										onChange={field.handleChange}
-										options={brewers}
-									/>
+									<Pressable onPressIn={onOpenBrewerSelectDialog}>
+										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+											<Text className="native:text-lg text-sm text-foreground">
+												{fetchGearList?.data?.find(
+													e => e._id === field.state.value
+												)?.name ?? t`Select your brewers`}
+											</Text>
+											<ChevronDown
+												size={16}
+												aria-hidden={true}
+												className="text-foreground opacity-50"
+											/>
+										</View>
+									</Pressable>
 									<ErrorMessage
 										message={field.state.meta.errors
 											.map(e => e?.message)
 											.join(', ')}
+									/>
+									<GearSelectDialog
+										control={brewerSelectDialogControl}
+										params={{
+											type: 'gear-select',
+											gearType: GEAR_TYPE.Brewer,
+											onSelect: field.handleChange,
+											selected: field.state.value,
+										}}
 									/>
 								</>
 							)}
@@ -414,16 +429,33 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							{field => (
 								<>
 									<RequiredLabel>{t`Filter paper`}</RequiredLabel>
-									<SelectComponent
-										placeholder={t`Select your filter paper`}
-										portalHost={CUSTOM_PORTAL_HOST_NAME}
-										options={filterPapers}
-										onChange={field.handleChange}
-									/>
+									<Pressable onPressIn={onOpenFilterPaperSelectDialog}>
+										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+											<Text className="native:text-lg text-sm text-foreground">
+												{fetchGearList?.data?.find(
+													e => e._id === field.state.value
+												)?.name ?? t`Select your filter paper`}
+											</Text>
+											<ChevronDown
+												size={16}
+												aria-hidden={true}
+												className="text-foreground opacity-50"
+											/>
+										</View>
+									</Pressable>
 									<ErrorMessage
 										message={field.state.meta.errors
 											.map(e => e?.message)
 											.join(', ')}
+									/>
+									<GearSelectDialog
+										control={filterPaperSelectDialogControl}
+										params={{
+											type: 'gear-select',
+											gearType: GEAR_TYPE['Filter paper'],
+											onSelect: field.handleChange,
+											selected: field.state.value,
+										}}
 									/>
 								</>
 							)}
@@ -432,16 +464,33 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							{field => (
 								<>
 									<RequiredLabel>{t`Grinder`}</RequiredLabel>
-									<SelectComponent
-										placeholder={t`Select your grinder`}
-										portalHost={CUSTOM_PORTAL_HOST_NAME}
-										options={grinders}
-										onChange={field.handleChange}
-									/>
+									<Pressable onPressIn={onOpenGrinderSelectDialog}>
+										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+											<Text className="native:text-lg text-sm text-foreground">
+												{fetchGearList?.data?.find(
+													e => e._id === field.state.value
+												)?.name ?? t`Select your grinder`}
+											</Text>
+											<ChevronDown
+												size={16}
+												aria-hidden={true}
+												className="text-foreground opacity-50"
+											/>
+										</View>
+									</Pressable>
 									<ErrorMessage
 										message={field.state.meta.errors
 											.map(e => e?.message)
 											.join(', ')}
+									/>
+									<GearSelectDialog
+										control={grinderSelectDialogControl}
+										params={{
+											type: 'gear-select',
+											gearType: GEAR_TYPE.Grinder,
+											onSelect: field.handleChange,
+											selected: field.state.value,
+										}}
 									/>
 								</>
 							)}
