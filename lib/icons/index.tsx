@@ -14,8 +14,12 @@ import { Link2 } from './Link2';
 import { Link } from './Link';
 import { Send } from './Send';
 import { Reply } from './Reply';
+import { MessageCircle } from './MessageCircle';
+import { Heart } from './Heart';
 export {
+	Heart,
 	ImagePlus,
+	MessageCircle,
 	Link,
 	Reply,
 	Send,

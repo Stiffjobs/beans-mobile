@@ -126,6 +126,7 @@ export const list = query({
 					},
 					beanProfile,
 					filterPaperDetails,
+					comments: [],
 					grinderDetails,
 					brewerDetails,
 					images: imagesUrl.filter((e) => e !== null),
@@ -213,7 +214,7 @@ export const feed = query({
 			.order('desc')
 			.paginate(args.paginationOpts);
 
-		const postWithImages = await Promise.all(
+		const postWithDetails = await Promise.all(
 			postRows.page.map(async (post) => {
 				const author = await ctx.db.get(post.author);
 				if (!author) throw new ConvexError('Author not found');
@@ -248,6 +249,11 @@ export const feed = query({
 					}),
 				);
 
+				const comments = await ctx.db
+					.query('post_comments')
+					.withIndex('by_post', (q) => q.eq('postId', post._id))
+					.collect();
+
 				return {
 					post: post,
 					author: {
@@ -258,13 +264,14 @@ export const feed = query({
 					filterPaperDetails: filterPaperDetails,
 					grinderDetails: grinderDetails,
 					brewerDetails: brewerDetails,
+					comments,
 					images: imagesUrl.filter((e) => e !== null),
 				};
 			}),
 		);
 		return {
 			...postRows,
-			page: postWithImages,
+			page: postWithDetails,
 		};
 	},
 });

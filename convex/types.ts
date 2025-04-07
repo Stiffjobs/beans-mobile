@@ -19,7 +19,8 @@ export type FeedPost = {
 	filterPaperDetails: Gear | null;
 	grinderDetails: Gear | null;
 	brewerDetails: Gear | null;
-	images: string[];
+	comments: Doc<'post_comments'>[];
+	images: (string | null)[];
 };
 
 export type FeedResponse = {

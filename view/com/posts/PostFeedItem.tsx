@@ -6,9 +6,11 @@ import { useLikePost, useUnlikePost } from '~/state/queries/post';
 import { api } from '~/convex/_generated/api';
 import { UserAvatar } from '../util/UserAvatar';
 import { Text } from '~/components/ui/text';
-import { Heart } from 'lucide-react-native';
 import { timeAgo } from '~/utils/time';
 import { useQuery } from 'convex/react';
+import { cn } from '~/lib/utils';
+import { Heart, MessageCircle } from '~/lib/icons';
+import { Muted } from '~/components/ui/typography';
 export function PostFeedItem({
 	item,
 	hideLike = false,
@@ -43,22 +45,32 @@ export function PostFeedItem({
 						<Text>{item.post.bean}</Text>
 					)}
 					<Text>{item.brewerDetails?.name ?? item.post.brewer}</Text>
-					<View className="flex-row justify-between items-center">
+					<View className="flex-row justify-between mt-2 items-center">
 						{hideLike ? (
 							<View />
 						) : (
-							<Pressable onPress={handleLike} hitSlop={8}>
+							<View className="flex-row gap-4 flex-1">
+								<Pressable onPress={handleLike} hitSlop={8}>
+									<View className="flex-row items-center gap-1">
+										<Heart
+											className={cn(
+												'size-6',
+												hasLiked
+													? 'text-red-500 fill-red-500'
+													: 'text-muted-foreground fill-background'
+											)}
+										/>
+									</View>
+								</Pressable>
 								<View className="flex-row items-center gap-1">
-									<Heart
-										className={
-											hasLiked
-												? 'text-red-500 fill-red-500'
-												: 'text-muted-foreground fill-background'
-										}
-										size={20}
-									/>
+									<MessageCircle className="size-6 text-muted-foreground" />
+									{item.comments.length > 0 && (
+										<Text className="font-semibold text-sm text-muted-foreground">
+											{item.comments.length}
+										</Text>
+									)}
 								</View>
-							</Pressable>
+							</View>
 						)}
 						<Text className="text-muted-foreground">
 							{timeAgo(item.post._creationTime)}
