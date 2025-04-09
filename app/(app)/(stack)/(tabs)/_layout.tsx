@@ -36,6 +36,15 @@ export default function TabLayout() {
 				}}
 			/>
 			<Tabs.Screen
+				name="notifications"
+				options={{
+					title: t`Notifications`,
+					tabBarIcon: ({ color, focused }) => (
+						<TabBarAnimatedIcon name="Bell" color={color} focused={focused} />
+					),
+				}}
+			/>
+			<Tabs.Screen
 				name="beans"
 				options={{
 					title: t`Beans`,

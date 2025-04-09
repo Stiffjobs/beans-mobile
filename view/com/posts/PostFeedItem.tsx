@@ -20,9 +20,9 @@ export function PostFeedItem({
 	const hasLiked = useQuery(api.users.hasLikedPost, { postId: item.post._id });
 	const handleLike = useCallback(() => {
 		if (hasLiked) {
-			unlikePost.mutate({ postId: item.post._id, refreshKey: 0 });
+			unlikePost.mutate({ postId: item.post._id });
 		} else {
-			likePost.mutate({ postId: item.post._id, refreshKey: 0 });
+			likePost.mutate({ postId: item.post._id });
 		}
 	}, [hasLiked, item.post._id]);
 	const likePost = useLikePost();

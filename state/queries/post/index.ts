@@ -120,7 +120,7 @@ type LikePostFormFields = z.infer<typeof likePostSchema>;
 export function useLikePost() {
 	const mutation = useConvexMutation(api.posts.likePost).withOptimisticUpdate(
 		(localStore, args) => {
-			const { postId, refreshKey } = args;
+			const { postId } = args;
 			// Update like status
 			const hasLiked = localStore.getQuery(api.users.hasLikedPost, {
 				postId: postId as Id<'posts'>,
@@ -139,7 +139,7 @@ export function useLikePost() {
 			optimisticallyUpdateValueInPaginatedQuery(
 				localStore,
 				api.posts.feed,
-				{ refreshKey },
+				{ refreshKey: 0 },
 				curr => {
 					if (curr.post._id === postId) {
 						return {
@@ -156,10 +156,9 @@ export function useLikePost() {
 		}
 	);
 	return useMutation({
-		mutationFn: async (values: LikePostFormFields & { refreshKey: number }) => {
+		mutationFn: async (values: LikePostFormFields) => {
 			await mutation({
 				postId: values.postId as Id<'posts'>,
-				refreshKey: values.refreshKey,
 			});
 		},
 		onSuccess: () => {},
@@ -173,7 +172,7 @@ type UnlikePostFormFields = z.infer<typeof unlikePostSchema>;
 export function useUnlikePost() {
 	const mutation = useConvexMutation(api.posts.unlikePost).withOptimisticUpdate(
 		(localStore, args) => {
-			const { postId, refreshKey } = args;
+			const { postId } = args;
 			// Update like status
 			const hasLiked = localStore.getQuery(api.users.hasLikedPost, {
 				postId: postId as Id<'posts'>,
@@ -200,7 +199,7 @@ export function useUnlikePost() {
 			optimisticallyUpdateValueInPaginatedQuery(
 				localStore,
 				api.posts.feed,
-				{ refreshKey },
+				{ refreshKey: 0 },
 				curr => {
 					if (curr.post._id === postId) {
 						return {
@@ -217,12 +216,9 @@ export function useUnlikePost() {
 		}
 	);
 	return useMutation({
-		mutationFn: async (
-			values: UnlikePostFormFields & { refreshKey: number }
-		) => {
+		mutationFn: async (values: UnlikePostFormFields) => {
 			await mutation({
 				postId: values.postId as Id<'posts'>,
-				refreshKey: values.refreshKey,
 			});
 		},
 		onSuccess: () => {},

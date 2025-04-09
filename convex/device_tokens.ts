@@ -7,7 +7,7 @@ import {
 	internalAction,
 } from './_generated/server';
 import { internal } from './_generated/api';
-import { novu } from './notification_httpActions';
+import { novu } from './notifications';
 import { getCurrentUserOrThrow } from './users';
 import { tryCatch } from './utils';
 import { ErrorDto } from '@novu/api/models/errors';

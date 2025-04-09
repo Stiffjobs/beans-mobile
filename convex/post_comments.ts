@@ -1,8 +1,14 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import {
+	internalAction,
+	internalQuery,
+	mutation,
+	query,
+} from './_generated/server';
 import { Id } from './_generated/dataModel';
 import { getCurrentUserOrThrow } from './users';
 import { QueryCtx } from './_generated/server';
+import { internal } from './_generated/api';
 
 // Helper function to extract mentions and find user IDs
 async function processMentions(ctx: QueryCtx, content: string) {
@@ -40,7 +46,7 @@ export const create = mutation({
 		// Process mentions in the content
 		const mentions = await processMentions(ctx, args.content);
 
-		return await ctx.db.insert('post_comments', {
+		const commentId = await ctx.db.insert('post_comments', {
 			postId: args.postId,
 			userId: user._id,
 			content: args.content,
@@ -48,6 +54,71 @@ export const create = mutation({
 			likesCount: 0,
 			mentions: mentions.length > 0 ? mentions : undefined,
 		});
+		console.log('commentId', commentId);
+		await ctx.scheduler.runAfter(0, internal.post_comments.sendNotification, {
+			commentId,
+		});
+		return commentId;
+	},
+});
+
+export const sendNotification = internalAction({
+	args: { commentId: v.id('post_comments') },
+	handler: async (ctx, args) => {
+		const { commentId } = args;
+		const comment = await ctx.runQuery(internal.post_comments.readComment, {
+			commentId,
+		});
+		if (!comment) {
+			throw new Error('Comment not found');
+		}
+
+		// Get the post to find the owner
+		const post = await ctx.runQuery(internal.posts.internalGetById, {
+			id: comment.postId,
+		});
+		if (!post) {
+			throw new Error('Post not found');
+		}
+
+		// Get all unique commenters on this post
+		const uniqueCommenterIds = new Set<Id<'users'>>();
+
+		// Add post author to notification list
+		uniqueCommenterIds.add(post.author);
+
+		// Add mentioned users
+		if (comment.mentions) {
+			comment.mentions.forEach(userId => uniqueCommenterIds.add(userId));
+		}
+
+		// Send notifications to all unique users
+		const notificationPromises = Array.from(uniqueCommenterIds).map(
+			async userId => {
+				// Skip if userId is undefined or if it's the commenter
+				if (!userId || userId === comment.userId) return;
+
+				const isPostAuthor = userId === post.author;
+				const message = isPostAuthor
+					? `${comment.user?.name} commented on your post`
+					: `${comment.user?.name} mentioned you in a comment`;
+
+				await ctx.runAction(internal.notifications.send, {
+					userId,
+					type: 'comment',
+					message,
+					data: {
+						postId: post._id,
+						commentor: comment.user,
+						commentId: comment._id,
+						commentContent: comment.content,
+						redirectTo: `/posts/${post._id}`,
+					},
+				});
+			}
+		);
+
+		await Promise.all(notificationPromises);
 	},
 });
 
@@ -71,6 +142,61 @@ export const remove = mutation({
 
 		await ctx.db.delete(args.commentId);
 		return { success: true };
+	},
+});
+
+export const readComment = internalQuery({
+	args: {
+		commentId: v.id('post_comments'),
+	},
+	handler: async (ctx, args) => {
+		const { commentId } = args;
+
+		const comment = await ctx.db.get(commentId);
+		if (!comment) {
+			throw new Error('Comment not found');
+		}
+
+		// Get the commenter's information
+		const user = await ctx.db.get(comment.userId);
+		// Get mentioned users' information
+		const mentionedUsers = comment.mentions
+			? await Promise.all(
+					comment.mentions.map(async userId => {
+						const mentionedUser = await ctx.db.get(userId);
+						return mentionedUser
+							? {
+									_id: mentionedUser._id,
+									name: mentionedUser.name,
+								}
+							: null;
+					})
+				)
+			: [];
+
+		// Format content with mentions
+		const mentions = comment.content.match(/@(\w+)/g) || [];
+		const mentionData = await Promise.all(
+			mentions.map(async mention => {
+				const username = mention.slice(1);
+				const mentionedUser = await ctx.db
+					.query('users')
+					.filter(q => q.eq(q.field('name'), username))
+					.first();
+				return {
+					mention,
+					username,
+					userId: mentionedUser?._id,
+				};
+			})
+		);
+
+		return {
+			...comment,
+			user: user,
+			mentionedUsers: mentionedUsers.filter(Boolean),
+			mentionData,
+		};
 	},
 });
 
@@ -110,9 +236,8 @@ export const list = query({
 
 				// Format content with mentions
 				let formattedContent = comment.content;
-				const mentions = comment.content.match(/@(\w+)/g) || [];
 				const mentionData = await Promise.all(
-					mentions.map(async mention => {
+					comment.content.match(/@(\w+)/g)?.map(async mention => {
 						const username = mention.slice(1);
 						const mentionedUser = await ctx.db
 							.query('users')
@@ -123,7 +248,7 @@ export const list = query({
 							username,
 							userId: mentionedUser?._id,
 						};
-					})
+					}) || []
 				);
 
 				return {

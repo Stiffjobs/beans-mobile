@@ -37,10 +37,10 @@ import { tokenCache } from '~/utils/cache';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Shell } from '~/view/shell';
 import { I18nProvider } from '~/utils/i18nProvider';
-import { PushNotificationManager } from '~/app/components/PushNotificationManager';
+import { PushNotificationManager } from '~/components/PushNotificationManager';
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 const convex = new ConvexReactClient(
-	process.env.EXPO_PUBLIC_CONVEX_URL as string
+	process.env.EXPO_PUBLIC_CONVEX_URL as string,
 );
 const convexQueryClient = new ConvexQueryClient(convex);
 const queryClient = new QueryClient({
@@ -56,7 +56,7 @@ convexQueryClient.connect(queryClient);
 
 if (!publishableKey) {
 	throw new Error(
-		'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env'
+		'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
 	);
 }
 export {

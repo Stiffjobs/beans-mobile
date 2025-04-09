@@ -5,12 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import { usePhotoLibraryPermission } from '~/lib/hooks/usePermissions';
 import { openCropper, openPicker } from '~/lib/media/picker';
-import {
-	Image as CroppedImage,
-	openCamera,
-} from 'react-native-image-crop-picker';
+import { Image as CroppedImage } from 'react-native-image-crop-picker';
 import { StyledIcon } from '../icons/StyledIcons';
-import Svg, { Circle, Path } from 'react-native-svg';
 import { CircleNativeWind, PathNativeWind, SvgNativeWind } from './images/svg';
 import { cn } from '~/lib/utils';
 

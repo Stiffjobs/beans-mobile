@@ -15,7 +15,7 @@ import type * as env from "../env.js";
 import type * as gears from "../gears.js";
 import type * as http from "../http.js";
 import type * as migrations from "../migrations.js";
-import type * as notification_httpActions from "../notification_httpActions.js";
+import type * as notifications from "../notifications.js";
 import type * as post_comments from "../post_comments.js";
 import type * as posts from "../posts.js";
 import type * as trigger from "../trigger.js";
@@ -44,7 +44,7 @@ declare const fullApi: ApiFromModules<{
   gears: typeof gears;
   http: typeof http;
   migrations: typeof migrations;
-  notification_httpActions: typeof notification_httpActions;
+  notifications: typeof notifications;
   post_comments: typeof post_comments;
   posts: typeof posts;
   trigger: typeof trigger;

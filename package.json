@@ -30,6 +30,8 @@
 		"@lingui/react": "^5.1.2",
 		"@miblanchard/react-native-slider": "^2.6.0",
 		"@novu/api": "^0.6.2",
+		"@novu/js": "^3.0.3",
+		"@novu/react-native": "^3.0.3",
 		"@react-native-community/slider": "^4.5.5",
 		"@react-navigation/drawer": "^7.1.1",
 		"@react-navigation/native": "^7.0.14",
