@@ -131,7 +131,7 @@ let EditableUserAvatar = ({
 		let options;
 		let destructiveButtonIndex: undefined | number;
 		let selectFromLibraryButtonIndex: undefined | number;
-		let cancelButtonIndex;
+		let cancelButtonIndex: undefined | number;
 		options = ['Delete', 'Select from library', 'Cancel'];
 		destructiveButtonIndex = 0;
 		selectFromLibraryButtonIndex = 1;
@@ -158,7 +158,7 @@ let EditableUserAvatar = ({
 					default:
 						return;
 				}
-			}
+			},
 		);
 	}, [showActionSheetWithOptions]);
 	return (

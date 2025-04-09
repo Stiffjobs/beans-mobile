@@ -6,8 +6,9 @@ import { useGetCurrentUser } from '~/state/queries/auth';
 import { Button } from '~/components/ui/button';
 import { t } from '@lingui/core/macro';
 import { Loader } from '~/components/Loader';
-import NotificationItem from '~/components/NotificationItem';
+import { NotificationItem } from '~/components/NotificationItem';
 import { Notification } from '@novu/js';
+import { Separator } from '~/components/ui/separator';
 
 export default () => {
 	const currentUser = useGetCurrentUser();
@@ -63,9 +64,10 @@ function NotificationComponent() {
 	return (
 		<FlatList
 			data={notifications}
-			keyExtractor={item => item.id}
+			keyExtractor={(item) => item.id}
 			renderItem={renderItem}
 			ListFooterComponent={renderFooter}
+			ItemSeparatorComponent={() => <Separator />}
 			onEndReached={fetchMore}
 			onEndReachedThreshold={0.5}
 			ListEmptyComponent={renderEmpty}

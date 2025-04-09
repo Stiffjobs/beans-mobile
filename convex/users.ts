@@ -10,7 +10,7 @@ import { DataModel } from './_generated/dataModel';
 
 export const current = query({
 	args: {},
-	handler: async ctx => {
+	handler: async (ctx) => {
 		const user = await getCurrentUser(ctx);
 		if (user?.avatar) {
 			return {
@@ -35,6 +35,7 @@ export const getUserById = query({
 		return thisUser;
 	},
 });
+
 export const upsertFromClerk = internalMutation({
 	args: { data: v.any() as Validator<UserJSON> }, // no runtime validation, trust Clerk
 	async handler(ctx, { data }) {
@@ -61,7 +62,7 @@ export const deleteFromClerk = internalMutation({
 			await ctx.db.delete(user._id);
 		} else {
 			console.warn(
-				`Can't delete user, there is none for Clerk user ID: ${clerkUserId}`
+				`Can't delete user, there is none for Clerk user ID: ${clerkUserId}`,
 			);
 		}
 	},
@@ -84,7 +85,7 @@ export async function getCurrentUser(ctx: QueryCtx) {
 async function userByExternalId(ctx: QueryCtx, externalId: string) {
 	return await ctx.db
 		.query('users')
-		.withIndex('by_token', q => q.eq('tokenIdentifier', externalId))
+		.withIndex('by_token', (q) => q.eq('tokenIdentifier', externalId))
 		.unique();
 }
 
@@ -94,7 +95,7 @@ export const updateProfile = mutation({
 			v.object({
 				storageId: v.id('_storage'),
 				contentType: v.string(),
-			})
+			}),
 		),
 		name: v.optional(v.string()),
 		isRemoveAvatar: v.boolean(),
@@ -133,7 +134,7 @@ export const updateProfile = mutation({
 
 export const getAvatarUrl = query({
 	args: {},
-	handler: async ctx => {
+	handler: async (ctx) => {
 		const user = await getCurrentUserOrThrow(ctx);
 		if (user.avatar) {
 			return await ctx.storage.getUrl(user.avatar);
@@ -151,8 +152,8 @@ export const followUser = mutation({
 		// Check if already following
 		const existingFollow = await ctx.db
 			.query('follows')
-			.withIndex('unique_follow', q =>
-				q.eq('followerId', user._id).eq('followingId', args.userIdToFollow)
+			.withIndex('unique_follow', (q) =>
+				q.eq('followerId', user._id).eq('followingId', args.userIdToFollow),
 			)
 			.first();
 
@@ -193,8 +194,8 @@ export const unfollowUser = mutation({
 		const user = await getCurrentUserOrThrow(ctx);
 		const existingFollow = await ctx.db
 			.query('follows')
-			.withIndex('unique_follow', q =>
-				q.eq('followerId', user._id).eq('followingId', args.userIdToUnfollow)
+			.withIndex('unique_follow', (q) =>
+				q.eq('followerId', user._id).eq('followingId', args.userIdToUnfollow),
 			)
 			.first();
 
@@ -231,8 +232,8 @@ export const isFollowing = query({
 
 		const follow = await ctx.db
 			.query('follows')
-			.withIndex('unique_follow', q =>
-				q.eq('followerId', currentUser._id).eq('followingId', args.authorId)
+			.withIndex('unique_follow', (q) =>
+				q.eq('followerId', currentUser._id).eq('followingId', args.authorId),
 			)
 			.first();
 
@@ -249,8 +250,8 @@ export const hasLikedPost = query({
 
 		const like = await ctx.db
 			.query('likes')
-			.withIndex('unique_like', q =>
-				q.eq('userId', user._id).eq('postId', args.postId)
+			.withIndex('unique_like', (q) =>
+				q.eq('userId', user._id).eq('postId', args.postId),
 			)
 			.first();
 
@@ -264,12 +265,12 @@ export const getFollowers = query({
 		const user = await getCurrentUserOrThrow(ctx);
 		const followers = await ctx.db
 			.query('follows')
-			.withIndex('by_following', q => q.eq('followingId', user._id))
+			.withIndex('by_following', (q) => q.eq('followingId', user._id))
 			.collect();
 
 		// Get user details for each follower
 		const followersWithDetails = await Promise.all(
-			followers.map(async follow => {
+			followers.map(async (follow) => {
 				const user = await ctx.db.get(follow.followerId);
 				if (!user) return null;
 				const avatar = user.avatar
@@ -280,7 +281,7 @@ export const getFollowers = query({
 					name: user.name,
 					avatar,
 				};
-			})
+			}),
 		);
 
 		return followersWithDetails.filter(Boolean);

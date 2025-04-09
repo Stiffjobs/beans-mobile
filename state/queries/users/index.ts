@@ -18,7 +18,7 @@ export const useUpdateProfile = ({ onSuccess }: { onSuccess?: () => void }) => {
 			values: UpdateProfileFormFields & {
 				avatar?: CroppedImage | null;
 				isRemove: boolean;
-			}
+			},
 		) => {
 			let uploadedImage;
 			if (values.avatar) {
@@ -40,7 +40,7 @@ export const useUpdateProfile = ({ onSuccess }: { onSuccess?: () => void }) => {
 			onSuccess?.();
 			Toast.show('Profile updated successfully', 'CircleCheck', 'success');
 		},
-		onError: error => {
+		onError: (error) => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -50,7 +50,7 @@ export const useIsFollowingThisUser = (authorId: string | undefined) => {
 	return useQuery(
 		convexQuery(api.users.isFollowing, {
 			authorId: authorId as Id<'users'>,
-		})
+		}),
 	);
 };
 
@@ -65,10 +65,10 @@ export const useFollowUser = () => {
 				localStore.setQuery(
 					api.users.isFollowing,
 					{ authorId: userIdToFollow as Id<'users'> },
-					true
+					true,
 				);
 			}
-		}
+		},
 	);
 	return useMutation({
 		mutationFn: async (userId: Id<'users'>) => {
@@ -77,7 +77,7 @@ export const useFollowUser = () => {
 			});
 		},
 		onSuccess: () => {},
-		onError: error => {
+		onError: (error) => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -85,7 +85,7 @@ export const useFollowUser = () => {
 
 export const useUnfollowUser = () => {
 	const mutation = useConvexMutation(
-		api.users.unfollowUser
+		api.users.unfollowUser,
 	).withOptimisticUpdate((localStore, args) => {
 		const { userIdToUnfollow } = args;
 		const isFollowing = localStore.getQuery(api.users.isFollowing, {
@@ -95,7 +95,7 @@ export const useUnfollowUser = () => {
 			localStore.setQuery(
 				api.users.isFollowing,
 				{ authorId: userIdToUnfollow as Id<'users'> },
-				false
+				false,
 			);
 		}
 	});
@@ -106,7 +106,7 @@ export const useUnfollowUser = () => {
 			});
 		},
 		onSuccess: () => {},
-		onError: error => {
+		onError: (error) => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -116,6 +116,6 @@ export const useGetUserById = (userId: string | undefined) => {
 	return useQuery(
 		convexQuery(api.users.getUserById, {
 			userId: userId as Id<'users'>,
-		})
+		}),
 	);
 };

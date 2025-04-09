@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Notification } from '@novu/js';
+import { cn } from '~/lib/utils';
+import { RelativePathString, router } from 'expo-router';
 
 type Redirect = {
 	url: string;
@@ -35,12 +37,12 @@ const formatRelativeTime = (timestamp: string): string => {
 	return date.toLocaleDateString();
 };
 
-const UpdateDesign: React.FC<{ notification: Notification }> = ({
+export const NotificationItem: React.FC<{ notification: Notification }> = ({
 	notification,
 }) => {
 	const handleRedirect = (redirect?: Redirect) => {
 		if (redirect?.url) {
-			Linking.openURL(redirect.url);
+			router.push(redirect.url as RelativePathString);
 		}
 	};
 
@@ -54,6 +56,7 @@ const UpdateDesign: React.FC<{ notification: Notification }> = ({
 				Alert.alert('Error', 'Failed to mark notification as read');
 			}
 		}
+		console.log('notification', notification.redirect);
 		handleRedirect(notification.redirect);
 	};
 
@@ -134,24 +137,26 @@ const UpdateDesign: React.FC<{ notification: Notification }> = ({
 	return (
 		<TouchableOpacity
 			style={[
-				styles.container,
 				notification.isRead ? styles.readContainer : styles.unreadContainer,
 			]}
+			className={cn('flex-row items-center rounded-lg p-4')}
 			onPress={handlePress}
 			onLongPress={handleLongPress}
 		>
-			<Image source={{ uri: notification.avatar }} style={styles.avatar} />
-			<View style={styles.contentContainer}>
-				<Text style={styles.subject} numberOfLines={1} ellipsizeMode="tail">
-					{notification.subject}
-				</Text>
-				<Text style={styles.body} numberOfLines={2} ellipsizeMode="tail">
-					{notification.body}
-				</Text>
-				<Text style={styles.timestamp}>
+			{notification.avatar ? (
+				<Image
+					source={{ uri: notification.avatar }}
+					className="w-12 h-12 rounded-full"
+				/>
+			) : (
+				<Text>No Image</Text>
+			)}
+			<View className="ml-4 flex-1  gap-2">
+				<Text className="text-lg font-semibold">{notification.body}</Text>
+				<Text className="text-muted-foreground">
 					{formatRelativeTime(notification.createdAt)}
 				</Text>
-				<View style={styles.actionsContainer}>
+				<View>
 					{notification.primaryAction &&
 						renderAction(notification.primaryAction, true)}
 					{notification.secondaryAction &&
@@ -221,12 +226,6 @@ const styles = StyleSheet.create({
 	},
 	archivedContainer: {
 		opacity: 0.7,
-	},
-	avatar: {
-		width: 60,
-		height: 60,
-		borderRadius: 20,
-		marginRight: SPACING.lg,
 	},
 	contentContainer: {
 		flex: 1,
@@ -316,5 +315,3 @@ const styles = StyleSheet.create({
 		color: COLORS.archived.text,
 	},
 });
-
-export default UpdateDesign;
