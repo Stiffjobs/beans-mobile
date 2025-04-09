@@ -1,8 +1,7 @@
 import { FlatList, RefreshControl, View } from 'react-native';
 import { Text } from '~/components/ui/text';
-import { NovuProvider, useNotifications } from '@novu/react-native';
+import { useNotifications } from '@novu/react-native';
 import { Authenticated, Unauthenticated } from 'convex/react';
-import { useGetCurrentUser } from '~/state/queries/auth';
 import { Button } from '~/components/ui/button';
 import { t } from '@lingui/core/macro';
 import { Loader } from '~/components/Loader';
@@ -11,19 +10,12 @@ import { Notification } from '@novu/js';
 import { Separator } from '~/components/ui/separator';
 
 export default () => {
-	const currentUser = useGetCurrentUser();
-
 	return (
 		<>
 			<Authenticated>
-				<NovuProvider
-					applicationIdentifier="zwGYVlGv2fTk"
-					subscriberId={currentUser.data?._id ?? ''}
-				>
-					<View className="flex-1">
-						<NotificationComponent />
-					</View>
-				</NovuProvider>
+				<View className="flex-1">
+					<NotificationComponent />
+				</View>
 			</Authenticated>
 			<Unauthenticated>
 				<View className="flex-1">
