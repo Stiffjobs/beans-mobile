@@ -12,6 +12,10 @@ import { isIOS } from '~/platform/detection';
 import { DrawerContent } from './Drawer';
 import { useSegments } from 'expo-router';
 import { useAuth } from '@clerk/clerk-expo';
+import { Authenticated, Unauthenticated } from 'convex/react';
+import { useGetCurrentUser } from '~/state/queries/auth';
+import { NovuProvider } from '@novu/react-native';
+
 function ShellInner({ children }: React.PropsWithChildren<{}>) {
 	const isDrawerOpen = useIsDrawerOpen();
 	const { sessionId } = useAuth();
@@ -26,7 +30,7 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 	}, [setIsDrawerOpen]);
 	const winDim = useWindowDimensions();
 	const segments = useSegments();
-	const isOnTab = segments.find(s => s === '(tabs)') !== undefined;
+	const isOnTab = segments.find((s) => s === '(tabs)') !== undefined;
 	const renderDrawerContent = useCallback(() => {
 		return <DrawerContent />;
 	}, []);
@@ -40,7 +44,7 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 				drawerStyle={{
 					width: Math.min(360, winDim.width * 0.6),
 				}}
-				configureGestureHandler={handler => {
+				configureGestureHandler={(handler) => {
 					handler = handler.requireExternalGestureToFail(trendingScrollGesture);
 					if (swipeEnabled) {
 						if (isDrawerOpen) {
@@ -75,9 +79,20 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 	);
 }
 export function Shell({ children }: React.PropsWithChildren<{}>) {
+	const user = useGetCurrentUser();
 	return (
 		<View className="h-full">
-			<ShellInner>{children}</ShellInner>
+			<Authenticated>
+				<NovuProvider
+					applicationIdentifier="zwGYVlGv2fTk"
+					subscriberId={user.data?._id ?? ''}
+				>
+					<ShellInner>{children}</ShellInner>
+				</NovuProvider>
+			</Authenticated>
+			<Unauthenticated>
+				<ShellInner>{children}</ShellInner>
+			</Unauthenticated>
 		</View>
 	);
 }
