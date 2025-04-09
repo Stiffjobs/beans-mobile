@@ -1,17 +1,5 @@
-import {
-	Link,
-	Stack,
-	useLocalSearchParams,
-	useSegments,
-	useFocusEffect,
-} from 'expo-router';
-import {
-	View,
-	ScrollView,
-	FlatList,
-	Pressable,
-	useWindowDimensions,
-} from 'react-native';
+import { Link, Stack, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { View, ScrollView, FlatList, Pressable } from 'react-native';
 import { Loader } from '~/components/Loader';
 import {
 	useGetPostById,
@@ -42,6 +30,8 @@ import { t } from '@lingui/core/macro';
 import { useQuery } from 'convex/react';
 import { api } from '~/convex/_generated/api';
 import { useFetchPostComments } from '~/state/queries/post_comments';
+import { useNotifications } from '@novu/react-native';
+import { NOTIFICATION_TRIGGER_TABLE } from '~/lib/constants';
 
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -57,8 +47,11 @@ export default function PostDetailsPage() {
 	}, [detailsDialogControl]);
 	const followUser = useFollowUser();
 	const unfollowUser = useUnfollowUser();
-	const urls = data?.images.filter(e => e !== null) ?? [];
+	const urls = data?.images.filter((e) => e !== null) ?? [];
 	const isMe = data?.author._id === currentUser.data?._id;
+	const { notifications } = useNotifications({
+		read: false,
+	});
 	useFetchPostComments(id as Id<'posts'>);
 
 	const handleFollow = useCallback(async () => {
@@ -81,6 +74,24 @@ export default function PostDetailsPage() {
 	const likePost = useLikePost();
 	const unlikePost = useUnlikePost();
 
+	async function readPostRelatedNotifications() {
+		if (!notifications) return;
+		await Promise.all(
+			notifications
+				.filter(
+					(e) =>
+						e.data?.triggerTable === NOTIFICATION_TRIGGER_TABLE.POSTS &&
+						e.data?.triggerId === id,
+				)
+				.map(async (e) => {
+					await e.read();
+				}),
+		);
+	}
+	useEffect(() => {
+		readPostRelatedNotifications();
+	}, [notifications, id]);
+
 	const openEditPostModal = useCallback(() => {
 		openModal({
 			name: 'edit-post',
@@ -95,7 +106,7 @@ export default function PostDetailsPage() {
 				name: 'comment-list',
 				postId: id as Id<'posts'>,
 			});
-		}, [openModal])
+		}, [openModal]),
 	);
 
 	if (isLoading) {
@@ -268,7 +279,7 @@ export default function PostDetailsPage() {
 				</View>
 			)}
 			<ImageView
-				images={urls.map(e => ({ uri: e! }))}
+				images={urls.map((e) => ({ uri: e! }))}
 				visible={visible}
 				onRequestClose={() => setVisible(false)}
 				imageIndex={viewImageIndex}
