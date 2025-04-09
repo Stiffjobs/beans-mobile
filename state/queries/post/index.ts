@@ -16,6 +16,7 @@ import { api } from '~/convex/_generated/api';
 import { useModalControls } from '~/state/modals';
 import { convexQuery, useConvexPaginatedQuery } from '@convex-dev/react-query';
 import { Id } from '~/convex/_generated/dataModel';
+import { Notification } from '@novu/js';
 
 import { router } from 'expo-router';
 import { uploadToStorage } from '~/utils/images';
@@ -236,4 +237,16 @@ export function useListPostsByUserId(userId: string) {
 
 export function useFetchFollowers() {
 	return useQuery(convexQuery(api.users.getFollowers, {}));
+}
+
+export function useMarkNotificationsAsRead() {
+	return useMutation({
+		mutationFn: async (notifications: Notification[]) => {
+			await Promise.all(
+				notifications.map(async notification => {
+					await notification.read();
+				})
+			);
+		},
+	});
 }

@@ -4,6 +4,7 @@ import { Loader } from '~/components/Loader';
 import {
 	useGetPostById,
 	useLikePost,
+	useMarkNotificationsAsRead,
 	useUnlikePost,
 } from '~/state/queries/post';
 import { Image } from 'expo-image';
@@ -28,10 +29,12 @@ import {
 import { Id } from '~/convex/_generated/dataModel';
 import { t } from '@lingui/core/macro';
 import { useQuery } from 'convex/react';
+import { useMutation } from '@tanstack/react-query';
 import { api } from '~/convex/_generated/api';
 import { useFetchPostComments } from '~/state/queries/post_comments';
 import { useNotifications } from '@novu/react-native';
 import { NOTIFICATION_TRIGGER_TABLE } from '~/lib/constants';
+import { Notification } from '@novu/js';
 
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
@@ -47,11 +50,10 @@ export default function PostDetailsPage() {
 	}, [detailsDialogControl]);
 	const followUser = useFollowUser();
 	const unfollowUser = useUnfollowUser();
-	const urls = data?.images.filter((e) => e !== null) ?? [];
+	const urls = data?.images.filter(e => e !== null) ?? [];
 	const isMe = data?.author._id === currentUser.data?._id;
-	const { notifications } = useNotifications({
-		read: false,
-	});
+	const { notifications } = useNotifications();
+	const markNotificationsAsRead = useMarkNotificationsAsRead();
 	useFetchPostComments(id as Id<'posts'>);
 
 	const handleFollow = useCallback(async () => {
@@ -74,23 +76,23 @@ export default function PostDetailsPage() {
 	const likePost = useLikePost();
 	const unlikePost = useUnlikePost();
 
-	async function readPostRelatedNotifications() {
-		if (!notifications) return;
-		await Promise.all(
-			notifications
-				.filter(
-					(e) =>
-						e.data?.triggerTable === NOTIFICATION_TRIGGER_TABLE.POSTS &&
-						e.data?.triggerId === id,
-				)
-				.map(async (e) => {
-					await e.read();
-				}),
+	const handleNotifications = useCallback(async () => {
+		if (!notifications?.length) return;
+
+		const postNotifications = notifications.filter(
+			e =>
+				e.data?.triggerTable === NOTIFICATION_TRIGGER_TABLE.POSTS &&
+				e.data?.triggerId === id
 		);
-	}
-	useEffect(() => {
-		readPostRelatedNotifications();
-	}, [notifications, id]);
+
+		if (postNotifications.length > 0) {
+			try {
+				await markNotificationsAsRead.mutateAsync(postNotifications);
+			} catch (error) {
+				console.error('Error marking notifications as read:', error);
+			}
+		}
+	}, [notifications, id, markNotificationsAsRead]);
 
 	const openEditPostModal = useCallback(() => {
 		openModal({
@@ -99,14 +101,15 @@ export default function PostDetailsPage() {
 		});
 	}, [openModal]);
 
-	//NOTE: open comment list modal when the page is focused
+	//NOTE: open comment list modal when the page is focused and mark notifications as read
 	useFocusEffect(
 		useCallback(() => {
 			openModal({
 				name: 'comment-list',
 				postId: id as Id<'posts'>,
 			});
-		}, [openModal]),
+			handleNotifications();
+		}, [openModal, handleNotifications])
 	);
 
 	if (isLoading) {
@@ -279,7 +282,7 @@ export default function PostDetailsPage() {
 				</View>
 			)}
 			<ImageView
-				images={urls.map((e) => ({ uri: e! }))}
+				images={urls.map(e => ({ uri: e! }))}
 				visible={visible}
 				onRequestClose={() => setVisible(false)}
 				imageIndex={viewImageIndex}
