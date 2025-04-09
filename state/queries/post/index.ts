@@ -32,14 +32,14 @@ export const useCreatePost = () => {
 	return useMutation({
 		mutationFn: async (values: CreatePostFormFields) => {
 			const storageIds = await Promise.all(
-				values.images.map(async (e) => {
+				values.images.map(async e => {
 					const ids = await uploadToStorage({
 						path: e.path,
 						uploadUrl: await getUploadUrl(),
 						mime: e.mime,
 					});
 					return ids;
-				}),
+				})
 			);
 
 			await mutation({
@@ -51,7 +51,7 @@ export const useCreatePost = () => {
 			Toast.show('Post created successfully', 'CheckCheck', 'success');
 			closeModal();
 		},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 			console.error(error);
 		},
@@ -65,7 +65,7 @@ export const useListPosts = () => {
 
 export const useGetPostById = (id: string) => {
 	return useQuery(
-		convexQuery(api.posts.getPostById, { id: id as Id<'posts'> }),
+		convexQuery(api.posts.getPostById, { id: id as Id<'posts'> })
 	);
 };
 
@@ -73,7 +73,7 @@ export const useFetchFeed = ({ refreshKey }: { refreshKey: number }) => {
 	return useConvexPaginatedQuery(
 		api.posts.feed,
 		{ refreshKey },
-		{ initialNumItems: 10 },
+		{ initialNumItems: 10 }
 	);
 };
 
@@ -87,7 +87,7 @@ export const useDeletePost = (id: string) => {
 			Toast.show('Post deleted successfully', 'CircleAlert', 'success');
 			router.back();
 		},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -113,7 +113,7 @@ export const useEditPost = ({
 			Toast.show('Post updated successfully', 'CircleCheck', 'success');
 			onSuccess?.();
 		},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -135,7 +135,7 @@ export function useLikePost() {
 					{
 						postId: postId as Id<'posts'>,
 					},
-					true,
+					true
 				);
 			}
 
@@ -143,7 +143,7 @@ export function useLikePost() {
 				localStore,
 				api.posts.feed,
 				{ refreshKey: 0 },
-				(curr) => {
+				curr => {
 					if (curr.post._id === postId) {
 						return {
 							...curr,
@@ -154,9 +154,9 @@ export function useLikePost() {
 						};
 					}
 					return curr;
-				},
+				}
 			);
-		},
+		}
 	);
 	return useMutation({
 		mutationFn: async (values: LikePostFormFields) => {
@@ -165,7 +165,7 @@ export function useLikePost() {
 			});
 		},
 		onSuccess: () => {},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -186,7 +186,7 @@ export function useUnlikePost() {
 					{
 						postId: postId as Id<'posts'>,
 					},
-					false,
+					false
 				);
 			}
 
@@ -203,7 +203,7 @@ export function useUnlikePost() {
 				localStore,
 				api.posts.feed,
 				{ refreshKey: 0 },
-				(curr) => {
+				curr => {
 					if (curr.post._id === postId) {
 						return {
 							...curr,
@@ -214,9 +214,9 @@ export function useUnlikePost() {
 						};
 					}
 					return curr;
-				},
+				}
 			);
-		},
+		}
 	);
 	return useMutation({
 		mutationFn: async (values: UnlikePostFormFields) => {
@@ -225,7 +225,7 @@ export function useUnlikePost() {
 			});
 		},
 		onSuccess: () => {},
-		onError: (error) => {
+		onError: error => {
 			Toast.show(t`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -233,7 +233,7 @@ export function useUnlikePost() {
 
 export function useListPostsByUserId(userId: string) {
 	return useQuery(
-		convexQuery(api.posts.listByUserId, { userId: userId as Id<'users'> }),
+		convexQuery(api.posts.listByUserId, { userId: userId as Id<'users'> })
 	);
 }
 
@@ -242,22 +242,22 @@ export function useFetchFollowers() {
 }
 
 export function useMarkNotificationsAsRead(postId: string) {
-	const { notifications } = useNotifications({ read: false });
+	const { notifications } = useNotifications({ limit: 20 });
 	return useQuery({
 		enabled: !!notifications,
 		queryKey: ['post', postId, 'comments', 'notifications'],
 		queryFn: async () => {
 			if (!notifications) return 0;
 			const filtered = notifications.filter(
-				(e) =>
+				e =>
+					e.isRead === false &&
 					e.data?.triggerTable === NOTIFICATION_TRIGGER_TABLE.POSTS &&
-					e.data?.triggerId === postId,
+					e.data?.triggerId === postId
 			);
-			console.log('filtered notification', filtered);
 			await Promise.all(
-				filtered.map(async (notification) => {
+				filtered.map(async notification => {
 					await notification.read();
-				}),
+				})
 			);
 
 			return filtered.length;

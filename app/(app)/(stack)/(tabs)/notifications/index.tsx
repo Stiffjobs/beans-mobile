@@ -30,7 +30,7 @@ export default () => {
 
 function NotificationComponent() {
 	const { notifications, isLoading, fetchMore, hasMore, refetch } =
-		useNotifications();
+		useNotifications({ limit: 20 });
 
 	const renderFooter = () => {
 		if (!hasMore) return null;
@@ -56,7 +56,7 @@ function NotificationComponent() {
 	return (
 		<FlatList
 			data={notifications}
-			keyExtractor={(item) => item.id}
+			keyExtractor={item => item.id}
 			renderItem={renderItem}
 			ListFooterComponent={renderFooter}
 			ItemSeparatorComponent={() => <Separator />}
