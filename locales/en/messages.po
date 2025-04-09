@@ -68,6 +68,7 @@ msgstr "Calendar"
 #: view/com/modals/EditProfile.tsx:84
 #: view/com/modals/CreatePostModal.tsx:185
 #: view/com/modals/CreatePostModal.tsx:710
+#: components/NotificationItem.tsx:87
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -114,6 +115,10 @@ msgstr "Edit Profile"
 msgid "Elevation (masl)"
 msgstr "Elevation (masl)"
 
+#: components/NotificationItem.tsx:71
+msgid "Error"
+msgstr "Error"
+
 #. placeholder {0}: error.message
 #: state/queries/post_comments/index.ts:87
 #: state/queries/post_comments/index.ts:100
@@ -133,6 +138,10 @@ msgstr "Extraction Yield (%)"
 #: hooks/usePushNotifications.ts:74
 msgid "Failed to get push token: {error}"
 msgstr "Failed to get push token: {error}"
+
+#: components/NotificationItem.tsx:71
+msgid "Failed to update notification status"
+msgstr "Failed to update notification status"
 
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:168
 msgid "Farm"
@@ -193,6 +202,14 @@ msgstr "Images"
 msgid "Light"
 msgstr "Light"
 
+#: components/NotificationItem.tsx:60
+msgid "Mark as Read"
+msgstr "Mark as Read"
+
+#: components/NotificationItem.tsx:60
+msgid "Mark as Unread"
+msgstr "Mark as Unread"
+
 #: utils/labels.ts:8
 msgid "Medium"
 msgstr "Medium"
@@ -216,7 +233,7 @@ msgstr "No comments yet"
 
 #: components/GearSelectDialog/index.tsx:32
 #: components/BeanProfileListDialog/index.tsx:44
-#: app/(app)/(stack)/(tabs)/notifications/index.tsx:55
+#: app/(app)/(stack)/(tabs)/notifications/index.tsx:47
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:119
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:133
 msgid "No data yet"
@@ -312,7 +329,7 @@ msgstr "Select your filter paper"
 msgid "Select your grinder"
 msgstr "Select your grinder"
 
-#: app/(app)/(stack)/(tabs)/notifications/index.tsx:31
+#: app/(app)/(stack)/(tabs)/notifications/index.tsx:23
 msgid "Sign in"
 msgstr "Sign in"
 
