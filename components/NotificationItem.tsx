@@ -1,17 +1,9 @@
 import React from 'react';
-import {
-	View,
-	Text,
-	StyleSheet,
-	Image,
-	TouchableOpacity,
-	Linking,
-	Alert,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import { Notification } from '@novu/js';
 import { cn } from '~/lib/utils';
 import { RelativePathString, router } from 'expo-router';
+import { t } from '@lingui/core/macro';
 
 type Redirect = {
 	url: string;
@@ -56,7 +48,6 @@ export const NotificationItem: React.FC<{ notification: Notification }> = ({
 				Alert.alert('Error', 'Failed to mark notification as read');
 			}
 		}
-		console.log('notification', notification.redirect);
 		handleRedirect(notification.redirect);
 	};
 
@@ -66,7 +57,7 @@ export const NotificationItem: React.FC<{ notification: Notification }> = ({
 			'Choose an action',
 			[
 				{
-					text: notification.isRead ? 'Mark as Unread' : 'Mark as Read',
+					text: notification.isRead ? t`Mark as Unread` : t`Mark as Read`,
 					onPress: async () => {
 						try {
 							if (notification.isRead) {
@@ -77,69 +68,34 @@ export const NotificationItem: React.FC<{ notification: Notification }> = ({
 							// Update local state or trigger a refresh here
 						} catch (error) {
 							console.error('Error updating notification read status:', error);
-							Alert.alert('Error', 'Failed to update notification status');
+							Alert.alert(t`Error`, t`Failed to update notification status`);
 						}
 					},
 				},
-				{
-					text: 'Archive',
-					onPress: async () => {
-						try {
-							await notification.archive();
-							// Update local state or trigger a refresh here
-						} catch (error) {
-							console.error('Error archiving notification:', error);
-							Alert.alert('Error', 'Failed to archive notification');
-						}
-					},
-				},
-				{ text: 'Cancel', style: 'cancel' },
+				// {
+				// 	text: 'Archive',
+				// 	onPress: async () => {
+				// 		try {
+				// 			await notification.archive();
+				// 			// Update local state or trigger a refresh here
+				// 		} catch (error) {
+				// 			console.error('Error archiving notification:', error);
+				// 			Alert.alert('Error', 'Failed to archive notification');
+				// 		}
+				// 	},
+				// },
+				{ text: t`Cancel`, style: 'cancel' },
 			],
-			{ cancelable: true }
-		);
-	};
-
-	const renderAction = (action: Action, isPrimary: boolean) => {
-		const isDisabled = action.isCompleted;
-		return (
-			<TouchableOpacity
-				style={[
-					styles.actionButton,
-					isPrimary ? styles.primaryAction : styles.secondaryAction,
-					action.isCompleted && styles.completedAction,
-				]}
-				onPress={() => handleRedirect(action.redirect)}
-				disabled={isDisabled}
-			>
-				<Text
-					style={[
-						styles.actionText,
-						isPrimary ? styles.primaryActionText : styles.secondaryActionText,
-						action.isCompleted && styles.completedActionText,
-					]}
-					numberOfLines={1}
-					ellipsizeMode="tail"
-				>
-					{action.label}
-				</Text>
-				{action.isCompleted && (
-					<Ionicons
-						name="checkmark-circle"
-						size={18}
-						color={COLORS.button.text.primary}
-						style={styles.actionIcon}
-					/>
-				)}
-			</TouchableOpacity>
+			{ cancelable: true },
 		);
 	};
 
 	return (
 		<TouchableOpacity
-			style={[
-				notification.isRead ? styles.readContainer : styles.unreadContainer,
-			]}
-			className={cn('flex-row items-center rounded-lg p-4')}
+			className={cn(
+				'flex-row items-center p-4',
+				notification.isRead ? 'bg-current' : 'bg-secondary',
+			)}
 			onPress={handlePress}
 			onLongPress={handleLongPress}
 		>
@@ -152,166 +108,15 @@ export const NotificationItem: React.FC<{ notification: Notification }> = ({
 				<Text>No Image</Text>
 			)}
 			<View className="ml-4 flex-1  gap-2">
-				<Text className="text-lg font-semibold">{notification.body}</Text>
+				<Text className="text-lg text-primary font-semibold">
+					{notification.body}
+				</Text>
 				<Text className="text-muted-foreground">
 					{formatRelativeTime(notification.createdAt)}
 				</Text>
-				<View>
-					{notification.primaryAction &&
-						renderAction(notification.primaryAction, true)}
-					{notification.secondaryAction &&
-						renderAction(notification.secondaryAction, false)}
-				</View>
 			</View>
 		</TouchableOpacity>
 	);
 };
 
 // Define color constants
-const COLORS = {
-	primary: '#2196F3',
-	secondary: '#757575',
-	background: '#FFFFFF',
-	unreadBackground: '#F0F8FF',
-	border: '#E0E0E0',
-	text: {
-		primary: '#000000',
-		secondary: '#757575',
-	},
-	archived: {
-		background: '#FFC107',
-		text: '#FFFFFF',
-	},
-	button: {
-		primary: '#2196F3',
-		secondary: '#FFFFFF',
-		text: {
-			primary: '#FFFFFF',
-			secondary: '#2196F3',
-		},
-		disabled: '#E0E0E0',
-		completed: '#4CAF50',
-	},
-};
-
-// Define spacing constants
-const SPACING = {
-	xs: 4,
-	sm: 8,
-	md: 12,
-	lg: 16,
-};
-
-// Define font size constants
-const FONT_SIZES = {
-	xs: 10,
-	sm: 12,
-	md: 14,
-	lg: 16,
-};
-
-const styles = StyleSheet.create({
-	container: {
-		flexDirection: 'row',
-		padding: SPACING.lg,
-		borderBottomWidth: 1,
-		borderBottomColor: COLORS.border,
-		alignItems: 'center', // Center items vertically
-	},
-	readContainer: {
-		backgroundColor: COLORS.background,
-	},
-	unreadContainer: {
-		backgroundColor: COLORS.unreadBackground,
-	},
-	archivedContainer: {
-		opacity: 0.7,
-	},
-	contentContainer: {
-		flex: 1,
-	},
-	subject: {
-		fontSize: FONT_SIZES.lg,
-		fontWeight: 'bold',
-		marginBottom: SPACING.xs,
-		color: COLORS.text.primary,
-	},
-	body: {
-		fontSize: FONT_SIZES.md,
-		marginBottom: SPACING.sm,
-		color: COLORS.text.primary,
-	},
-	timestamp: {
-		fontSize: FONT_SIZES.sm,
-		color: COLORS.text.secondary,
-		marginBottom: SPACING.sm,
-	},
-	tagsContainer: {
-		flexDirection: 'row',
-		flexWrap: 'wrap',
-		marginBottom: SPACING.sm,
-	},
-	actionsContainer: {
-		flexDirection: 'row',
-		justifyContent: 'space-between', // Changed from 'flex-start' to 'space-between'
-		marginTop: SPACING.sm, // Add some top margin
-	},
-	actionButton: {
-		flex: 1, // Make buttons expand to fill available space
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'center',
-		paddingVertical: SPACING.sm,
-		paddingHorizontal: SPACING.md,
-		borderRadius: 8,
-		height: 40,
-		elevation: 2,
-		shadowColor: '#000',
-		shadowOffset: { width: 0, height: 1 },
-		shadowOpacity: 0.1,
-		shadowRadius: 2,
-		marginHorizontal: SPACING.xs, // Add horizontal margin
-	},
-	primaryAction: {
-		backgroundColor: COLORS.button.primary,
-	},
-	secondaryAction: {
-		backgroundColor: COLORS.button.secondary,
-		borderWidth: 1,
-		borderColor: COLORS.button.primary,
-	},
-	completedAction: {
-		backgroundColor: COLORS.button.completed,
-	},
-	actionText: {
-		fontSize: FONT_SIZES.md,
-		fontWeight: '500',
-		textAlign: 'center',
-		letterSpacing: 0.25,
-	},
-	primaryActionText: {
-		color: COLORS.button.text.primary,
-	},
-	secondaryActionText: {
-		color: COLORS.button.text.secondary,
-	},
-	completedActionText: {
-		color: COLORS.button.text.primary,
-	},
-	actionIcon: {
-		marginLeft: SPACING.sm,
-	},
-	archivedBadge: {
-		position: 'absolute',
-		top: 0,
-		right: 0,
-		backgroundColor: COLORS.archived.background,
-		paddingVertical: SPACING.xs,
-		paddingHorizontal: SPACING.sm,
-		borderRadius: 4,
-	},
-	archivedText: {
-		fontSize: FONT_SIZES.xs,
-		color: COLORS.archived.text,
-	},
-});
