@@ -29,13 +29,8 @@ import {
 import { Id } from '~/convex/_generated/dataModel';
 import { t } from '@lingui/core/macro';
 import { useQuery } from 'convex/react';
-import { useMutation } from '@tanstack/react-query';
 import { api } from '~/convex/_generated/api';
 import { useFetchPostComments } from '~/state/queries/post_comments';
-import { useNotifications } from '@novu/react-native';
-import { NOTIFICATION_TRIGGER_TABLE } from '~/lib/constants';
-import { Notification } from '@novu/js';
-
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const [viewImageIndex, setViewImageIndex] = useState(0);
@@ -50,10 +45,9 @@ export default function PostDetailsPage() {
 	}, [detailsDialogControl]);
 	const followUser = useFollowUser();
 	const unfollowUser = useUnfollowUser();
-	const urls = data?.images.filter(e => e !== null) ?? [];
+	const urls = data?.images.filter((e) => e !== null) ?? [];
 	const isMe = data?.author._id === currentUser.data?._id;
-	const { notifications } = useNotifications();
-	const markNotificationsAsRead = useMarkNotificationsAsRead();
+	useMarkNotificationsAsRead(id);
 	useFetchPostComments(id as Id<'posts'>);
 
 	const handleFollow = useCallback(async () => {
@@ -76,24 +70,6 @@ export default function PostDetailsPage() {
 	const likePost = useLikePost();
 	const unlikePost = useUnlikePost();
 
-	const handleNotifications = useCallback(async () => {
-		if (!notifications?.length) return;
-
-		const postNotifications = notifications.filter(
-			e =>
-				e.data?.triggerTable === NOTIFICATION_TRIGGER_TABLE.POSTS &&
-				e.data?.triggerId === id
-		);
-
-		if (postNotifications.length > 0) {
-			try {
-				await markNotificationsAsRead.mutateAsync(postNotifications);
-			} catch (error) {
-				console.error('Error marking notifications as read:', error);
-			}
-		}
-	}, [notifications, id, markNotificationsAsRead]);
-
 	const openEditPostModal = useCallback(() => {
 		openModal({
 			name: 'edit-post',
@@ -108,8 +84,8 @@ export default function PostDetailsPage() {
 				name: 'comment-list',
 				postId: id as Id<'posts'>,
 			});
-			handleNotifications();
-		}, [openModal, handleNotifications])
+			// handleNotifications();
+		}, [openModal]),
 	);
 
 	if (isLoading) {
@@ -282,7 +258,7 @@ export default function PostDetailsPage() {
 				</View>
 			)}
 			<ImageView
-				images={urls.map(e => ({ uri: e! }))}
+				images={urls.map((e) => ({ uri: e! }))}
 				visible={visible}
 				onRequestClose={() => setVisible(false)}
 				imageIndex={viewImageIndex}
