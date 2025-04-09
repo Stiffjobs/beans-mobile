@@ -1,7 +1,8 @@
-import { router, Slot, useSegments } from 'expo-router';
-import { useEffect } from 'react';
+import { Slot, useSegments } from 'expo-router';
+import { useNotificationObserver } from '~/hooks/useNotificationObserver';
 export default () => {
 	const segments = useSegments();
+	useNotificationObserver();
 	// useEffect(() => {
 	// 	if (isLoading) return;
 	// 	const inAuth = segments[1] === '(auth)';

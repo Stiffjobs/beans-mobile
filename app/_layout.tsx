@@ -13,8 +13,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import '../global.css';
 import { useColorScheme } from '~/lib/useColorScheme';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import * as Updates from 'expo-updates';
+import * as Notifications from 'expo-notifications';
 
 import { Provider as ModalProvider } from '@/state/modals';
 import { Provider as DialogStateProvider } from '~/state/dialogs';
@@ -66,6 +67,13 @@ export {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldPlaySound: false,
+		shouldSetBadge: false,
+		shouldShowAlert: false,
+	}),
+});
 const LIGHT_THEME: Theme = {
 	...DefaultTheme,
 	colors: NAV_THEME.light,
