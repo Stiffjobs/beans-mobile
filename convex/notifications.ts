@@ -16,6 +16,8 @@ export const send = internalAction({
 			avatar: v.union(v.string(), v.null()),
 			redirectTo: v.string(),
 			senderId: v.id('users'),
+			triggerTable: v.string(),
+			triggerId: v.string(),
 		}),
 	},
 	handler: async (_, args) => {
@@ -32,6 +34,8 @@ export const send = internalAction({
 				avatar: args.data.avatar,
 				senderId: args.data.senderId,
 				redirectTo: args.data.redirectTo,
+				triggerTable: args.data.triggerTable,
+				triggerId: args.data.triggerId,
 			},
 			overrides: {},
 		});

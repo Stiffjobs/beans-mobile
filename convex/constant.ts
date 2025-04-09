@@ -22,3 +22,8 @@ export enum GEAR_TYPE {
 	Brewer = 'brewer',
 	'Filter paper' = 'filter paper',
 }
+
+export const NOTIFICATION_TRIGGER_TABLE = {
+	POST_COMMENTS: 'post_comments',
+	POSTS: 'posts',
+};

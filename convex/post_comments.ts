@@ -9,6 +9,7 @@ import { Id } from './_generated/dataModel';
 import { getCurrentUserOrThrow } from './users';
 import { QueryCtx } from './_generated/server';
 import { internal } from './_generated/api';
+import { NOTIFICATION_TRIGGER_TABLE } from './constant';
 
 // Helper function to extract mentions and find user IDs
 async function processMentions(ctx: QueryCtx, content: string) {
@@ -111,6 +112,8 @@ export const sendNotification = internalAction({
 						avatar: comment.user?.avatar,
 						redirectTo: `/posts/${post._id}`,
 						senderId: post.author,
+						triggerTable: NOTIFICATION_TRIGGER_TABLE.POSTS,
+						triggerId: post._id,
 						subject: 'Beans',
 					},
 				});
