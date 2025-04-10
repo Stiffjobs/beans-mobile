@@ -30,21 +30,22 @@ function ShellInner({ children }: React.PropsWithChildren<{}>) {
 	}, [setIsDrawerOpen]);
 	const winDim = useWindowDimensions();
 	const segments = useSegments();
-	const isOnTab = segments.find((s) => s === '(tabs)') !== undefined;
+	const isOnTab = segments.find(s => s === '(tabs)') !== undefined;
 	const renderDrawerContent = useCallback(() => {
 		return <DrawerContent />;
 	}, []);
 	const [trendingScrollGesture] = useState(() => Gesture.Native());
-	const swipeEnabled = isOnTab && sessionId && !isDrawerSwipeDisabled;
+	const swipeEnabled = isOnTab && !isDrawerSwipeDisabled;
 
 	return (
 		<>
 			<Drawer
 				renderDrawerContent={renderDrawerContent}
+				swipeEnabled={swipeEnabled}
 				drawerStyle={{
-					width: Math.min(360, winDim.width * 0.6),
+					width: Math.min(400, winDim.width * 0.8),
 				}}
-				configureGestureHandler={(handler) => {
+				configureGestureHandler={handler => {
 					handler = handler.requireExternalGestureToFail(trendingScrollGesture);
 					if (swipeEnabled) {
 						if (isDrawerOpen) {

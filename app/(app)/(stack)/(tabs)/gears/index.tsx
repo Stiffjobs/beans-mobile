@@ -2,12 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Link } from 'expo-router';
 import { useCallback, useState } from 'react';
-import {
-	Pressable,
-	RefreshControl,
-	useWindowDimensions,
-	View,
-} from 'react-native';
+import { Pressable, RefreshControl, View } from 'react-native';
 import { FAB } from '~/components/FAB';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
@@ -18,40 +13,11 @@ import { GearData } from '~/lib/types';
 import { useModalControls } from '~/state/modals';
 import { useListGears } from '~/state/queries/gears';
 import { Brewer, FilterPaper, Grinder } from '~/view/com/icons/SvgIcons';
-import {
-	NavigationState,
-	Route,
-	SceneRendererProps,
-	TabDescriptor,
-	TabView,
-} from 'react-native-tab-view';
-import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
-import { CustomTabBar } from '~/view/com/pager/TabBar';
 import { Pager } from '~/view/com/pager/Pager';
 type ScreenProps = {
 	data: GearData[];
 	refreshing: boolean;
 	handlePTR: () => void;
-};
-const renderTabBar = (
-	props: SceneRendererProps & {
-		navigationState: NavigationState<Route>;
-		options: Record<string, TabDescriptor<Route>> | undefined;
-	}
-) => {
-	const { options, ...rest } = props;
-	return (
-		<BlockDrawerGesture>
-			<CustomTabBar
-				className="bg-background"
-				tabStyle={{ width: 'auto' }}
-				activeClassName="text-primary"
-				inactiveClassName="text-primary/50"
-				indicatorClassName="bg-primary/75"
-				{...rest}
-			/>
-		</BlockDrawerGesture>
-	);
 };
 export default function Gears() {
 	const { openModal } = useModalControls();
@@ -65,74 +31,37 @@ export default function Gears() {
 		fetchListGears.refetch();
 		setRefreshing(false);
 	}, [fetchListGears]);
-	const [index, setIndex] = useState(0);
-	const routes = [
-		{ key: 'brewer', title: 'Brewer' },
-		{ key: 'filterPaper', title: 'Filter Paper' },
-		{ key: 'grinder', title: 'Grinder' },
-	];
-	const layout = useWindowDimensions();
-
-	const renderScene = useCallback(
-		(
-			props: SceneRendererProps & {
-				route: {
-					key: string;
-				};
-			}
-		) => {
-			switch (props.route.key) {
-				case 'brewer':
-					return (
-						<BrewerScreen
-							refreshing={refreshing}
-							handlePTR={handleRefresh}
-							data={
-								fetchListGears.data?.filter(e => e.type === GEAR_TYPE.Brewer) ??
-								[]
-							}
-						/>
-					);
-				case 'filterPaper':
-					return (
-						<FilterPaperScreen
-							refreshing={refreshing}
-							handlePTR={handleRefresh}
-							data={
-								fetchListGears.data?.filter(
-									e => e.type === GEAR_TYPE['Filter paper']
-								) ?? []
-							}
-						/>
-					);
-				case 'grinder':
-					return (
-						<GrinderScreen
-							refreshing={refreshing}
-							handlePTR={handleRefresh}
-							data={
-								fetchListGears.data?.filter(
-									e => e.type === GEAR_TYPE.Grinder
-								) ?? []
-							}
-						/>
-					);
-			}
-		},
-		[fetchListGears.data]
-	);
 
 	return (
 		<View className="flex-1">
 			<Authenticated>
-				<Pager
-					index={index}
-					initialLayout={layout}
-					navigationState={{ index, routes }}
-					renderScene={renderScene}
-					renderTabBar={renderTabBar}
-					onIndexChange={setIndex}
-				/>
+				<Pager tabBarItems={['Brewer', 'Filter Paper', 'Grinder']}>
+					<BrewerScreen
+						refreshing={refreshing}
+						handlePTR={handleRefresh}
+						data={
+							fetchListGears.data?.filter(e => e.type === GEAR_TYPE.Brewer) ??
+							[]
+						}
+					/>
+					<FilterPaperScreen
+						refreshing={refreshing}
+						handlePTR={handleRefresh}
+						data={
+							fetchListGears.data?.filter(
+								e => e.type === GEAR_TYPE['Filter paper']
+							) ?? []
+						}
+					/>
+					<GrinderScreen
+						refreshing={refreshing}
+						handlePTR={handleRefresh}
+						data={
+							fetchListGears.data?.filter(e => e.type === GEAR_TYPE.Grinder) ??
+							[]
+						}
+					/>
+				</Pager>
 				<FAB iconName="PackagePlus" onPress={openCreateGearModal} />
 			</Authenticated>
 			<Unauthenticated>

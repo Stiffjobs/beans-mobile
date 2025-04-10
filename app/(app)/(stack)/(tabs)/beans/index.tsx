@@ -21,7 +21,6 @@ import { Authenticated, Unauthenticated } from 'convex/react';
 import { Link } from 'expo-router';
 import { Button } from '~/components/ui/button';
 import { t } from '@lingui/core/macro';
-import { renderTabBar } from '~/view/com/pager/TabBar';
 import { Pager } from '~/view/com/pager/Pager';
 
 interface ScreenProps {
@@ -43,55 +42,26 @@ export default function Beans() {
 		fetchListBeanProfiles.refetch();
 		setRefreshing(false);
 	}, [fetchListBeanProfiles]);
-	const routes = [
-		{ key: 'unfinished', title: t`Unfinished` },
-		{ key: 'finished', title: t`Finished` },
-	];
-	const [index, setIndex] = useState(0);
-	const layout = useWindowDimensions();
 	const finished =
 		fetchListBeanProfiles.data?.filter(profile => profile.finished) ?? [];
 	const unfinished =
 		fetchListBeanProfiles.data?.filter(profile => !profile.finished) ?? [];
-	const renderScene = useCallback(
-		(
-			props: SceneRendererProps & {
-				route: Route;
-			}
-		) => {
-			switch (props.route.key) {
-				case 'unfinished':
-					return (
-						<UnFinishedBeanProfiles
-							data={unfinished}
-							refreshing={refreshing}
-							handlePTR={handleRefresh}
-						/>
-					);
-				case 'finished':
-					return (
-						<FinishedBeanProfiles
-							data={finished}
-							refreshing={refreshing}
-							handlePTR={handleRefresh}
-						/>
-					);
-			}
-		},
-		[fetchListBeanProfiles.data]
-	);
 
 	return (
 		<View className="flex-1">
 			<Authenticated>
-				<Pager
-					index={index}
-					renderScene={renderScene}
-					renderTabBar={renderTabBar}
-					onIndexChange={setIndex}
-					initialLayout={{ width: layout.width }}
-					navigationState={{ index, routes }}
-				/>
+				<Pager tabBarItems={['Unfinished', 'Finished']}>
+					<UnFinishedBeanProfiles
+						data={unfinished}
+						refreshing={refreshing}
+						handlePTR={handleRefresh}
+					/>
+					<FinishedBeanProfiles
+						data={finished}
+						refreshing={refreshing}
+						handlePTR={handleRefresh}
+					/>
+				</Pager>
 				<FAB iconName="PackagePlus" onPress={openCreateBeanProfileModal} />
 			</Authenticated>
 			<Unauthenticated>

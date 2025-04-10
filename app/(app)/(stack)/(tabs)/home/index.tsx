@@ -1,9 +1,4 @@
-import {
-	useWindowDimensions,
-	View,
-	FlatList,
-	RefreshControl,
-} from 'react-native';
+import { View, FlatList, RefreshControl } from 'react-native';
 import { useModalControls } from '~/state/modals';
 import { Calendar, DateData } from 'react-native-calendars';
 import { Text } from '~/components/ui/text';
@@ -19,22 +14,18 @@ import {
 } from 'react';
 import { formatDate, formatDateToString } from '~/lib/utils';
 import { useCalendarTheme } from '~/hooks/useCalendarTheme';
-import {
-	NavigationState,
-	SceneRendererProps,
-	TabDescriptor,
-	Route,
-} from 'react-native-tab-view';
-import { CustomTabBar } from '~/view/com/pager/TabBar';
-import { GestureDetector, ScrollView } from 'react-native-gesture-handler';
-import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
+import { TabBar } from '~/view/com/pager/TabBar';
+import { ScrollView } from 'react-native-gesture-handler';
 import { FAB } from '~/components/FAB';
-import { useLingui } from '@lingui/react/macro';
 import { PostFeedItem } from '~/view/com/posts/PostFeedItem';
 import { BrewingCard } from '~/view/com/posts/BrewingCard';
-import { Pager } from '~/view/com/pager/Pager';
+import { Pager, RenderTabBarFnProps } from '~/view/com/pager/Pager';
 import { Link } from 'expo-router';
 import { Button } from '~/components/ui/button';
+import Animated from 'react-native-reanimated';
+import React from 'react';
+
+const TAB_BAR_ITEMS = ['Feed', 'Calendar'];
 
 function CalendarScreen({
 	setSelectedDate,
@@ -129,79 +120,47 @@ function FeedScreen() {
 	);
 }
 
-const renderTabBar = (
-	props: SceneRendererProps & {
-		navigationState: NavigationState<Route>;
-		options: Record<string, TabDescriptor<Route>> | undefined;
-	}
-) => {
-	const { options, ...rest } = props;
-	return (
-		<BlockDrawerGesture>
-			<CustomTabBar
-				className="bg-background"
-				tabStyle={{ width: 'auto' }}
-				activeClassName="text-primary"
-				inactiveClassName="text-primary/50"
-				indicatorClassName="bg-primary/75"
-				{...rest}
-			/>
-		</BlockDrawerGesture>
-	);
-};
-
-export default function HomeScreen() {
+const AuthenticatedContent = React.memo(function AuthenticatedContent({
+	selectedDate,
+	setSelectedDate,
+}: {
+	selectedDate: string;
+	setSelectedDate: Dispatch<SetStateAction<string>>;
+}) {
 	const { openModal } = useModalControls();
-	const [selectedDate, setSelectedDate] = useState<string>(
-		formatDate(new Date().getTime())
-	);
-	const renderScene = useCallback(
-		(
-			props: SceneRendererProps & {
-				route: Route;
-			}
-		) => {
-			switch (props.route.key) {
-				case 'feed':
-					return <FeedScreen />;
-				case 'calendar':
-					return (
-						<CalendarScreen
-							selectedDate={selectedDate}
-							setSelectedDate={setSelectedDate}
-						/>
-					);
-			}
-		},
-		[selectedDate]
-	);
-
 	const openCreatePostModal = useCallback(() => {
 		openModal({
 			name: 'create-post',
 			selectedDate: selectedDate,
 		});
 	}, [openModal, selectedDate]);
-	const layout = useWindowDimensions();
-	const { t } = useLingui();
 
-	const [index, setIndex] = useState(0);
-	const routes = [
-		{ key: 'feed', title: t`Feed` },
-		{ key: 'calendar', title: t`Calendar` },
-	];
+	return (
+		<>
+			<Pager tabBarItems={TAB_BAR_ITEMS}>
+				<FeedScreen />
+				<CalendarScreen
+					selectedDate={selectedDate}
+					setSelectedDate={setSelectedDate}
+				/>
+			</Pager>
+			<FAB iconName="Plus" onPress={openCreatePostModal} />
+		</>
+	);
+});
+
+export default function HomeScreen() {
+	const [selectedDate, setSelectedDate] = useState<string>(
+		formatDate(new Date().getTime())
+	);
+
 	return (
 		<View className="flex-1">
 			<Authenticated>
-				<Pager
-					index={index}
-					renderScene={renderScene}
-					renderTabBar={renderTabBar}
-					onIndexChange={setIndex}
-					initialLayout={{ width: layout.width }}
-					navigationState={{ index, routes }}
+				<AuthenticatedContent
+					selectedDate={selectedDate}
+					setSelectedDate={setSelectedDate}
 				/>
-				<FAB iconName="Plus" onPress={openCreatePostModal} />
 			</Authenticated>
 			<Unauthenticated>
 				<View className="flex-1 items-center justify-center">
