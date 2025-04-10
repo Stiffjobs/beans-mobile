@@ -16,7 +16,7 @@ import {
 	useIsFollowingThisUser,
 	useUnfollowUser,
 } from '~/state/queries/users';
-import { renderTabBar } from '~/view/com/pager/TabBar';
+import { Pager } from '~/view/com/pager/Pager';
 import { PostFeedItem } from '~/view/com/posts/PostFeedItem';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
 
@@ -99,13 +99,9 @@ export default function ProfileDetailsPage() {
 					<Text>{t`Follow`}</Text>
 				</Button>
 			)}
-			<TabView
-				navigationState={{ index, routes }}
-				renderTabBar={renderTabBar}
-				renderScene={renderScene}
-				onIndexChange={setIndex}
-				initialLayout={{ width: layout.width }}
-			/>
+			<Pager tabBarItems={['Posts']}>
+				<PostsTab profileId={profileId} />
+			</Pager>
 		</View>
 	);
 }
