@@ -1,15 +1,11 @@
 import {
-	Pressable,
 	useWindowDimensions,
 	View,
 	FlatList,
 	RefreshControl,
-	GestureResponderEvent,
 } from 'react-native';
 import { useModalControls } from '~/state/modals';
 import { Calendar, DateData } from 'react-native-calendars';
-import { Link, router } from 'expo-router';
-import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Loader } from '~/components/Loader';
@@ -27,16 +23,18 @@ import {
 	NavigationState,
 	SceneRendererProps,
 	TabDescriptor,
-	TabView,
+	Route,
 } from 'react-native-tab-view';
 import { CustomTabBar } from '~/view/com/pager/TabBar';
-import { ScrollView } from 'react-native-gesture-handler';
+import { GestureDetector, ScrollView } from 'react-native-gesture-handler';
 import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
 import { FAB } from '~/components/FAB';
 import { useLingui } from '@lingui/react/macro';
 import { PostFeedItem } from '~/view/com/posts/PostFeedItem';
-import { FeedPost } from '~/convex/types';
 import { BrewingCard } from '~/view/com/posts/BrewingCard';
+import { Pager } from '~/view/com/pager/Pager';
+import { Link } from 'expo-router';
+import { Button } from '~/components/ui/button';
 
 function CalendarScreen({
 	setSelectedDate,
@@ -131,11 +129,6 @@ function FeedScreen() {
 	);
 }
 
-type Route = {
-	key: string;
-	title: string;
-};
-
 const renderTabBar = (
 	props: SceneRendererProps & {
 		navigationState: NavigationState<Route>;
@@ -165,10 +158,7 @@ export default function HomeScreen() {
 	const renderScene = useCallback(
 		(
 			props: SceneRendererProps & {
-				route: {
-					key: string;
-					title: string;
-				};
+				route: Route;
 			}
 		) => {
 			switch (props.route.key) {
@@ -200,11 +190,11 @@ export default function HomeScreen() {
 		{ key: 'feed', title: t`Feed` },
 		{ key: 'calendar', title: t`Calendar` },
 	];
-
 	return (
 		<View className="flex-1">
 			<Authenticated>
-				<TabView
+				<Pager
+					index={index}
 					renderScene={renderScene}
 					renderTabBar={renderTabBar}
 					onIndexChange={setIndex}

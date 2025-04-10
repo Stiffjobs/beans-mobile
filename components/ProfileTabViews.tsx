@@ -7,6 +7,7 @@ import { SceneRendererProps, TabView } from 'react-native-tab-view';
 import { useListPosts } from '~/state/queries/post';
 import { renderTabBar } from '~/view/com/pager/TabBar';
 import { PostFeedItem } from '~/view/com/posts/PostFeedItem';
+import { Pager } from '~/view/com/pager/Pager';
 
 export function ProfileTabViews() {
 	const routes = [{ key: 'posts', title: t`Posts` }];
@@ -31,7 +32,8 @@ export function ProfileTabViews() {
 
 	return (
 		<View className="flex-1">
-			<TabView
+			<Pager
+				index={index}
 				navigationState={{ index, routes }}
 				renderTabBar={renderTabBar}
 				renderScene={renderScene}

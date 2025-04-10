@@ -15,13 +15,14 @@ import {
 import { Text } from '~/components/ui/text';
 import { RefreshControl } from 'react-native';
 import { BeanProfileProps } from '~/lib/types';
-import { SceneRendererProps, TabView } from 'react-native-tab-view';
+import { Route, SceneRendererProps, TabView } from 'react-native-tab-view';
 import { Muted } from '~/components/ui/typography';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Link } from 'expo-router';
 import { Button } from '~/components/ui/button';
 import { t } from '@lingui/core/macro';
 import { renderTabBar } from '~/view/com/pager/TabBar';
+import { Pager } from '~/view/com/pager/Pager';
 
 interface ScreenProps {
 	data: BeanProfileProps[];
@@ -55,9 +56,7 @@ export default function Beans() {
 	const renderScene = useCallback(
 		(
 			props: SceneRendererProps & {
-				route: {
-					key: string;
-				};
+				route: Route;
 			}
 		) => {
 			switch (props.route.key) {
@@ -85,7 +84,8 @@ export default function Beans() {
 	return (
 		<View className="flex-1">
 			<Authenticated>
-				<TabView
+				<Pager
+					index={index}
 					renderScene={renderScene}
 					renderTabBar={renderTabBar}
 					onIndexChange={setIndex}
