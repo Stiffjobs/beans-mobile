@@ -110,13 +110,20 @@ export function Component(props: CommentListModalProps) {
 		}
 	}, [content]);
 
-	const handleSelectUser = (user: { name: string } | null) => {
+	/**
+	 * Handle the selection of a user for mention
+	 *
+	 * NOTE: this function setting field if using textInput with onFocus and onBlur, would cause crashing
+	 * @param user - The user to mention
+	 * @returns void
+	 */
+	function handleSelectUser(user: { name: string } | null) {
 		if (!user) return;
 		const words = content.split(' ');
 		words[words.length - 1] = `@${user.name} `;
 		form.setFieldValue('content', words.join(' '));
 		setMentionSearch('');
-	};
+	}
 
 	const showSendButtonStyle = useAnimatedStyle(() => {
 		const show = content.length > 0;
