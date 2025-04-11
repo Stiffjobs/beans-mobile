@@ -1,7 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Link } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Pressable, RefreshControl, View } from 'react-native';
 import { FAB } from '~/components/FAB';
 import { Button } from '~/components/ui/button';
@@ -13,7 +13,9 @@ import { GearData } from '~/lib/types';
 import { useModalControls } from '~/state/modals';
 import { useListGears } from '~/state/queries/gears';
 import { Brewer, FilterPaper, Grinder } from '~/view/com/icons/SvgIcons';
-import { Pager } from '~/view/com/pager/Pager';
+import { Pager, PagerRef, RenderTabBarFnProps } from '~/view/com/pager/Pager';
+import { TabBar } from '~/view/com/pager/TabBar';
+import { t } from '@lingui/core/macro';
 type ScreenProps = {
 	data: GearData[];
 	refreshing: boolean;
@@ -31,11 +33,17 @@ export default function Gears() {
 		fetchListGears.refetch();
 		setRefreshing(false);
 	}, [fetchListGears]);
+	const pagerRef = useRef<PagerRef>(null);
+	const renderTabBar = useCallback((props: RenderTabBarFnProps) => {
+		return (
+			<TabBar {...props} items={[t`Brewer`, t`Filter Paper`, t`Grinder`]} />
+		);
+	}, []);
 
 	return (
 		<View className="flex-1">
 			<Authenticated>
-				<Pager tabBarItems={['Brewer', 'Filter Paper', 'Grinder']}>
+				<Pager ref={pagerRef} renderTabBar={renderTabBar}>
 					<BrewerScreen
 						refreshing={refreshing}
 						handlePTR={handleRefresh}

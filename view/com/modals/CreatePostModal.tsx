@@ -17,7 +17,7 @@ import { ComposerImage, createComposerImage } from '~/state/gallery';
 import { composerReducer, initialPostDraft } from '../composer/state/composer';
 import { Gallery } from '../composer/photos/Gallery';
 import { useModalControls } from '~/state/modals';
-import { Pager } from '../pager/Pager';
+import { Pager, PagerRef } from '../pager/Pager';
 import { TimeMaskInput } from '../time/TimeMaskInput';
 import { H4 } from '~/components/ui/typography';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -113,7 +113,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 	const filterPaperSelectDialogControl = useGearSelectDialogControl();
 
 	const [activePage, setActivePage] = React.useState(0);
-	const pagerRef = useRef<PagerView>(null);
+	const pagerRef = useRef<PagerRef>(null);
 
 	const { requestPhotoAccessIfNeeded } = usePhotoLibraryPermission();
 	const { closeModal } = useModalControls();
@@ -211,6 +211,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			<Separator />
 			<Pager
 				ref={pagerRef}
+				renderTabBar={_ => <View />}
 				onPageSelected={index => {
 					setActivePage(index);
 				}}

@@ -10,6 +10,8 @@ import {
 	SetStateAction,
 	useCallback,
 	useEffect,
+	useMemo,
+	useRef,
 	useState,
 } from 'react';
 import { formatDate, formatDateToString } from '~/lib/utils';
@@ -19,13 +21,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { FAB } from '~/components/FAB';
 import { PostFeedItem } from '~/view/com/posts/PostFeedItem';
 import { BrewingCard } from '~/view/com/posts/BrewingCard';
-import { Pager, RenderTabBarFnProps } from '~/view/com/pager/Pager';
+import { Pager, PagerRef, RenderTabBarFnProps } from '~/view/com/pager/Pager';
 import { Link } from 'expo-router';
 import { Button } from '~/components/ui/button';
-import Animated from 'react-native-reanimated';
 import React from 'react';
-
-const TAB_BAR_ITEMS = ['Feed', 'Calendar'];
+import { t } from '@lingui/core/macro';
+const TAB_BAR_ITEMS = [t`Feed`, t`Calendar`];
 
 function CalendarScreen({
 	setSelectedDate,
@@ -119,7 +120,6 @@ function FeedScreen() {
 		</View>
 	);
 }
-
 const AuthenticatedContent = React.memo(function AuthenticatedContent({
 	selectedDate,
 	setSelectedDate,
@@ -127,6 +127,7 @@ const AuthenticatedContent = React.memo(function AuthenticatedContent({
 	selectedDate: string;
 	setSelectedDate: Dispatch<SetStateAction<string>>;
 }) {
+	const pagerRef = useRef<PagerRef>(null);
 	const { openModal } = useModalControls();
 	const openCreatePostModal = useCallback(() => {
 		openModal({
@@ -134,10 +135,13 @@ const AuthenticatedContent = React.memo(function AuthenticatedContent({
 			selectedDate: selectedDate,
 		});
 	}, [openModal, selectedDate]);
+	const renderTabBar = useCallback((props: RenderTabBarFnProps) => {
+		return <TabBar {...props} items={TAB_BAR_ITEMS} />;
+	}, []);
 
 	return (
 		<>
-			<Pager tabBarItems={TAB_BAR_ITEMS}>
+			<Pager ref={pagerRef} renderTabBar={renderTabBar}>
 				<FeedScreen />
 				<CalendarScreen
 					selectedDate={selectedDate}

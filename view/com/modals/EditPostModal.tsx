@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import { Pressable, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import PagerView from 'react-native-pager-view';
 import { Label } from '~/components/ui/label';
 import { H4 } from '~/components/ui/typography';
 import { Text } from '~/components/ui/text';
@@ -20,7 +19,7 @@ import { Button } from '~/components/ui/button';
 import { WindowOverlay } from '../util/WindowOverlay';
 import { PortalHost } from '@rn-primitives/portal';
 import { Separator } from '@rn-primitives/select';
-import { Pager } from '../pager/Pager';
+import { Pager, PagerRef } from '../pager/Pager';
 import { useEditPost, useGetPostById } from '~/state/queries/post';
 import { Loader } from '~/components/Loader';
 import { RecipeStepsEditor } from '~/components/RecipeStepsEditor';
@@ -83,7 +82,7 @@ export function Component({ id }: { id: string }) {
 		beanProfileListDialogControl.open();
 	}, [beanProfileListDialogControl]);
 	const [activePage, setActivePage] = React.useState(0);
-	const pagerRef = useRef<PagerView>(null);
+	const pagerRef = useRef<PagerRef>(null);
 	const { closeModal } = useModalControls();
 	const fetchGearList = useListGears();
 	const editPostMutation = useEditPost({
@@ -155,6 +154,7 @@ export function Component({ id }: { id: string }) {
 			<Separator />
 			<Pager
 				ref={pagerRef}
+				renderTabBar={_ => <View />}
 				onPageSelected={index => {
 					setActivePage(index);
 				}}

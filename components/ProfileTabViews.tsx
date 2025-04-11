@@ -1,17 +1,19 @@
-import { t } from '@lingui/core/macro';
 import { FlashList } from '@shopify/flash-list';
 import { useCallback, useState } from 'react';
-import { Text } from './ui/text';
-import { useWindowDimensions, View } from 'react-native';
-import { SceneRendererProps, TabView } from 'react-native-tab-view';
+import { View } from 'react-native';
 import { useListPosts } from '~/state/queries/post';
 import { PostFeedItem } from '~/view/com/posts/PostFeedItem';
-import { Pager } from '~/view/com/pager/Pager';
+import { Pager, RenderTabBarFnProps } from '~/view/com/pager/Pager';
+import { TabBar } from '~/view/com/pager/TabBar';
+import { t } from '@lingui/core/macro';
 
 export function ProfileTabViews() {
+	const renderTabBar = useCallback((props: RenderTabBarFnProps) => {
+		return <TabBar {...props} items={[t`Posts`]} />;
+	}, []);
 	return (
 		<View className="flex-1">
-			<Pager tabBarItems={['Posts']}>
+			<Pager renderTabBar={renderTabBar}>
 				<PostsTab />
 			</Pager>
 		</View>

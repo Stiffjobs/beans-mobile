@@ -1,6 +1,6 @@
-import { Pressable, useWindowDimensions, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useModalControls } from '~/state/modals';
 import { FAB } from '~/components/FAB';
 import { useListBeanProfiles } from '~/state/queries/bean_profiles';
@@ -15,13 +15,13 @@ import {
 import { Text } from '~/components/ui/text';
 import { RefreshControl } from 'react-native';
 import { BeanProfileProps } from '~/lib/types';
-import { Route, SceneRendererProps, TabView } from 'react-native-tab-view';
 import { Muted } from '~/components/ui/typography';
 import { Authenticated, Unauthenticated } from 'convex/react';
 import { Link } from 'expo-router';
 import { Button } from '~/components/ui/button';
 import { t } from '@lingui/core/macro';
-import { Pager } from '~/view/com/pager/Pager';
+import { Pager, PagerRef, RenderTabBarFnProps } from '~/view/com/pager/Pager';
+import { TabBar } from '~/view/com/pager/TabBar';
 
 interface ScreenProps {
 	data: BeanProfileProps[];
@@ -47,10 +47,15 @@ export default function Beans() {
 	const unfinished =
 		fetchListBeanProfiles.data?.filter(profile => !profile.finished) ?? [];
 
+	const renderTabBar = useCallback((props: RenderTabBarFnProps) => {
+		return <TabBar {...props} items={[t`Unfinished`, t`Finished`]} />;
+	}, []);
+	const pagerRef = useRef<PagerRef>(null);
+
 	return (
 		<View className="flex-1">
 			<Authenticated>
-				<Pager tabBarItems={['Unfinished', 'Finished']}>
+				<Pager ref={pagerRef} renderTabBar={renderTabBar}>
 					<UnFinishedBeanProfiles
 						data={unfinished}
 						refreshing={refreshing}

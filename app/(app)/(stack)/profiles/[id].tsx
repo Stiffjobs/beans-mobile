@@ -3,7 +3,6 @@ import { FlashList } from '@shopify/flash-list';
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Linking, Pressable, useWindowDimensions, View } from 'react-native';
-import { SceneRendererProps, TabView } from 'react-native-tab-view';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Id } from '~/convex/_generated/dataModel';
@@ -16,7 +15,8 @@ import {
 	useIsFollowingThisUser,
 	useUnfollowUser,
 } from '~/state/queries/users';
-import { Pager } from '~/view/com/pager/Pager';
+import { Pager, RenderTabBarFnProps } from '~/view/com/pager/Pager';
+import { TabBar } from '~/view/com/pager/TabBar';
 import { PostFeedItem } from '~/view/com/posts/PostFeedItem';
 import { UserAvatar } from '~/view/com/util/UserAvatar';
 
@@ -41,22 +41,9 @@ export default function ProfileDetailsPage() {
 	const handleUnFollow = useCallback(async () => {
 		await unfollowMutation.mutateAsync(profileId as Id<'users'>);
 	}, [unfollowMutation.mutateAsync, profileId]);
-
-	const renderScene = useCallback(
-		(
-			props: SceneRendererProps & {
-				route: {
-					key: string;
-				};
-			}
-		) => {
-			switch (props.route.key) {
-				case 'posts':
-					return <PostsTab profileId={profileId} />;
-			}
-		},
-		[profileId]
-	);
+	const renderTabBar = useCallback((props: RenderTabBarFnProps) => {
+		return <TabBar {...props} items={[t`Posts`]} />;
+	}, []);
 	return (
 		<View className="flex-1 gap-4 px-4">
 			<View className="items-start justify-between flex flex-row ">
@@ -99,7 +86,7 @@ export default function ProfileDetailsPage() {
 					<Text>{t`Follow`}</Text>
 				</Button>
 			)}
-			<Pager tabBarItems={['Posts']}>
+			<Pager renderTabBar={renderTabBar}>
 				<PostsTab profileId={profileId} />
 			</Pager>
 		</View>
