@@ -1,6 +1,7 @@
 import { Link, router } from 'expo-router';
-import { useCallback, useMemo } from 'react';
-import { Pressable, View } from 'react-native';
+import { useRef, useCallback, useMemo } from 'react';
+import { View } from 'react-native';
+import { Pressable } from 'react-native-gesture-handler';
 import { FeedPost } from '~/convex/types';
 import { useLikePost, useUnlikePost } from '~/state/queries/post';
 import { api } from '~/convex/_generated/api';
@@ -10,6 +11,8 @@ import { timeAgo } from '~/utils/time';
 import { useQuery } from 'convex/react';
 import { cn } from '~/lib/utils';
 import { Heart, MessageCircle } from '~/lib/icons';
+import { CustomPressable } from '~/components/CustomPressable';
+
 export function PostFeedItem({
 	item,
 	hideLike = false,
@@ -33,7 +36,7 @@ export function PostFeedItem({
 
 	return (
 		<Link push asChild href={`/posts/${item.post._id}`}>
-			<Pressable>
+			<CustomPressable>
 				<View className="p-4 bg-background rounded-md">
 					<View className="flex-row items-center gap-2">
 						<UserAvatar size="sm" avatar={item.author.avatarUrl} />
@@ -86,7 +89,7 @@ export function PostFeedItem({
 						</Text>
 					</View>
 				</View>
-			</Pressable>
+			</CustomPressable>
 		</Link>
 	);
 }

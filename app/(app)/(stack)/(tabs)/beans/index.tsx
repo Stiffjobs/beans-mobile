@@ -22,6 +22,7 @@ import { Button } from '~/components/ui/button';
 import { t } from '@lingui/core/macro';
 import { Pager, PagerRef, RenderTabBarFnProps } from '~/view/com/pager/Pager';
 import { TabBar } from '~/view/com/pager/TabBar';
+import { CustomPressable } from '~/components/CustomPressable';
 
 interface ScreenProps {
 	data: BeanProfileProps[];
@@ -125,7 +126,7 @@ function BeanProfileCard(profile: BeanProfileProps) {
 	}, [profile._id]);
 
 	return (
-		<Pressable onPress={handlePress}>
+		<CustomPressable onPress={handlePress}>
 			<Card className="mx-4">
 				<CardHeader>
 					<View className="flex flex-col">
@@ -159,6 +160,6 @@ function BeanProfileCard(profile: BeanProfileProps) {
 
 				<CardFooter></CardFooter>
 			</Card>
-		</Pressable>
+		</CustomPressable>
 	);
 }

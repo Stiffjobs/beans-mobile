@@ -16,6 +16,7 @@ import { Brewer, FilterPaper, Grinder } from '~/view/com/icons/SvgIcons';
 import { Pager, PagerRef, RenderTabBarFnProps } from '~/view/com/pager/Pager';
 import { TabBar } from '~/view/com/pager/TabBar';
 import { t } from '@lingui/core/macro';
+import { CustomPressable } from '~/components/CustomPressable';
 type ScreenProps = {
 	data: GearData[];
 	refreshing: boolean;
@@ -130,7 +131,7 @@ function GearCard({ gear }: { gear: GearData }) {
 		openModal({ name: 'edit-gear', id: gear._id });
 	}, [openModal, gear._id]);
 	return (
-		<Pressable onPress={openEditGearModal}>
+		<CustomPressable onPress={openEditGearModal}>
 			<View className="p-4 justify-between flex flex-row">
 				<View className="gap-4">
 					<H4>{gear.name}</H4>
@@ -138,7 +139,7 @@ function GearCard({ gear }: { gear: GearData }) {
 				</View>
 				<GearTypeIcon type={gear.type as GEAR_TYPE} />
 			</View>
-		</Pressable>
+		</CustomPressable>
 	);
 }
 

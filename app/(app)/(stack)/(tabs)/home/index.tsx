@@ -26,6 +26,7 @@ import { Link } from 'expo-router';
 import { Button } from '~/components/ui/button';
 import React from 'react';
 import { t } from '@lingui/core/macro';
+import { FlashList } from '@shopify/flash-list';
 const TAB_BAR_ITEMS = [t`Feed`, t`Calendar`];
 
 function CalendarScreen({
@@ -97,7 +98,8 @@ function FeedScreen() {
 
 	return (
 		<View className="flex-1 px-4">
-			<FlatList
+			<FlashList
+				estimatedItemSize={100}
 				data={fetchFeed.results}
 				refreshControl={
 					<RefreshControl
