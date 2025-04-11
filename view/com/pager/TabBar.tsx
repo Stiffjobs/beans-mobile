@@ -290,58 +290,60 @@ export function TabBar({
 
 	return (
 		<View className="bg-background flex-row">
-			<ScrollView
-				horizontal={true}
-				showsHorizontalScrollIndicator={false}
-				ref={scrollElRef}
-				className="flex-grow flex-1 bg-transparent px-2"
-				onLayout={e => {
-					containerSize.set(e.nativeEvent.layout.width);
-				}}
-				onScrollBeginDrag={() => {
-					// Remember that you've manually messed with the tabbar scroll.
-					// This will disable auto-adjustment until after next pager swipe or item tap.
-					syncScrollState.set('unsynced');
-				}}
-				onScroll={e => {
-					scrollX.value = Math.round(e.nativeEvent.contentOffset.x);
-				}}
-			>
-				<Animated.View
+			<BlockDrawerGesture>
+				<ScrollView
+					horizontal={true}
+					showsHorizontalScrollIndicator={false}
+					ref={scrollElRef}
+					className="flex-grow flex-1 bg-transparent px-2"
 					onLayout={e => {
-						contentSize.set(e.nativeEvent.layout.width);
+						containerSize.set(e.nativeEvent.layout.width);
 					}}
-					style={{ flexDirection: 'row', flexGrow: 1 }}
+					onScrollBeginDrag={() => {
+						// Remember that you've manually messed with the tabbar scroll.
+						// This will disable auto-adjustment until after next pager swipe or item tap.
+						syncScrollState.set('unsynced');
+					}}
+					onScroll={e => {
+						scrollX.value = Math.round(e.nativeEvent.contentOffset.x);
+					}}
 				>
-					{items.map((item, i) => {
-						return (
-							<TabBarItem
-								key={i}
-								index={i}
-								testID={testID}
-								dragProgress={dragProgress}
-								item={item}
-								onPressItem={onPressItem}
-								onItemLayout={onItemLayout}
-								onTextLayout={onTextLayout}
-							/>
-						);
-					})}
 					<Animated.View
-						className={'border-primary'}
-						style={[
-							indicatorStyle,
-							{
-								position: 'absolute',
-								left: 0,
-								bottom: 0,
-								right: 0,
-								borderBottomWidth: 2,
-							},
-						]}
-					/>
-				</Animated.View>
-			</ScrollView>
+						onLayout={e => {
+							contentSize.set(e.nativeEvent.layout.width);
+						}}
+						style={{ flexDirection: 'row', flexGrow: 1 }}
+					>
+						{items.map((item, i) => {
+							return (
+								<TabBarItem
+									key={i}
+									index={i}
+									testID={testID}
+									dragProgress={dragProgress}
+									item={item}
+									onPressItem={onPressItem}
+									onItemLayout={onItemLayout}
+									onTextLayout={onTextLayout}
+								/>
+							);
+						})}
+						<Animated.View
+							className={'border-primary'}
+							style={[
+								indicatorStyle,
+								{
+									position: 'absolute',
+									left: 0,
+									bottom: 0,
+									right: 0,
+									borderBottomWidth: 2,
+								},
+							]}
+						/>
+					</Animated.View>
+				</ScrollView>
+			</BlockDrawerGesture>
 			<View className="absolute left-0 right-0 top-full border-b-hairline border-primary/40" />
 		</View>
 	);

@@ -17,9 +17,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSetDrawerSwipeDisabled } from '~/state/shell';
 import { View } from 'react-native';
-import { TabBar } from './TabBar';
-import { BlockDrawerGesture } from '~/view/shell/BlockDrawerGesture';
-
 const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
 
 export interface PagerRef {
@@ -35,7 +32,7 @@ export interface RenderTabBarFnProps {
 export type RenderTabBarFn = (props: RenderTabBarFnProps) => JSX.Element;
 interface Props {
 	initialPage?: number;
-	tabBarItems?: string[];
+	renderTabBar: RenderTabBarFn;
 	onPageSelected?: (index: number) => void;
 	onPageScrollStateChanged?: (
 		scrollState: 'idle' | 'dragging' | 'settling'
@@ -47,7 +44,7 @@ export const Pager = forwardRef<PagerRef, React.PropsWithChildren<Props>>(
 		{
 			children,
 			initialPage = 0,
-			tabBarItems,
+			renderTabBar,
 			onPageScrollStateChanged: parentOnPageScrollStateChanged,
 			onPageSelected: parentOnPageSelected,
 		}: React.PropsWithChildren<Props>,
@@ -130,15 +127,12 @@ export const Pager = forwardRef<PagerRef, React.PropsWithChildren<Props>>(
 
 		return (
 			<View className="flex-1">
-				{tabBarItems && (
-					<TabBar
-						selectedPage={selectedPage}
-						dragProgress={dragProgress}
-						dragState={dragState}
-						onSelect={onTabBarSelect}
-						items={tabBarItems}
-					/>
-				)}
+				{renderTabBar({
+					selectedPage,
+					dragProgress,
+					dragState,
+					onSelect: onTabBarSelect,
+				})}
 				<GestureDetector gesture={nativeGesture}>
 					<AnimatedPagerView
 						style={{ flex: 1 }}
