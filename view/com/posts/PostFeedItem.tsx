@@ -1,7 +1,6 @@
 import { Link, router } from 'expo-router';
 import { useRef, useCallback, useMemo } from 'react';
-import { View } from 'react-native';
-import { Pressable } from 'react-native-gesture-handler';
+import { View, Pressable, GestureResponderEvent } from 'react-native';
 import { FeedPost } from '~/convex/types';
 import { useLikePost, useUnlikePost } from '~/state/queries/post';
 import { api } from '~/convex/_generated/api';
@@ -21,13 +20,17 @@ export function PostFeedItem({
 	hideLike?: boolean;
 }) {
 	const hasLiked = useQuery(api.users.hasLikedPost, { postId: item.post._id });
-	const handleLike = useCallback(() => {
-		if (hasLiked) {
-			unlikePost.mutate({ postId: item.post._id });
-		} else {
-			likePost.mutate({ postId: item.post._id });
-		}
-	}, [hasLiked, item.post._id]);
+	const handleLike = useCallback(
+		(e: GestureResponderEvent) => {
+			e.stopPropagation();
+			if (hasLiked) {
+				unlikePost.mutate({ postId: item.post._id });
+			} else {
+				likePost.mutate({ postId: item.post._id });
+			}
+		},
+		[hasLiked, item.post._id],
+	);
 	const likePost = useLikePost();
 	const unlikePost = useUnlikePost();
 	const postLikesCount = useMemo(() => {
@@ -63,7 +66,7 @@ export function PostFeedItem({
 													'size-6',
 													hasLiked
 														? 'text-red-500 fill-red-500'
-														: 'text-muted-foreground fill-background'
+														: 'text-muted-foreground fill-background',
 												)}
 											/>
 										</View>
