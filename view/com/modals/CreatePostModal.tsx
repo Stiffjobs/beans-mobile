@@ -3,7 +3,7 @@ import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
 import { Label } from '~/components/ui/label';
 import * as z from 'zod';
-import { useForm } from '@tanstack/react-form';
+import { useForm, useStore } from '@tanstack/react-form';
 import { Input } from '~/components/input/Input';
 import Slider from '@react-native-community/slider';
 import { GEAR_TYPE, RoastLevelEnum } from '~/lib/constants';
@@ -12,7 +12,13 @@ import { createPostSchema } from '~/lib/schemas';
 import { useCreatePost } from '~/state/queries/post';
 import { openPicker } from '~/lib/media/picker';
 import { usePhotoLibraryPermission } from '~/lib/hooks/usePermissions';
-import React, { useCallback, useEffect, useReducer, useRef } from 'react';
+import React, {
+	useCallback,
+	useEffect,
+	useReducer,
+	useRef,
+	useState,
+} from 'react';
 import { ComposerImage, createComposerImage } from '~/state/gallery';
 import { composerReducer, initialPostDraft } from '../composer/state/composer';
 import { Gallery } from '../composer/photos/Gallery';
@@ -140,7 +146,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 		});
 
 		const results = await Promise.all(
-			items.map((item) => createComposerImage(item)),
+			items.map(item => createComposerImage(item))
 		);
 
 		dispatch({
@@ -151,21 +157,20 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 	const fetchGearList = useListGears();
 	const fetchBeanProfiles = useListBeanProfiles();
 	const createPostMutation = useCreatePost();
-
 	const isSecondPage = activePage === 1;
 
 	const handleScrollPage = useCallback(
 		(index: number) => {
 			pagerRef.current?.setPage(index);
 		},
-		[pagerRef],
+		[pagerRef]
 	);
 
 	const handleBeanProfileSelect = useCallback(
 		(beanProfile: Id<'bean_profiles'>) => {
 			form.setFieldValue('beanProfile', beanProfile);
 		},
-		[form],
+		[form]
 	);
 
 	return (
@@ -182,9 +187,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 				)}
 				<Text>{activePage + 1} / 2</Text>
 				{isSecondPage ? (
-					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isValid]}
-					>
+					<form.Subscribe selector={state => [state.canSubmit, state.isValid]}>
 						{([canSubmit, isValid]) => (
 							<Button
 								disabled={!isValid && !canSubmit}
@@ -208,8 +211,8 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 			<Separator />
 			<Pager
 				ref={pagerRef}
-				renderTabBar={(_) => <View />}
-				onPageSelected={(index) => {
+				renderTabBar={_ => <View />}
+				onPageSelected={index => {
 					setActivePage(index);
 				}}
 				initialPage={activePage}
@@ -225,7 +228,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							</Text>
 						</Trans>
 						<form.Field name="beanProfile">
-							{(field) => {
+							{field => {
 								return (
 									<>
 										<RequiredLabel>{t`Bean profile`}</RequiredLabel>
@@ -233,7 +236,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 											<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 												<Text className="native:text-lg text-sm text-foreground">
 													{fetchBeanProfiles?.data?.find(
-														(e) => e._id === field.state.value,
+														e => e._id === field.state.value
 													)?.origin ?? t`Select a bean profile`}
 												</Text>
 												<ChevronDown
@@ -245,7 +248,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										</Pressable>
 										<ErrorMessage
 											message={field.state.meta.errors
-												.map((e) => e?.message)
+												.map(e => e?.message)
 												.join(', ')}
 										/>
 									</>
@@ -253,7 +256,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							}}
 						</form.Field>
 						<form.Field name="roastLevel">
-							{(field) => (
+							{field => (
 								<>
 									<RequiredLabel>{t`Roast level`}</RequiredLabel>
 									<SelectRoastLevel
@@ -263,7 +266,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
@@ -273,17 +276,29 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							<form.Field
 								name="coffeeIn"
 								listeners={{
-									onChange: (e) => {
+									onChange: e => {
+										//NOTE: For waterIn calculation
 										const ratio = parseFloat(form.getFieldValue('ratio'));
 										const coffeeIn = parseFloat(e.value);
 										if (!coffeeIn) return;
 										const waterIn = Math.round(coffeeIn * ratio);
-										if (isNaN(waterIn)) return;
-										form.setFieldValue('waterIn', waterIn.toString());
+										if (!isNaN(waterIn)) {
+											form.setFieldValue('waterIn', waterIn.toString());
+										}
+										//NOTE: for ey calculation
+										const beverageWeight = parseFloat(
+											form.getFieldValue('beverageWeight') || '0'
+										);
+										const tds = form.getFieldValue('tds') ?? 0;
+										if (beverageWeight && coffeeIn > 0 && tds) {
+											const ey = (tds * beverageWeight) / coffeeIn;
+											if (isNaN(ey)) return;
+											form.setFieldValue('ey', ey);
+										}
 									},
 								}}
 							>
-								{(field) => (
+								{field => (
 									<View className="flex-1">
 										<RequiredLabel>{t`Coffee in (g)`}</RequiredLabel>
 										<Input
@@ -294,7 +309,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										/>
 										<ErrorMessage
 											message={field.state.meta.errors
-												.map((e) => e?.message)
+												.map(e => e?.message)
 												.join(', ')}
 										/>
 									</View>
@@ -304,7 +319,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							<form.Field
 								name="ratio"
 								listeners={{
-									onChange: (e) => {
+									onChange: e => {
 										const coffeeIn = parseFloat(form.getFieldValue('coffeeIn'));
 										const ratio = parseFloat(e.value);
 										if (!coffeeIn) return;
@@ -314,7 +329,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									},
 								}}
 							>
-								{(field) => (
+								{field => (
 									<View className="flex-1">
 										<RequiredLabel>{t`Ratio`}</RequiredLabel>
 										<MaskInput
@@ -327,7 +342,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										/>
 										<ErrorMessage
 											message={field.state.meta.errors
-												.map((e) => e?.message)
+												.map(e => e?.message)
 												.join(', ')}
 										/>
 									</View>
@@ -335,11 +350,11 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							</form.Field>
 						</View>
 						<form.Subscribe
-							selector={(state) => [state.values.coffeeIn, state.values.ratio]}
+							selector={state => [state.values.coffeeIn, state.values.ratio]}
 						>
 							{([coffeeIn, ratio]) => {
 								const waterIn = Math.round(
-									parseFloat(coffeeIn) * parseFloat(ratio),
+									parseFloat(coffeeIn) * parseFloat(ratio)
 								);
 								return (
 									<>
@@ -353,8 +368,24 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								);
 							}}
 						</form.Subscribe>
-						<form.Field name="beverageWeight">
-							{(field) => (
+						<form.Field
+							name="beverageWeight"
+							listeners={{
+								onChange: e => {
+									const beverageWeight = parseFloat(e.value || '0');
+									const coffeeIn = parseFloat(
+										form.getFieldValue('coffeeIn') || '0'
+									);
+									const tds = form.getFieldValue('tds');
+									if (beverageWeight && coffeeIn > 0 && tds) {
+										const ey = (tds * beverageWeight) / coffeeIn;
+										if (isNaN(ey)) return;
+										form.setFieldValue('ey', ey);
+									}
+								},
+							}}
+						>
+							{field => (
 								<>
 									<Label>{t`Beverage weight (g)`}</Label>
 									<Input
@@ -364,14 +395,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="brewTemperature">
-							{(field) => (
+							{field => (
 								<>
 									<RequiredLabel>{t`Brew temperature (°C)`}</RequiredLabel>
 									<Input
@@ -382,21 +413,21 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="brewerId">
-							{(field) => (
+							{field => (
 								<>
 									<RequiredLabel>{t`Brewer`}</RequiredLabel>
 									<Pressable onPressIn={onOpenBrewerSelectDialog}>
 										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 											<Text className="native:text-lg text-sm text-foreground">
 												{fetchGearList?.data?.find(
-													(e) => e._id === field.state.value,
+													e => e._id === field.state.value
 												)?.name ?? t`Select your brewers`}
 											</Text>
 											<ChevronDown
@@ -408,7 +439,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									</Pressable>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 									<GearSelectDialog
@@ -424,14 +455,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							)}
 						</form.Field>
 						<form.Field name="filterPaperId">
-							{(field) => (
+							{field => (
 								<>
 									<RequiredLabel>{t`Filter paper`}</RequiredLabel>
 									<Pressable onPressIn={onOpenFilterPaperSelectDialog}>
 										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 											<Text className="native:text-lg text-sm text-foreground">
 												{fetchGearList?.data?.find(
-													(e) => e._id === field.state.value,
+													e => e._id === field.state.value
 												)?.name ?? t`Select your filter paper`}
 											</Text>
 											<ChevronDown
@@ -443,7 +474,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									</Pressable>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 									<GearSelectDialog
@@ -459,14 +490,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							)}
 						</form.Field>
 						<form.Field name="grinderId">
-							{(field) => (
+							{field => (
 								<>
 									<RequiredLabel>{t`Grinder`}</RequiredLabel>
 									<Pressable onPressIn={onOpenGrinderSelectDialog}>
 										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 											<Text className="native:text-lg text-sm text-foreground">
 												{fetchGearList?.data?.find(
-													(e) => e._id === field.state.value,
+													e => e._id === field.state.value
 												)?.name ?? t`Select your grinder`}
 											</Text>
 											<ChevronDown
@@ -478,7 +509,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									</Pressable>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 									<GearSelectDialog
@@ -494,7 +525,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							)}
 						</form.Field>
 						<form.Field name="grindSetting">
-							{(field) => (
+							{field => (
 								<>
 									<RequiredLabel>{t`Grind setting`}</RequiredLabel>
 									<Input
@@ -503,14 +534,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="bloomTime">
-							{(field) => (
+							{field => (
 								<>
 									<RequiredLabel>{t`Bloom time`}</RequiredLabel>
 									<TimeMaskInput
@@ -519,14 +550,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="totalDrawdownTime">
-							{(field) => (
+							{field => (
 								<>
 									<RequiredLabel>{t`Total drawdown time`}</RequiredLabel>
 									<TimeMaskInput
@@ -535,14 +566,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="brewingWater">
-							{(field) => (
+							{field => (
 								<>
 									<Label>{t`Brewing water (ppm)`}</Label>
 									<Input
@@ -552,14 +583,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="methodName">
-							{(field) => (
+							{field => (
 								<>
 									<Label>{t`Preparation`}</Label>
 									<Input
@@ -568,14 +599,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="otherTools">
-							{(field) => (
+							{field => (
 								<>
 									<Label>{t`Other tools`}</Label>
 									<Input
@@ -584,14 +615,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="flavor">
-							{(field) => (
+							{field => (
 								<>
 									<Label>{t`Flavor`}</Label>
 									<Input
@@ -600,14 +631,31 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
-						<form.Field name="tds">
-							{(field) => (
+						<form.Field
+							name="tds"
+							listeners={{
+								onChange: e => {
+									const beverageWeight = parseFloat(
+										form.getFieldValue('beverageWeight') || '0'
+									);
+									const coffeeIn = parseFloat(
+										form.getFieldValue('coffeeIn') || '0'
+									);
+									if (beverageWeight && coffeeIn > 0 && e.value) {
+										const ey = (e.value * beverageWeight) / coffeeIn;
+										if (isNaN(ey)) return;
+										form.setFieldValue('ey', ey);
+									}
+								},
+							}}
+						>
+							{field => (
 								<>
 									<Label>{t`TDS`}</Label>
 									<Slider
@@ -615,38 +663,27 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										maximumValue={2.0}
 										step={0.01}
 										value={field.state.value}
-										onValueChange={(newValue) => {
+										onValueChange={newValue => {
 											field.handleChange(newValue);
-											// Calculate and set EY when TDS changes
-											const beverageWeight = parseFloat(
-												form.getFieldValue('beverageWeight') || '0',
-											);
-											const coffeeIn = parseFloat(
-												form.getFieldValue('coffeeIn') || '0',
-											);
-											if (beverageWeight && coffeeIn) {
-												const ey = (newValue * beverageWeight) / coffeeIn;
-												form.setFieldValue('ey', ey);
-											}
 										}}
 									/>
 									<Text>{field.state.value?.toFixed(2)}</Text>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
 							)}
 						</form.Field>
 						<form.Field name="ey">
-							{(field) => (
+							{field => (
 								<>
 									<Label>{t`Extraction Yield (%)`}</Label>
 									<H4>{field.state.value?.toFixed(2)}%</H4>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
@@ -657,7 +694,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 				<KeyboardAwareScrollView key={2}>
 					<View className="flex-1 px-10 mt-6 mb-12 gap-2">
 						<form.Field name="recipeSteps">
-							{(field) => (
+							{field => (
 								<>
 									<RecipeStepsEditor
 										steps={field.state.value}
@@ -665,7 +702,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									/>
 									<ErrorMessage
 										message={field.state.meta.errors
-											.map((e) => e?.message)
+											.map(e => e?.message)
 											.join(', ')}
 									/>
 								</>
