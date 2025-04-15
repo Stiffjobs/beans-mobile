@@ -3,7 +3,7 @@ import { BeanProfileListDialogProps } from './type';
 import * as Dialog from '~/components/Dialog';
 import { Text } from '../ui/text';
 import { useListBeanProfiles } from '~/state/queries/bean_profiles';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import {
 	Card,
 	CardContent,
@@ -12,11 +12,20 @@ import {
 	CardTitle,
 } from '../ui/card';
 import { t } from '@lingui/core/macro';
+import { Button } from '../ui/button';
+import { X } from '~/lib/icons';
+import { useCallback } from 'react';
+import { Id } from '~/convex/_generated/dataModel';
 export { useDialogControl as useBeanProfileListDialogControl } from '~/components/Dialog';
 
 export function BeanProfileListDialog(props: BeanProfileListDialogProps) {
 	return (
-		<Dialog.Outer containsList control={props.control}>
+		<Dialog.Outer
+			snapPoints={Dialog.BottomSheetSnapPoint.Full}
+			hideBackdrop
+			containsList
+			control={props.control}
+		>
 			<Inner {...props} />
 		</Dialog.Outer>
 	);
@@ -25,19 +34,36 @@ export function BeanProfileListDialog(props: BeanProfileListDialogProps) {
 function Inner(props: BeanProfileListDialogProps) {
 	const beanProfiles = useListBeanProfiles();
 
+	const handleDismiss = useCallback(() => {
+		props.control.close();
+	}, [props.control]);
+	const handleSelect = useCallback(
+		(profileId: Id<'bean_profiles'>) => {
+			props.params.onSelect?.(profileId);
+			handleDismiss();
+		},
+		[props.control],
+	);
 	if (beanProfiles.isLoading) {
 		return (
 			<Dialog.Inner>
-				<Text>Loading...</Text>
+				<Text>{t`Loading...`}</Text>
 			</Dialog.Inner>
 		);
 	}
 
 	return (
 		<Dialog.Inner {...props}>
-			<Text className="text-lg font-semibold mb-2">Select Bean Profile</Text>
+			<View className="flex-row pb-2  justify-between items-center">
+				<Text className="text-lg font-semibold mb-2">Select Bean Profile</Text>
+				<Button onPress={handleDismiss} size={'icon'} variant={'ghost'}>
+					<View className="rounded-full items-center p-2 bg-secondary">
+						<X strokeWidth={3} className="text-primary size-5" />
+					</View>
+				</Button>
+			</View>
 			<BottomSheetFlatList
-				data={beanProfiles.data?.filter(e => !e.finished) ?? []}
+				data={beanProfiles.data?.filter((e) => !e.finished) ?? []}
 				ItemSeparatorComponent={() => <View className="h-2" />}
 				ListEmptyComponent={() => (
 					<View className="flex flex-1 justify-center items-center">
@@ -48,10 +74,7 @@ function Inner(props: BeanProfileListDialogProps) {
 				renderItem={({ item: profile }) => (
 					<TouchableOpacity
 						key={profile._id}
-						onPress={() => {
-							props.params?.onSelect?.(profile._id);
-							props.control.close();
-						}}
+						onPress={() => handleSelect(profile._id)}
 					>
 						<Card>
 							<CardHeader>
