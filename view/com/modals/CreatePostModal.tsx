@@ -391,6 +391,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 									<Input
 										numberOfLines={1}
 										value={field.state.value}
+										keyboardType="numeric"
 										onChangeText={field.handleChange}
 									/>
 									<ErrorMessage
