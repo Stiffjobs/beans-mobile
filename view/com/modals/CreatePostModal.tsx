@@ -146,7 +146,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 		});
 
 		const results = await Promise.all(
-			items.map(item => createComposerImage(item))
+			items.map(item => createComposerImage(item)),
 		);
 
 		dispatch({
@@ -163,14 +163,14 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 		(index: number) => {
 			pagerRef.current?.setPage(index);
 		},
-		[pagerRef]
+		[pagerRef],
 	);
 
 	const handleBeanProfileSelect = useCallback(
 		(beanProfile: Id<'bean_profiles'>) => {
 			form.setFieldValue('beanProfile', beanProfile);
 		},
-		[form]
+		[form],
 	);
 
 	return (
@@ -236,7 +236,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 											<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 												<Text className="native:text-lg text-sm text-foreground">
 													{fetchBeanProfiles?.data?.find(
-														e => e._id === field.state.value
+														e => e._id === field.state.value,
 													)?.origin ?? t`Select a bean profile`}
 												</Text>
 												<ChevronDown
@@ -287,7 +287,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										}
 										//NOTE: for ey calculation
 										const beverageWeight = parseFloat(
-											form.getFieldValue('beverageWeight') || '0'
+											form.getFieldValue('beverageWeight') || '0',
 										);
 										const tds = form.getFieldValue('tds') ?? 0;
 										if (beverageWeight && coffeeIn > 0 && tds) {
@@ -354,7 +354,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 						>
 							{([coffeeIn, ratio]) => {
 								const waterIn = Math.round(
-									parseFloat(coffeeIn) * parseFloat(ratio)
+									parseFloat(coffeeIn) * parseFloat(ratio),
 								);
 								return (
 									<>
@@ -374,7 +374,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 								onChange: e => {
 									const beverageWeight = parseFloat(e.value || '0');
 									const coffeeIn = parseFloat(
-										form.getFieldValue('coffeeIn') || '0'
+										form.getFieldValue('coffeeIn') || '0',
 									);
 									const tds = form.getFieldValue('tds');
 									if (beverageWeight && coffeeIn > 0 && tds) {
@@ -428,7 +428,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 											<Text className="native:text-lg text-sm text-foreground">
 												{fetchGearList?.data?.find(
-													e => e._id === field.state.value
+													e => e._id === field.state.value,
 												)?.name ?? t`Select your brewers`}
 											</Text>
 											<ChevronDown
@@ -463,7 +463,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 											<Text className="native:text-lg text-sm text-foreground">
 												{fetchGearList?.data?.find(
-													e => e._id === field.state.value
+													e => e._id === field.state.value,
 												)?.name ?? t`Select your filter paper`}
 											</Text>
 											<ChevronDown
@@ -498,7 +498,7 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 										<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
 											<Text className="native:text-lg text-sm text-foreground">
 												{fetchGearList?.data?.find(
-													e => e._id === field.state.value
+													e => e._id === field.state.value,
 												)?.name ?? t`Select your grinder`}
 											</Text>
 											<ChevronDown
@@ -643,10 +643,10 @@ export function Component({ selectedDate }: { selectedDate: string }) {
 							listeners={{
 								onChange: e => {
 									const beverageWeight = parseFloat(
-										form.getFieldValue('beverageWeight') || '0'
+										form.getFieldValue('beverageWeight') || '0',
 									);
 									const coffeeIn = parseFloat(
-										form.getFieldValue('coffeeIn') || '0'
+										form.getFieldValue('coffeeIn') || '0',
 									);
 									if (beverageWeight && coffeeIn > 0 && e.value) {
 										const ey = (e.value * beverageWeight) / coffeeIn;
