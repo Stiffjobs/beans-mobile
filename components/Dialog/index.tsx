@@ -30,7 +30,7 @@ const SNAPPOINTS = {
 	[BottomSheetSnapPoint.Hidden]: ['0%'],
 	[BottomSheetSnapPoint.Quarter]: ['30%'],
 	[BottomSheetSnapPoint.Partial]: ['50%'],
-	[BottomSheetSnapPoint.Full]: ['90%'],
+	[BottomSheetSnapPoint.Full]: ['100%'],
 	[BottomSheetSnapPoint.Comments]: ['10%', '100%'],
 };
 let NativewindModal = cssInterop(BottomSheetModal, {
@@ -66,7 +66,7 @@ export function Outer({
 			}
 			setIndex(index);
 		},
-		[snapPoints]
+		[snapPoints],
 	);
 
 	const callQueuedCallbacks = React.useCallback(() => {
@@ -91,7 +91,7 @@ export function Outer({
 		({ children }: { children?: React.ReactNode }) => (
 			<FullWindowOverlay>{children}</FullWindowOverlay>
 		),
-		[]
+		[],
 	);
 	const close = React.useCallback<DialogControlProps['close']>(
 		(cb?: () => void) => {
@@ -100,13 +100,13 @@ export function Outer({
 			}
 			ref.current?.dismiss();
 		},
-		[]
+		[],
 	);
 	const toIndex = React.useCallback<DialogControlProps['toIndex']>(
 		(index: number) => {
 			ref.current?.snapToIndex(index);
 		},
-		[]
+		[],
 	);
 	useImperativeHandle(
 		control.ref,
@@ -115,7 +115,7 @@ export function Outer({
 			close,
 			toIndex,
 		}),
-		[open, close, toIndex]
+		[open, close, toIndex],
 	);
 
 	const context = React.useMemo(
@@ -127,7 +127,7 @@ export function Outer({
 			index,
 			snapPoints,
 		}),
-		[close, disableDrag, setDisableDrag, index, snapPoints]
+		[close, disableDrag, setDisableDrag, index, snapPoints],
 	);
 	const reduceMotion = useReducedMotion();
 	const insets = useSafeAreaInsets();
@@ -135,7 +135,7 @@ export function Outer({
 
 	const renderHandle = useCallback(
 		(props: BottomSheetHandleProps) => <Handle {...props} />,
-		[]
+		[],
 	);
 	const shadowStyle = addShadow
 		? {
