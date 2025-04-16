@@ -14,8 +14,16 @@ import {
 import { t } from '@lingui/core/macro';
 import { Button } from '../ui/button';
 import { X } from '~/lib/icons';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Id } from '~/convex/_generated/dataModel';
+import { BeanProfileProps } from '~/lib/types';
+import { searchBeanProfiles } from '~/utils/search';
+import { Input } from '../ui/input';
+import Animated from 'react-native-reanimated';
+import {
+	KeyboardAvoidingView,
+	useReanimatedKeyboardAnimation,
+} from 'react-native-keyboard-controller';
 export { useDialogControl as useBeanProfileListDialogControl } from '~/components/Dialog';
 
 export function BeanProfileListDialog(props: BeanProfileListDialogProps) {
@@ -33,6 +41,11 @@ export function BeanProfileListDialog(props: BeanProfileListDialogProps) {
 
 function Inner(props: BeanProfileListDialogProps) {
 	const beanProfiles = useListBeanProfiles();
+	const [search, setSearch] = useState('');
+	const [profiles, setProfiles] = useState<BeanProfileProps[]>([]);
+	useEffect(() => {
+		setProfiles(searchBeanProfiles(search, beanProfiles.data ?? []));
+	}, [search, beanProfiles.data]);
 
 	const handleDismiss = useCallback(() => {
 		props.control.close();
@@ -54,42 +67,51 @@ function Inner(props: BeanProfileListDialogProps) {
 
 	return (
 		<Dialog.Inner {...props}>
-			<View className="flex-row pb-2  justify-between items-center">
-				<Text className="text-lg font-semibold mb-2">Select Bean Profile</Text>
-				<Button onPress={handleDismiss} size={'icon'} variant={'ghost'}>
-					<View className="rounded-full items-center p-2 bg-secondary">
-						<X strokeWidth={3} className="text-primary size-5" />
-					</View>
-				</Button>
+			<View className="py-2 gap-1">
+				<View className="flex-row  justify-between items-center">
+					<Text className="text-lg font-semibold mb-2">
+						{t`Select Bean Profile`}
+					</Text>
+					<Button onPress={handleDismiss} size={'icon'} variant={'ghost'}>
+						<View className="rounded-full items-center p-2 bg-secondary">
+							<X strokeWidth={3} className="text-primary size-5" />
+						</View>
+					</Button>
+				</View>
+				<View className="flex-row justify-between items-center">
+					<Input className="flex-1" onChangeText={setSearch} maxLength={40} />
+				</View>
 			</View>
-			<BottomSheetFlatList
-				data={beanProfiles.data?.filter((e) => !e.finished) ?? []}
-				ItemSeparatorComponent={() => <View className="h-2" />}
-				ListEmptyComponent={() => (
-					<View className="flex flex-1 justify-center items-center">
-						<Text>{t`No data yet`}</Text>
-					</View>
-				)}
-				contentContainerClassName={'pb-20'}
-				renderItem={({ item: profile }) => (
-					<TouchableOpacity
-						key={profile._id}
-						onPress={() => handleSelect(profile._id)}
-					>
-						<Card>
-							<CardHeader>
-								<CardTitle>{profile.roaster}</CardTitle>
-								<CardDescription>{profile.origin}</CardDescription>
-							</CardHeader>
-							<CardContent className="py-2">
-								<Details label="Farm" value={profile.farm} />
-								<Details label="Varietal" value={profile.variety} />
-								<Details label="Process" value={profile.process} />
-							</CardContent>
-						</Card>
-					</TouchableOpacity>
-				)}
-			/>
+			<KeyboardAvoidingView behavior="padding" className="flex-1">
+				<BottomSheetFlatList
+					data={profiles.filter((e) => !e.finished) ?? []}
+					ItemSeparatorComponent={() => <View className="h-2" />}
+					ListEmptyComponent={() => (
+						<View className="flex flex-1 justify-center items-center">
+							<Text>{t`No data yet`}</Text>
+						</View>
+					)}
+					contentContainerClassName={'pb-20'}
+					renderItem={({ item: profile }) => (
+						<TouchableOpacity
+							key={profile._id}
+							onPress={() => handleSelect(profile._id)}
+						>
+							<Card>
+								<CardHeader>
+									<CardTitle>{profile.roaster}</CardTitle>
+									<CardDescription>{profile.origin}</CardDescription>
+								</CardHeader>
+								<CardContent className="py-2">
+									<Details label="Farm" value={profile.farm} />
+									<Details label="Varietal" value={profile.variety} />
+									<Details label="Process" value={profile.process} />
+								</CardContent>
+							</Card>
+						</TouchableOpacity>
+					)}
+				/>
+			</KeyboardAvoidingView>
 		</Dialog.Inner>
 	);
 }
