@@ -11,20 +11,20 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#: view/com/modals/CreatePostModal.tsx:224
+#: view/com/modals/CreatePostModal.tsx:226
 msgid "<0>Fields marked with <1>*</1> are required</0>"
 msgstr "<0>Fields marked with <1>*</1> are required</0>"
 
-#: view/com/modals/CommentListModal.tsx:230
+#: view/com/modals/CommentListModal.tsx:237
 #: components/CommentsDialog/index.tsx:245
 msgid "Add a comment..."
 msgstr "Add a comment..."
 
-#: view/com/modals/CreatePostModal.tsx:702
+#: view/com/modals/CreatePostModal.tsx:739
 msgid "Are you sure to discard this post?"
 msgstr "Are you sure to discard this post?"
 
-#: view/com/modals/CreatePostModal.tsx:234
+#: view/com/modals/CreatePostModal.tsx:236
 msgid "Bean profile"
 msgstr "Bean profile"
 
@@ -32,7 +32,7 @@ msgstr "Bean profile"
 msgid "Beans"
 msgstr "Beans"
 
-#: view/com/modals/CreatePostModal.tsx:362
+#: view/com/modals/CreatePostModal.tsx:392
 msgid "Beverage weight (g)"
 msgstr "Beverage weight (g)"
 
@@ -44,46 +44,46 @@ msgstr "Beverage weight (g)"
 msgid "Bio"
 msgstr "Bio"
 
-#: view/com/modals/CreatePostModal.tsx:518
+#: view/com/modals/CreatePostModal.tsx:549
 msgid "Bloom time"
 msgstr "Bloom time"
 
-#: view/com/modals/CreatePostModal.tsx:379
+#: view/com/modals/CreatePostModal.tsx:410
 msgid "Brew temperature (°C)"
 msgstr "Brew temperature (°C)"
 
-#: view/com/modals/CreatePostModal.tsx:397
+#: view/com/modals/CreatePostModal.tsx:428
 #: utils/labels.ts:17
-#: app/(app)/(stack)/(tabs)/gears/index.tsx:39
+#: app/(app)/(stack)/(tabs)/gears/index.tsx:40
 msgid "Brewer"
 msgstr "Brewer"
 
-#: view/com/modals/CreatePostModal.tsx:550
+#: view/com/modals/CreatePostModal.tsx:581
 msgid "Brewing water (ppm)"
 msgstr "Brewing water (ppm)"
 
-#: app/(app)/(stack)/(tabs)/home/index.tsx:29
+#: app/(app)/(stack)/(tabs)/home/index.tsx:30
 msgid "Calendar"
 msgstr "Calendar"
 
 #: view/com/modals/EditProfile.tsx:84
 #: view/com/modals/CreatePostModal.tsx:185
-#: view/com/modals/CreatePostModal.tsx:711
+#: view/com/modals/CreatePostModal.tsx:748
 #: components/NotificationItem.tsx:87
 msgid "Cancel"
 msgstr "Cancel"
 
-#: view/com/modals/CreatePostModal.tsx:291
+#: view/com/modals/CreatePostModal.tsx:305
 msgid "Coffee in (g)"
 msgstr "Coffee in (g)"
 
 #. placeholder {0}: fetchCommentsQuery.data?.length ?? 0
-#: view/com/modals/CommentListModal.tsx:156
+#: view/com/modals/CommentListModal.tsx:163
 #: components/CommentsDialog/index.tsx:171
 msgid "Comments ({0})"
 msgstr "Comments ({0})"
 
-#: view/com/modals/CreatePostModal.tsx:222
+#: view/com/modals/CreatePostModal.tsx:224
 msgid "Created on"
 msgstr "Created on"
 
@@ -91,15 +91,15 @@ msgstr "Created on"
 msgid "Dark"
 msgstr "Dark"
 
-#: view/com/modals/CreatePostModal.tsx:707
+#: view/com/modals/CreatePostModal.tsx:744
 msgid "Discard"
 msgstr "Discard"
 
-#: view/com/modals/CreatePostModal.tsx:692
+#: view/com/modals/CreatePostModal.tsx:729
 msgid "Discard post"
 msgstr "Discard post"
 
-#: view/com/modals/CreatePostModal.tsx:700
+#: view/com/modals/CreatePostModal.tsx:737
 msgid "Discard Post"
 msgstr "Discard Post"
 
@@ -112,7 +112,7 @@ msgstr "Display Name"
 msgid "Edit Profile"
 msgstr "Edit Profile"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:155
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:156
 msgid "Elevation (masl)"
 msgstr "Elevation (masl)"
 
@@ -132,7 +132,7 @@ msgstr "Error: {0}"
 msgid "Extra Light"
 msgstr "Extra Light"
 
-#: view/com/modals/CreatePostModal.tsx:648
+#: view/com/modals/CreatePostModal.tsx:685
 msgid "Extraction Yield (%)"
 msgstr "Extraction Yield (%)"
 
@@ -144,28 +144,28 @@ msgstr "Failed to get push token: {error}"
 msgid "Failed to update notification status"
 msgstr "Failed to update notification status"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:143
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:144
 msgid "Farm"
 msgstr "Farm"
 
-#: app/(app)/(stack)/(tabs)/home/index.tsx:29
+#: app/(app)/(stack)/(tabs)/home/index.tsx:30
 msgid "Feed"
 msgstr "Feed"
 
-#: view/com/modals/CreatePostModal.tsx:432
+#: view/com/modals/CreatePostModal.tsx:463
 msgid "Filter paper"
 msgstr "Filter paper"
 
 #: utils/labels.ts:18
-#: app/(app)/(stack)/(tabs)/gears/index.tsx:39
+#: app/(app)/(stack)/(tabs)/gears/index.tsx:40
 msgid "Filter Paper"
 msgstr "Filter Paper"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:51
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:52
 msgid "Finished"
 msgstr "Finished"
 
-#: view/com/modals/CreatePostModal.tsx:599
+#: view/com/modals/CreatePostModal.tsx:630
 msgid "Flavor"
 msgstr "Flavor"
 
@@ -183,13 +183,13 @@ msgstr "Following"
 msgid "Gears"
 msgstr "Gears"
 
-#: view/com/modals/CreatePostModal.tsx:502
+#: view/com/modals/CreatePostModal.tsx:533
 msgid "Grind setting"
 msgstr "Grind setting"
 
-#: view/com/modals/CreatePostModal.tsx:467
+#: view/com/modals/CreatePostModal.tsx:498
 #: utils/labels.ts:16
-#: app/(app)/(stack)/(tabs)/gears/index.tsx:39
+#: app/(app)/(stack)/(tabs)/gears/index.tsx:40
 msgid "Grinder"
 msgstr "Grinder"
 
@@ -197,13 +197,17 @@ msgstr "Grinder"
 msgid "Home"
 msgstr "Home"
 
-#: view/com/modals/CreatePostModal.tsx:677
+#: view/com/modals/CreatePostModal.tsx:714
 msgid "Images"
 msgstr "Images"
 
 #: utils/labels.ts:6
 msgid "Light"
 msgstr "Light"
+
+#: components/BeanProfileListDialog/index.tsx:63
+msgid "Loading..."
+msgstr "Loading..."
 
 #: components/NotificationItem.tsx:60
 msgid "Mark as Read"
@@ -225,20 +229,20 @@ msgstr "Medium Dark"
 msgid "Medium Light"
 msgstr "Medium Light"
 
-#: view/com/modals/CreatePostModal.tsx:207
+#: view/com/modals/CreatePostModal.tsx:209
 msgid "Next"
 msgstr "Next"
 
-#: view/com/modals/CommentListModal.tsx:172
+#: view/com/modals/CommentListModal.tsx:179
 #: components/CommentsDialog/index.tsx:187
 msgid "No comments yet"
 msgstr "No comments yet"
 
 #: components/GearSelectDialog/index.tsx:32
-#: components/BeanProfileListDialog/index.tsx:44
+#: components/BeanProfileListDialog/index.tsx:91
 #: app/(app)/(stack)/(tabs)/notifications/index.tsx:47
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:94
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:108
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:95
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:109
 msgid "No data yet"
 msgstr "No data yet"
 
@@ -246,7 +250,7 @@ msgstr "No data yet"
 msgid "Notifications"
 msgstr "Notifications"
 
-#: view/com/modals/CreatePostModal.tsx:583
+#: view/com/modals/CreatePostModal.tsx:614
 msgid "Other tools"
 msgstr "Other tools"
 
@@ -254,7 +258,7 @@ msgstr "Other tools"
 msgid "Permission not granted for push notifications"
 msgstr "Permission not granted for push notifications"
 
-#: view/com/modals/CreatePostModal.tsx:197
+#: view/com/modals/CreatePostModal.tsx:199
 #: app/(app)/(stack)/posts/_layout.tsx:16
 msgid "Post"
 msgstr "Post"
@@ -265,7 +269,7 @@ msgstr "Post"
 msgid "Posts"
 msgstr "Posts"
 
-#: view/com/modals/CreatePostModal.tsx:567
+#: view/com/modals/CreatePostModal.tsx:598
 msgid "Preparation"
 msgstr "Preparation"
 
@@ -273,11 +277,11 @@ msgstr "Preparation"
 msgid "Prev"
 msgstr "Prev"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:151
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:152
 msgid "Process"
 msgstr "Process"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:139
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:140
 msgid "Producer"
 msgstr "Producer"
 
@@ -297,11 +301,11 @@ msgstr "Push Notification Error"
 msgid "Push Notification Error:"
 msgstr "Push Notification Error:"
 
-#: view/com/modals/CreatePostModal.tsx:322
+#: view/com/modals/CreatePostModal.tsx:336
 msgid "Ratio"
 msgstr "Ratio"
 
-#: view/com/modals/CreatePostModal.tsx:261
+#: view/com/modals/CreatePostModal.tsx:263
 msgid "Roast level"
 msgstr "Roast level"
 
@@ -309,27 +313,31 @@ msgstr "Roast level"
 msgid "Save"
 msgstr "Save"
 
-#: view/com/modals/CreatePostModal.tsx:240
+#: view/com/modals/CreatePostModal.tsx:242
 msgid "Select a bean profile"
 msgstr "Select a bean profile"
 
-#: view/com/modals/CreatePostModal.tsx:264
+#: view/com/modals/CreatePostModal.tsx:266
 msgid "Select a roast level"
 msgstr "Select a roast level"
 
-#: view/com/modals/CreatePostModal.tsx:685
+#: components/BeanProfileListDialog/index.tsx:73
+msgid "Select Bean Profile"
+msgstr "Select Bean Profile"
+
+#: view/com/modals/CreatePostModal.tsx:722
 msgid "Select Images"
 msgstr "Select Images"
 
-#: view/com/modals/CreatePostModal.tsx:403
+#: view/com/modals/CreatePostModal.tsx:434
 msgid "Select your brewers"
 msgstr "Select your brewers"
 
-#: view/com/modals/CreatePostModal.tsx:438
+#: view/com/modals/CreatePostModal.tsx:469
 msgid "Select your filter paper"
 msgstr "Select your filter paper"
 
-#: view/com/modals/CreatePostModal.tsx:473
+#: view/com/modals/CreatePostModal.tsx:504
 msgid "Select your grinder"
 msgstr "Select your grinder"
 
@@ -337,11 +345,11 @@ msgstr "Select your grinder"
 msgid "Sign in"
 msgstr "Sign in"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:75
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:76
 msgid "Sign In"
 msgstr "Sign In"
 
-#: view/com/modals/CreatePostModal.tsx:615
+#: view/com/modals/CreatePostModal.tsx:663
 msgid "TDS"
 msgstr "TDS"
 
@@ -349,19 +357,19 @@ msgstr "TDS"
 msgid "Tell us about yourself"
 msgstr "Tell us about yourself"
 
-#: view/com/modals/CreatePostModal.tsx:534
+#: view/com/modals/CreatePostModal.tsx:565
 msgid "Total drawdown time"
 msgstr "Total drawdown time"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:51
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:52
 msgid "Unfinished"
 msgstr "Unfinished"
 
-#: app/(app)/(stack)/(tabs)/beans/index.tsx:147
+#: app/(app)/(stack)/(tabs)/beans/index.tsx:148
 msgid "Varietal"
 msgstr "Varietal"
 
-#: view/com/modals/CreatePostModal.tsx:349
+#: view/com/modals/CreatePostModal.tsx:363
 msgid "Water in (g)"
 msgstr "Water in (g)"
 
