@@ -40,7 +40,7 @@ export function TabBar({
 }: TabBarProps) {
 	const scrollElRef = useAnimatedRef<ScrollView>();
 	const syncScrollState = useSharedValue<'synced' | 'unsynced' | 'needs-sync'>(
-		'synced'
+		'synced',
 	);
 	const didInitialScroll = useSharedValue(false);
 	const contentSize = useSharedValue(0);
@@ -58,7 +58,7 @@ export function TabBar({
 				animated: true,
 			});
 		},
-		[scrollElRef]
+		[scrollElRef],
 	);
 
 	const indexToOffset = useCallback(
@@ -78,11 +78,11 @@ export function TabBar({
 				// is positioned like "left: 0" but the last item is like "right: 0".
 				[0, itemsLength - 1],
 				[0, freeSpace],
-				'clamp'
+				'clamp',
 			);
 			return layout.x - accumulatingOffset;
 		},
-		[itemsLength, contentSize, containerSize, layouts]
+		[itemsLength, contentSize, containerSize, layouts],
 	);
 
 	const progressToOffset = useCallback(
@@ -95,10 +95,10 @@ export function TabBar({
 					indexToOffset(Math.floor(progress)),
 					indexToOffset(Math.ceil(progress)),
 				],
-				'clamp'
+				'clamp',
 			);
 		},
-		[indexToOffset]
+		[indexToOffset],
 	);
 
 	// When we know the entire layout for the first time, scroll selection into view.
@@ -117,7 +117,7 @@ export function TabBar({
 					runOnJS(scrollToOffsetJS)(offset);
 				}
 			}
-		}
+		},
 	);
 
 	// When you swipe the pager, the tabbar should scroll automatically
@@ -135,7 +135,7 @@ export function TabBar({
 				const offset = progressToOffset(nextProgress);
 				scrollTo(scrollElRef, offset, 0, false);
 			}
-		}
+		},
 	);
 
 	// If the syncing is currently off but you've just finished swiping,
@@ -155,7 +155,7 @@ export function TabBar({
 				scrollTo(scrollElRef, offset, 0, true);
 				syncScrollState.set('synced');
 			}
-		}
+		},
 	);
 
 	// When you press on the item, we'll scroll into view -- unless you previously
@@ -194,29 +194,29 @@ export function TabBar({
 			progressToOffset,
 			containerSize,
 			layouts,
-		]
+		],
 	);
 
 	const onItemLayout = useCallback(
 		(i: number, layout: { x: number; width: number }) => {
 			'worklet';
-			layouts.modify(ls => {
+			layouts.modify((ls) => {
 				ls[i] = layout;
 				return ls;
 			});
 		},
-		[layouts]
+		[layouts],
 	);
 
 	const onTextLayout = useCallback(
 		(i: number, layout: { width: number }) => {
 			'worklet';
-			textLayouts.modify(ls => {
+			textLayouts.modify((ls) => {
 				ls[i] = layout;
 				return ls;
 			});
 		},
-		[textLayouts]
+		[textLayouts],
 	);
 
 	const indicatorStyle = useAnimatedStyle(() => {
@@ -241,7 +241,7 @@ export function TabBar({
 			const maxIndicatorWidth = itemWidth - 2 * CONTENT_PADDING;
 			const indicatorWidth = Math.min(
 				Math.max(minIndicatorWidth, textWidth),
-				maxIndicatorWidth
+				maxIndicatorWidth,
 			);
 			return indicatorWidth / contentSize.get();
 		}
@@ -263,14 +263,14 @@ export function TabBar({
 					translateX: interpolate(
 						dragProgress.get(),
 						layoutsValue.map((l, i) => i),
-						layoutsValue.map(l => l.x + l.width / 2 - contentSize.get() / 2)
+						layoutsValue.map((l) => l.x + l.width / 2 - contentSize.get() / 2),
 					),
 				},
 				{
 					scaleX: interpolate(
 						dragProgress.get(),
 						textLayoutsValue.map((l, i) => i),
-						textLayoutsValue.map((l, i) => getScaleX(i))
+						textLayoutsValue.map((l, i) => getScaleX(i)),
 					),
 				},
 			],
@@ -285,7 +285,7 @@ export function TabBar({
 				onPressSelected?.(index);
 			}
 		},
-		[onSelect, selectedPage, onPressSelected, onPressUIThread]
+		[onSelect, selectedPage, onPressSelected, onPressUIThread],
 	);
 
 	return (
@@ -296,7 +296,7 @@ export function TabBar({
 					showsHorizontalScrollIndicator={false}
 					ref={scrollElRef}
 					className="flex-grow flex-1 bg-transparent px-2"
-					onLayout={e => {
+					onLayout={(e) => {
 						containerSize.set(e.nativeEvent.layout.width);
 					}}
 					onScrollBeginDrag={() => {
@@ -304,12 +304,12 @@ export function TabBar({
 						// This will disable auto-adjustment until after next pager swipe or item tap.
 						syncScrollState.set('unsynced');
 					}}
-					onScroll={e => {
+					onScroll={(e) => {
 						scrollX.value = Math.round(e.nativeEvent.contentOffset.x);
 					}}
 				>
 					<Animated.View
-						onLayout={e => {
+						onLayout={(e) => {
 							contentSize.set(e.nativeEvent.layout.width);
 						}}
 						style={{ flexDirection: 'row', flexGrow: 1 }}
@@ -344,7 +344,7 @@ export function TabBar({
 					</Animated.View>
 				</ScrollView>
 			</BlockDrawerGesture>
-			<View className="absolute left-0 right-0 top-full border-b-hairline border-primary/40" />
+			<View className="absolute left-0 right-0 top-full" />
 		</View>
 	);
 }
@@ -375,7 +375,7 @@ function TabBarItem({
 				dragProgress.get(),
 				[index - 1, index, index + 1],
 				[0.7, 1, 0.7],
-				'clamp'
+				'clamp',
 			),
 		};
 	});
@@ -384,14 +384,14 @@ function TabBarItem({
 		(e: LayoutChangeEvent) => {
 			runOnUI(onItemLayout)(index, e.nativeEvent.layout);
 		},
-		[index, onItemLayout]
+		[index, onItemLayout],
 	);
 
 	const handleTextLayout = useCallback(
 		(e: LayoutChangeEvent) => {
 			runOnUI(onTextLayout)(index, e.nativeEvent.layout);
 		},
-		[index, onTextLayout]
+		[index, onTextLayout],
 	);
 
 	return (
