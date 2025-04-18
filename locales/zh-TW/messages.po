@@ -85,6 +85,10 @@ msgstr "咖啡粉重(g)"
 msgid "Comments ({0})"
 msgstr ""
 
+#: view/com/modals/CreateBeanProfileModal.tsx:55
+msgid "Country"
+msgstr ""
+
 #: view/com/modals/CreatePostModal.tsx:224
 msgid "Created on"
 msgstr ""
@@ -92,6 +96,10 @@ msgstr ""
 #: utils/labels.ts:10
 msgid "Dark"
 msgstr "深焙"
+
+#: view/com/modals/CreateBeanProfileModal.tsx:192
+msgid "Description (Optional)"
+msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:744
 msgid "Discard"
@@ -114,6 +122,7 @@ msgstr ""
 msgid "Edit Profile"
 msgstr ""
 
+#: view/com/modals/CreateBeanProfileModal.tsx:175
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:156
 msgid "Elevation (masl)"
 msgstr ""
@@ -146,6 +155,7 @@ msgstr ""
 msgid "Failed to update notification status"
 msgstr ""
 
+#: view/com/modals/CreateBeanProfileModal.tsx:124
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:144
 msgid "Farm"
 msgstr ""
@@ -172,12 +182,12 @@ msgid "Flavor"
 msgstr "風味"
 
 #: app/(app)/(stack)/profiles/[id].tsx:86
-#: app/(app)/(stack)/posts/[id].tsx:138
+#: app/(app)/(stack)/posts/[id].tsx:158
 msgid "Follow"
 msgstr ""
 
 #: app/(app)/(stack)/profiles/[id].tsx:82
-#: app/(app)/(stack)/posts/[id].tsx:132
+#: app/(app)/(stack)/posts/[id].tsx:152
 msgid "Following"
 msgstr ""
 
@@ -241,6 +251,7 @@ msgid "No comments yet"
 msgstr ""
 
 #: components/GearSelectDialog/index.tsx:32
+#: components/CountryPickerDialog/index.tsx:73
 #: components/BeanProfileListDialog/index.tsx:91
 #: app/(app)/(stack)/(tabs)/notifications/index.tsx:47
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:95
@@ -250,6 +261,10 @@ msgstr ""
 
 #: app/(app)/(stack)/(tabs)/_layout.tsx:41
 msgid "Notifications"
+msgstr ""
+
+#: view/com/modals/CreateBeanProfileModal.tsx:73
+msgid "Origin"
 msgstr ""
 
 #: view/com/modals/CreatePostModal.tsx:614
@@ -279,10 +294,12 @@ msgstr "準備工作"
 msgid "Prev"
 msgstr "上一步"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:141
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:152
 msgid "Process"
 msgstr ""
 
+#: view/com/modals/CreateBeanProfileModal.tsx:107
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:140
 msgid "Producer"
 msgstr ""
@@ -311,6 +328,10 @@ msgstr "比例"
 msgid "Roast level"
 msgstr "烘焙度"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:90
+msgid "Roaster"
+msgstr ""
+
 #: view/com/modals/EditProfile.tsx:98
 msgid "Save"
 msgstr ""
@@ -323,6 +344,7 @@ msgstr "選擇咖啡豆"
 msgid "Select a roast level"
 msgstr "選擇烘焙度"
 
+#: components/CountryPickerDialog/index.tsx:56
 #: components/BeanProfileListDialog/index.tsx:73
 msgid "Select Bean Profile"
 msgstr ""
@@ -351,6 +373,14 @@ msgstr ""
 msgid "Sign In"
 msgstr ""
 
+#: view/com/modals/CreateBeanProfileModal.tsx:216
+msgid "Submit"
+msgstr ""
+
+#: view/com/modals/CreateBeanProfileModal.tsx:216
+msgid "Submitting..."
+msgstr ""
+
 #: view/com/modals/CreatePostModal.tsx:663
 msgid "TDS"
 msgstr "萃取濃度"
@@ -367,6 +397,7 @@ msgstr "總沖煮時間"
 msgid "Unfinished"
 msgstr ""
 
+#: view/com/modals/CreateBeanProfileModal.tsx:158
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:148
 msgid "Varietal"
 msgstr ""

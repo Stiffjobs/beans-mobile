@@ -83,6 +83,10 @@ msgstr "Coffee in (g)"
 msgid "Comments ({0})"
 msgstr "Comments ({0})"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:55
+msgid "Country"
+msgstr "Country"
+
 #: view/com/modals/CreatePostModal.tsx:224
 msgid "Created on"
 msgstr "Created on"
@@ -90,6 +94,10 @@ msgstr "Created on"
 #: utils/labels.ts:10
 msgid "Dark"
 msgstr "Dark"
+
+#: view/com/modals/CreateBeanProfileModal.tsx:192
+msgid "Description (Optional)"
+msgstr "Description (Optional)"
 
 #: view/com/modals/CreatePostModal.tsx:744
 msgid "Discard"
@@ -112,6 +120,7 @@ msgstr "Display Name"
 msgid "Edit Profile"
 msgstr "Edit Profile"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:175
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:156
 msgid "Elevation (masl)"
 msgstr "Elevation (masl)"
@@ -144,6 +153,7 @@ msgstr "Failed to get push token: {error}"
 msgid "Failed to update notification status"
 msgstr "Failed to update notification status"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:124
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:144
 msgid "Farm"
 msgstr "Farm"
@@ -170,12 +180,12 @@ msgid "Flavor"
 msgstr "Flavor"
 
 #: app/(app)/(stack)/profiles/[id].tsx:86
-#: app/(app)/(stack)/posts/[id].tsx:138
+#: app/(app)/(stack)/posts/[id].tsx:158
 msgid "Follow"
 msgstr "Follow"
 
 #: app/(app)/(stack)/profiles/[id].tsx:82
-#: app/(app)/(stack)/posts/[id].tsx:132
+#: app/(app)/(stack)/posts/[id].tsx:152
 msgid "Following"
 msgstr "Following"
 
@@ -239,6 +249,7 @@ msgid "No comments yet"
 msgstr "No comments yet"
 
 #: components/GearSelectDialog/index.tsx:32
+#: components/CountryPickerDialog/index.tsx:73
 #: components/BeanProfileListDialog/index.tsx:91
 #: app/(app)/(stack)/(tabs)/notifications/index.tsx:47
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:95
@@ -249,6 +260,10 @@ msgstr "No data yet"
 #: app/(app)/(stack)/(tabs)/_layout.tsx:41
 msgid "Notifications"
 msgstr "Notifications"
+
+#: view/com/modals/CreateBeanProfileModal.tsx:73
+msgid "Origin"
+msgstr "Origin"
 
 #: view/com/modals/CreatePostModal.tsx:614
 msgid "Other tools"
@@ -277,10 +292,12 @@ msgstr "Preparation"
 msgid "Prev"
 msgstr "Prev"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:141
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:152
 msgid "Process"
 msgstr "Process"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:107
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:140
 msgid "Producer"
 msgstr "Producer"
@@ -309,6 +326,10 @@ msgstr "Ratio"
 msgid "Roast level"
 msgstr "Roast level"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:90
+msgid "Roaster"
+msgstr "Roaster"
+
 #: view/com/modals/EditProfile.tsx:98
 msgid "Save"
 msgstr "Save"
@@ -321,6 +342,7 @@ msgstr "Select a bean profile"
 msgid "Select a roast level"
 msgstr "Select a roast level"
 
+#: components/CountryPickerDialog/index.tsx:56
 #: components/BeanProfileListDialog/index.tsx:73
 msgid "Select Bean Profile"
 msgstr "Select Bean Profile"
@@ -349,6 +371,14 @@ msgstr "Sign in"
 msgid "Sign In"
 msgstr "Sign In"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:216
+msgid "Submit"
+msgstr "Submit"
+
+#: view/com/modals/CreateBeanProfileModal.tsx:216
+msgid "Submitting..."
+msgstr "Submitting..."
+
 #: view/com/modals/CreatePostModal.tsx:663
 msgid "TDS"
 msgstr "TDS"
@@ -365,6 +395,7 @@ msgstr "Total drawdown time"
 msgid "Unfinished"
 msgstr "Unfinished"
 
+#: view/com/modals/CreateBeanProfileModal.tsx:158
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:148
 msgid "Varietal"
 msgstr "Varietal"
