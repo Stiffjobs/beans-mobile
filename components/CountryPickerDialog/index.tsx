@@ -67,7 +67,7 @@ function Inner(props: CountryPickerDialogProps) {
 			<View className="py-2 gap-1">
 				<View className="flex-row  justify-between items-center">
 					<Text className="text-lg font-semibold mb-2">
-						{t`Select Bean Profile`}
+						{t`Choose country`}
 					</Text>
 					<Button onPress={handleDismiss} size={'icon'} variant={'ghost'}>
 						<View className="rounded-full items-center p-2 bg-secondary">
