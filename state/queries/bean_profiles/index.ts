@@ -12,6 +12,7 @@ import { useModalControls } from '~/state/modals';
 import * as Toast from '~/view/com/util/Toast';
 import { Id } from '~/convex/_generated/dataModel';
 import { Country, CountryDetails } from '~/lib/types';
+import { Dispatch, SetStateAction } from 'react';
 
 // List all bean profiles for the current user
 export const useListBeanProfiles = () => {
@@ -19,10 +20,25 @@ export const useListBeanProfiles = () => {
 };
 
 // Get a single bean profile by ID
-export const useGetBeanProfileById = (id: string) => {
-	return useQuery(
-		convexQuery(api.bean_profiles.getById, { id: id as Id<'bean_profiles'> }),
-	);
+export const useGetBeanProfileById = ({
+	id,
+	setCountry,
+}: {
+	id: string;
+	setCountry: Dispatch<SetStateAction<Country | undefined>>;
+}) => {
+	const countries = useListCountries();
+	const query = useConvexQuery(api.bean_profiles.getById, {
+		id: id as Id<'bean_profiles'>,
+	});
+	return useQuery({
+		enabled: !!query,
+		queryKey: ['bean_profile', id],
+		queryFn: async () => {
+			setCountry(countries?.find((c) => c.code === query?.countryCode));
+			return query;
+		},
+	});
 };
 
 // Create a new bean profile
