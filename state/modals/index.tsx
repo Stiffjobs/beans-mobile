@@ -39,11 +39,6 @@ export interface CommentListModal {
 	postId: string;
 }
 
-export interface CountryPickerModal {
-	name: 'country-picker';
-	onSelect?: () => {};
-}
-
 export type Modal =
 	| CreatePostModal
 	| EditProfileModal
@@ -52,8 +47,7 @@ export type Modal =
 	| EditGearModal
 	| CreateBeanProfileModal
 	| EditBeanProfileModal
-	| CommentListModal
-	| CountryPickerModal;
+	| CommentListModal;
 const ModalContext = React.createContext<{
 	isModalActive: boolean;
 	progress: SharedValue<number>;

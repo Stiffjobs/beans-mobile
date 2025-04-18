@@ -90,9 +90,6 @@ export function ModalsContainer() {
 		snapPoints = CommentListModal.snapPoints;
 		options = CommentListModal.options;
 		element = <CommentListModal.Component {...activeModal} snapTo={snapTo} />;
-	} else if (activeModal?.name === 'country-picker') {
-		snapPoints = CountryPickerModal.snapPoints;
-		element = <CountryPickerModal.Component {...activeModal} />;
 	} else {
 		return null;
 	}
