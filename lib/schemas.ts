@@ -14,8 +14,8 @@ export const signUpSchema = z.object({
 		.string()
 		.min(8, 'Password must be at least 8 characters')
 		.refine(
-			password => password.length <= 64,
-			'Password must not exceed 64 characters'
+			(password) => password.length <= 64,
+			'Password must not exceed 64 characters',
 		),
 	username: z.string().min(3, 'Username must be at least 3 characters'),
 });
@@ -27,7 +27,7 @@ export const createPostSchema = z.object({
 	coffeeIn: z.string().min(1, 'Coffee in is required'),
 	beanProfile: z
 		.custom<Id<'bean_profiles'>>()
-		.refine(id => id.length > 0, 'Bean profile is required'),
+		.refine((id) => id.length > 0, 'Bean profile is required'),
 	ratio: z.string().min(1, 'Ratio is required'),
 	beverageWeight: z.string().optional(),
 	waterIn: z.string().optional(),
@@ -35,24 +35,24 @@ export const createPostSchema = z.object({
 	filterPaper: z.string().min(1, 'Filter paper is required'),
 	filterPaperId: z
 		.custom<Id<'gears'>>()
-		.refine(id => id.length > 0, 'Filter paper is required'),
+		.refine((id) => id.length > 0, 'Filter paper is required'),
 	grinder: z.string().min(1, 'Grinder is required'),
 	grinderId: z
 		.custom<Id<'gears'>>()
-		.refine(id => id.length > 0, 'Grinder is required'),
+		.refine((id) => id.length > 0, 'Grinder is required'),
 	grindSetting: z.string().min(1, 'Grind setting is required'),
 	bloomTime: z.string().min(1, 'Bloom time is required'),
 	totalDrawdownTime: z.string().min(1, 'Total drawdown time is required'),
 	brewer: z.string().min(1, 'Brewer is required'),
 	brewerId: z
 		.custom<Id<'gears'>>()
-		.refine(id => id.length > 0, 'Brewer is required'),
+		.refine((id) => id.length > 0, 'Brewer is required'),
 	recipeSteps: z.array(
 		z.object({
 			timestamp: z.string(),
 			action: z.string(),
 			value: z.number(),
-		})
+		}),
 	),
 	brewingWater: z.string().optional(),
 	methodName: z.string().optional(),
@@ -87,6 +87,7 @@ export const createBeanProfileSchema = z.object({
 	origin: z.string().min(1, 'Origin is required'),
 	producer: z.string().min(1, 'Producer is required'),
 	roaster: z.string().min(1, 'Roaster is required'),
+	country: z.string().optional(),
 	farm: z.string().min(1, 'Farm is required'),
 	process: z.string().min(1, 'Process is required'),
 	variety: z.string().min(1, 'Variety is required'),
@@ -100,7 +101,7 @@ export const editBeanProfileSchema = createBeanProfileSchema;
 export const likePostSchema = z.object({
 	postId: z
 		.custom<Id<'posts'>>()
-		.refine(id => id.length > 0, 'Post ID is required'),
+		.refine((id) => id.length > 0, 'Post ID is required'),
 });
 
 export const unlikePostSchema = likePostSchema;
@@ -108,12 +109,12 @@ export const unlikePostSchema = likePostSchema;
 export const createPostCommentSchema = z.object({
 	postId: z
 		.custom<Id<'posts'>>()
-		.refine(id => id.length > 0, 'Post ID is required'),
+		.refine((id) => id.length > 0, 'Post ID is required'),
 	content: z.string().min(1, 'Comment is required'),
 });
 
 export const deletePostCommentSchema = z.object({
 	commentId: z
 		.custom<Id<'post_comments'>>()
-		.refine(id => id.length > 0, 'Comment ID is required'),
+		.refine((id) => id.length > 0, 'Comment ID is required'),
 });
