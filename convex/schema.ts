@@ -55,8 +55,8 @@ export default defineSchema({
 					timestamp: v.string(),
 					action: v.string(),
 					value: v.number(),
-				})
-			)
+				}),
+			),
 		),
 		methodName: v.optional(v.string()),
 		otherTools: v.optional(v.string()),
@@ -82,11 +82,13 @@ export default defineSchema({
 		farm: v.string(),
 		roaster: v.string(),
 		process: v.string(),
+		roastDate: v.optional(v.string()),
 		variety: v.string(),
 		elevation: v.string(),
 		owner: v.id('users'),
 		description: v.optional(v.string()),
 		finished: v.boolean(),
+		countryCode: v.optional(v.string()),
 	}).index('by_owner', ['owner']),
 	post_comments: defineTable({
 		postId: v.id('posts'),

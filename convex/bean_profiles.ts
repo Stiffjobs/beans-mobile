@@ -13,6 +13,8 @@ export const create = mutation({
 		elevation: v.string(),
 		description: v.optional(v.string()),
 		finished: v.boolean(),
+		countryCode: v.optional(v.string()),
+		roastDate: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
 		const user = await getCurrentUserOrThrow(ctx);
@@ -26,11 +28,11 @@ export const create = mutation({
 
 export const list = query({
 	args: {},
-	handler: async ctx => {
+	handler: async (ctx) => {
 		const user = await getCurrentUserOrThrow(ctx);
 		const beanProfiles = await ctx.db
 			.query('bean_profiles')
-			.withIndex('by_owner', q => q.eq('owner', user._id))
+			.withIndex('by_owner', (q) => q.eq('owner', user._id))
 			.order('desc')
 			.collect();
 		return beanProfiles;
@@ -60,6 +62,7 @@ export const getById = query({
  * @param variety - The variety of the bean profile
  * @param elevation - The elevation of the bean profile
  * @param description - The description of the bean profile
+ * @param [countryCode] - The country code of the bean profile
  */
 export const update = mutation({
 	args: {
@@ -73,6 +76,8 @@ export const update = mutation({
 		elevation: v.optional(v.string()),
 		description: v.optional(v.string()),
 		finished: v.optional(v.boolean()),
+		countryCode: v.optional(v.string()),
+		roastDate: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
 		const user = await getCurrentUserOrThrow(ctx);
