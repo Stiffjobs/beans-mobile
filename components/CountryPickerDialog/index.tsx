@@ -1,13 +1,11 @@
 import { View } from 'react-native';
 import { Text } from '../ui/text';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { CountryPickerDialogProps } from './type';
 import * as Dialog from '~/components/Dialog';
 import { Country, CountryDetails } from '~/lib/types';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
 import { BottomSheetFlatList, TouchableOpacity } from '@gorhom/bottom-sheet';
-import countriesData from 'data/countries.json'; // Assuming this path is correct relative to the build/runtime environment
-import { useQuery } from '@tanstack/react-query';
 import { t } from '@lingui/core/macro';
 import { Button } from '../ui/button';
 import { X } from '~/lib/icons';
@@ -15,7 +13,13 @@ import { Input } from '../input/Input';
 import { searchCountries } from '~/utils/search';
 import { Image } from 'expo-image';
 import { getFlagEmoji } from '~/lib/utils';
+import Animated, {
+	useAnimatedStyle,
+	withTiming,
+} from 'react-native-reanimated';
+import { useListCountries } from '~/state/queries/bean_profiles';
 export { useDialogControl as useCountryPickerDialogControl } from '~/components/Dialog';
+const AnimatedButton = Animated.createAnimatedComponent(Button);
 
 export function CountryPickerDialog(props: CountryPickerDialogProps) {
 	return (
@@ -29,42 +33,35 @@ export function CountryPickerDialog(props: CountryPickerDialogProps) {
 	);
 }
 
-const fetchCountries = async (): Promise<Country[]> => {
-	const countryArray: Country[] = Object.entries(countriesData).map(
-		([code, details]) => ({
-			code,
-			details: details as CountryDetails, // Cast the details part
-		}),
-	);
-	// Sort alphabetically by common name for better UI
-	countryArray.sort((a, b) =>
-		a.details.name.common.localeCompare(b.details.name.common),
-	);
-	return countryArray;
-};
-
 function Inner(props: CountryPickerDialogProps) {
 	const [search, setSearch] = useState('');
 	const handleDismiss = useCallback(() => {
 		props.control.close();
 	}, [props.control]);
-	const { data: countries } = useQuery<Country[], Error>({
-		queryKey: ['countries'], // Unique key for this query
-		queryFn: fetchCountries, // Function to fetch the data
-	});
+
+	const countries = useListCountries();
+
 	const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
+
+	const scaleAnim = useAnimatedStyle(() => {
+		const scaleValue = search.length > 0 ? 1 : 0;
+		return {
+			transform: [{ scale: withTiming(scaleValue, { duration: 300 }) }],
+		};
+	});
 
 	const handleSelect = useCallback(
 		(country: Country) => {
 			props.params.onSelect?.(country);
 			handleDismiss();
 		},
-		[props.control],
+		[props.control, handleDismiss],
 	);
 
 	useEffect(() => {
 		setFilteredCountries(searchCountries(search, countries ?? []));
 	}, [search, countries]);
+
 	return (
 		<Dialog.Inner {...props}>
 			<View className="py-2 gap-1">
@@ -78,8 +75,24 @@ function Inner(props: CountryPickerDialogProps) {
 						</View>
 					</Button>
 				</View>
-				<View className="flex-row justify-between items-center">
-					<Input className="flex-1" onChangeText={setSearch} maxLength={40} />
+				<View className="flex-row justify-between items-center gap-2">
+					<Input
+						className="flex-1"
+						value={search}
+						onChangeText={setSearch}
+						maxLength={40}
+						placeholder={t`Search countries...`}
+					/>
+					{search.length > 0 && (
+						<AnimatedButton
+							style={scaleAnim}
+							onPress={() => setSearch('')}
+							className="p-2"
+							variant={'ghost'}
+						>
+							<Text className="text-destructive">{t`Clear`}</Text>
+						</AnimatedButton>
+					)}
 				</View>
 			</View>
 			<KeyboardAvoidingView behavior="padding" className="flex-1">
@@ -90,8 +103,8 @@ function Inner(props: CountryPickerDialogProps) {
 							<Text>{t`No data yet`}</Text>
 						</View>
 					)}
-					data={filteredCountries} // This is now the sorted array
-					keyExtractor={(item) => item.code} // Use the country code as the key
+					data={filteredCountries}
+					keyExtractor={(item) => item.code}
 					renderItem={({ item }) => (
 						<TouchableOpacity
 							onPress={() => handleSelect(item)}
@@ -101,7 +114,6 @@ function Inner(props: CountryPickerDialogProps) {
 								borderBottomColor: '#eee',
 							}}
 						>
-							{/* Access data via item.details */}
 							<View className="flex-row items-center justify-between">
 								<Text>
 									{item.details.name.common} ({item.code})

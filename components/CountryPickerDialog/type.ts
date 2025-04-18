@@ -6,5 +6,6 @@ export type CountryPickerDialogProps = {
 	params: {
 		type: 'country-picker';
 		onSelect?: (country: Country) => void;
+		selected: Country | undefined;
 	};
 };
