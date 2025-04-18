@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { convexQuery } from '@convex-dev/react-query';
 import { api } from '~/convex/_generated/api';
+import countriesData from 'data/countries.json'; // Assuming this path is correct relative to the build/runtime environment
 import {
 	useMutation as useConvexMutation,
 	useQuery as useConvexQuery,
@@ -10,6 +11,7 @@ import { z } from 'zod';
 import { useModalControls } from '~/state/modals';
 import * as Toast from '~/view/com/util/Toast';
 import { Id } from '~/convex/_generated/dataModel';
+import { Country, CountryDetails } from '~/lib/types';
 
 // List all bean profiles for the current user
 export const useListBeanProfiles = () => {
@@ -19,7 +21,7 @@ export const useListBeanProfiles = () => {
 // Get a single bean profile by ID
 export const useGetBeanProfileById = (id: string) => {
 	return useQuery(
-		convexQuery(api.bean_profiles.getById, { id: id as Id<'bean_profiles'> })
+		convexQuery(api.bean_profiles.getById, { id: id as Id<'bean_profiles'> }),
 	);
 };
 
@@ -37,7 +39,7 @@ export const useCreateBeanProfile = () => {
 			Toast.show('Bean profile created', 'CircleCheck', 'success');
 			closeModal();
 		},
-		onError: error => {
+		onError: (error) => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 			console.error(error);
 		},
@@ -55,7 +57,7 @@ export const useUpdateBeanProfile = ({ id }: { id: string }) => {
 		onSuccess: () => {
 			Toast.show('Bean profile updated', 'CircleCheck', 'success');
 		},
-		onError: error => {
+		onError: (error) => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
@@ -72,8 +74,30 @@ export const useDeleteBeanProfile = () => {
 		onSuccess: () => {
 			Toast.show('Bean profile deleted', 'CircleCheck', 'success');
 		},
-		onError: error => {
+		onError: (error) => {
 			Toast.show(`Error: ${error.message}`, 'CircleAlert', 'error');
 		},
 	});
 };
+
+export const useListCountries = () => {
+	const { data: countries } = useQuery<Country[], Error>({
+		queryKey: ['countries'], // Unique key for this query
+		queryFn: fetchCountries, // Function to fetch the data
+	});
+	return countries;
+};
+
+async function fetchCountries(): Promise<Country[]> {
+	const countryArray: Country[] = Object.entries(countriesData).map(
+		([code, details]) => ({
+			code,
+			details: details as CountryDetails, // Cast the details part
+		}),
+	);
+	// Sort alphabetically by common name for better UI
+	countryArray.sort((a, b) =>
+		a.details.name.common.localeCompare(b.details.name.common),
+	);
+	return countryArray;
+}
