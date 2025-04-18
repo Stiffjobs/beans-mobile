@@ -39,6 +39,11 @@ export interface CommentListModal {
 	postId: string;
 }
 
+export interface CountryPickerModal {
+	name: 'country-picker';
+	onSelect?: () => {};
+}
+
 export type Modal =
 	| CreatePostModal
 	| EditProfileModal
@@ -47,7 +52,8 @@ export type Modal =
 	| EditGearModal
 	| CreateBeanProfileModal
 	| EditBeanProfileModal
-	| CommentListModal;
+	| CommentListModal
+	| CountryPickerModal;
 const ModalContext = React.createContext<{
 	isModalActive: boolean;
 	progress: SharedValue<number>;
@@ -78,11 +84,11 @@ export function Provider({ children }: React.PropsWithChildren<{}>) {
 	const progress = useSharedValue(0);
 	const [index, setIndex] = useState(0);
 	const openModal = React.useCallback((modal: Modal) => {
-		setActiveModals(modals => [...modals, modal]);
+		setActiveModals((modals) => [...modals, modal]);
 	}, []);
 	const closeModal = React.useCallback(() => {
 		let wasActive = activeModals.length > 0;
-		setActiveModals(modals => {
+		setActiveModals((modals) => {
 			return modals.slice(0, -1);
 		});
 		return wasActive;
@@ -100,7 +106,7 @@ export function Provider({ children }: React.PropsWithChildren<{}>) {
 			progress,
 			index,
 		}),
-		[activeModals, progress, index]
+		[activeModals, progress, index],
 	);
 
 	const methods = React.useMemo(
@@ -110,7 +116,7 @@ export function Provider({ children }: React.PropsWithChildren<{}>) {
 			closeAllModals,
 			setIndex,
 		}),
-		[openModal, closeModal, closeAllModals, setIndex]
+		[openModal, closeModal, closeAllModals, setIndex],
 	);
 	return (
 		<ModalContext.Provider value={state}>

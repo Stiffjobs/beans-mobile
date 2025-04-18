@@ -9,6 +9,7 @@ import * as CreateGearModal from './CreateGearModal';
 import * as CreateBeanProfileModal from './CreateBeanProfileModal';
 import * as EditBeanProfileModal from './EditBeanProfileModal';
 import * as CommentListModal from './CommentListModal';
+import * as CountryPickerModal from './CountryPickerModal';
 import { SafeAreaView, View, Modal } from 'react-native';
 import { createCustomBackdrop } from '../util/BottomSheetCustomBackdrop';
 import { useReducedMotion } from 'react-native-reanimated';
@@ -89,6 +90,9 @@ export function ModalsContainer() {
 		snapPoints = CommentListModal.snapPoints;
 		options = CommentListModal.options;
 		element = <CommentListModal.Component {...activeModal} snapTo={snapTo} />;
+	} else if (activeModal?.name === 'country-picker') {
+		snapPoints = CountryPickerModal.snapPoints;
+		element = <CountryPickerModal.Component {...activeModal} />;
 	} else {
 		return null;
 	}
