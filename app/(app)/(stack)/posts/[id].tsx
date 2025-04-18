@@ -1,5 +1,5 @@
 import { Link, Stack, useLocalSearchParams, useFocusEffect } from 'expo-router';
-import { View, ScrollView, FlatList, Pressable } from 'react-native';
+import { View, ScrollView, FlatList, Pressable, Alert } from 'react-native';
 import { Loader } from '~/components/Loader';
 import {
 	useGetPostById,
@@ -31,6 +31,12 @@ import { t } from '@lingui/core/macro';
 import { useQuery } from 'convex/react';
 import { api } from '~/convex/_generated/api';
 import { useFetchPostComments } from '~/state/queries/post_comments';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
+import { Share } from 'lucide-react-native';
+
+// Share recipe as plain text
+
 export default function PostDetailsPage() {
 	const { id } = useLocalSearchParams<{ id: string }>();
 	const [viewImageIndex, setViewImageIndex] = useState(0);
@@ -77,6 +83,14 @@ export default function PostDetailsPage() {
 		});
 	}, [openModal]);
 
+	const exportCoffeeDetails = useCallback(async () => {
+		try {
+		} catch (error) {
+			console.error('Error exporting coffee details:', error);
+			Alert.alert('Error', 'Could not export coffee details');
+		}
+	}, [data]);
+
 	//NOTE: open comment list modal when the page is focused and mark notifications as read
 	useFocusEffect(
 		useCallback(() => {
@@ -97,21 +111,27 @@ export default function PostDetailsPage() {
 	}
 	return (
 		<ScrollView
-			className="flex-1 p-4 gap-4"
-			contentContainerClassName="pb-[30%]"
+			className="flex-1 bg-background"
+			contentContainerClassName="pb-20 px-4"
 		>
 			<Stack.Screen
 				options={{
-					headerRight: () =>
-						isMe ? (
-							<Button onPress={openDetailsDialog} size="icon" variant="ghost">
-								<Ellipsis />
+					headerRight: () => (
+						<View className="flex-row">
+							<Button onPress={exportCoffeeDetails} size="icon" variant="ghost">
+								<Share size={24} />
 							</Button>
-						) : null,
+							{isMe && (
+								<Button onPress={openDetailsDialog} size="icon" variant="ghost">
+									<Ellipsis />
+								</Button>
+							)}
+						</View>
+					),
 				}}
 			/>
-			<View className="px-2 flex-1 gap-4">
-				<View className="flex-row items-center justify-between">
+			<View className="mb-4">
+				<View className="flex-row items-center justify-between my-4">
 					<Link push asChild href={`/profiles/${data?.author._id}`}>
 						<Pressable>
 							<View className="flex-row items-center gap-2">
@@ -147,70 +167,122 @@ export default function PostDetailsPage() {
 				) : (
 					<Text className="text-2xl font-semibold">{data?.bean}</Text>
 				)}
-				<FlatList
-					data={urls}
-					horizontal
-					keyExtractor={(_, index) => index.toString()}
-					ItemSeparatorComponent={() => <View className="w-1" />}
-					renderItem={({ item, index }) => (
-						<Pressable
-							onPress={() => {
-								setViewImageIndex(index);
-								setVisible(true);
-							}}
-						>
-							<Image
-								contentFit="cover"
-								style={{ height: 180, aspectRatio: 1, borderRadius: 8 }}
-								source={{ uri: item }}
-							/>
-						</Pressable>
-					)}
-				/>
-				<View className="rounded-lg">
-					<H4>Basic Information</H4>
+			</View>
+
+			<FlatList
+				data={urls}
+				horizontal
+				className="mb-4"
+				keyExtractor={(_, index) => index.toString()}
+				ItemSeparatorComponent={() => <View className="w-1" />}
+				renderItem={({ item, index }) => (
+					<Pressable
+						onPress={() => {
+							setViewImageIndex(index);
+							setVisible(true);
+						}}
+					>
+						<Image
+							contentFit="cover"
+							style={{ height: 180, aspectRatio: 1, borderRadius: 8 }}
+							source={{ uri: item }}
+						/>
+					</Pressable>
+				)}
+			/>
+
+			{/* Coffee Identity Card */}
+			<View className="bg-card rounded-xl mb-4 overflow-hidden shadow">
+				<View className="bg-blue-500 px-3 py-2">
+					<Text className="text-white font-bold text-base">
+						Coffee Identity
+					</Text>
+				</View>
+				<View className="p-2">
 					{data?.beanProfile ? (
 						<>
-							<DetailItem label="Roaster" value={data.beanProfile.roaster} />
-							<DetailItem label="Origin" value={data?.beanProfile.origin} />
-							<DetailItem label="Producer" value={data?.beanProfile.producer} />
-							<DetailItem label="Farm" value={data?.beanProfile.farm} />
-							<DetailItem label="Process" value={data?.beanProfile.process} />
-							<DetailItem label="Variety" value={data?.beanProfile.variety} />
-							<DetailItem
+							<DataRow label="Roaster" value={data.beanProfile.roaster} />
+							<DataRow label="Origin" value={data?.beanProfile.origin} />
+							<DataRow label="Producer" value={data?.beanProfile.producer} />
+							<DataRow label="Farm" value={data?.beanProfile.farm} />
+							<DataRow label="Process" value={data?.beanProfile.process} />
+							<DataRow label="Variety" value={data?.beanProfile.variety} />
+							<DataRow
 								label="Elevation (masl)"
 								value={data?.beanProfile.elevation}
 							/>
 						</>
 					) : (
-						<DetailItem label="Bean" value={data?.bean} />
+						<DataRow label="Bean" value={data?.bean} />
 					)}
-					<DetailItem label="Flavor" value={data?.flavor} />
-					<DetailItem label="Roast Level" value={data?.roastLevel} />
+					<DataRow label="Flavor" value={data?.flavor} />
+					<DataRow label="Roast Level" value={data?.roastLevel} />
 				</View>
+			</View>
 
-				{/* Brewing Parameters */}
-				<View className="rounded-lg ">
-					<H4>Brewing Parameters</H4>
-					<DetailItem label="Coffee In (g)" value={data?.coffeeIn} />
-					<DetailItem label="Ratio" value={data?.ratio?.replace('/', ':')} />
-					<DetailItem label="Water In (g)" value={data?.waterIn} />
-					<DetailItem
-						label="Beverage Weight (g)"
-						value={data?.beverageWeight}
-					/>
-					<DetailItem label="Temperature (°C)" value={data?.brewTemperature} />
-					<DetailItem label="Preparation" value={data?.methodName} />
+			{/* Brewing Parameters Card */}
+			<View className="bg-card rounded-xl mb-4 overflow-hidden shadow">
+				<View className="bg-emerald-500 px-3 py-2">
+					<Text className="text-white font-bold text-base">
+						Brewing Parameters
+					</Text>
 				</View>
+				<View className="flex-row flex-wrap">
+					<View className="w-1/2 p-4 items-center border-r border-b border-border">
+						<Text className="text-muted-foreground text-xs mb-1">
+							Coffee (g)
+						</Text>
+						<Text className="text-foreground text-xl font-bold">
+							{data?.coffeeIn}
+						</Text>
+					</View>
+					<View className="w-1/2 p-4 items-center border-b border-border">
+						<Text className="text-muted-foreground text-xs mb-1">Ratio</Text>
+						<Text className="text-foreground text-xl font-bold">
+							{data?.ratio?.replace('/', ':')}
+						</Text>
+					</View>
+					<View className="w-1/2 p-4 items-center border-r border-b border-border">
+						<Text className="text-muted-foreground text-xs mb-1">
+							Water (g)
+						</Text>
+						<Text className="text-foreground text-xl font-bold">
+							{data?.waterIn}
+						</Text>
+					</View>
+					<View className="w-1/2 p-4 items-center border-b border-border">
+						<Text className="text-muted-foreground text-xs mb-1">
+							Yield (g)
+						</Text>
+						<Text className="text-foreground text-xl font-bold">
+							{data?.beverageWeight}
+						</Text>
+					</View>
+					<View className="w-full p-4 items-center">
+						<Text className="text-muted-foreground text-xs mb-1">
+							Temperature (°C)
+						</Text>
+						<Text className="text-foreground text-xl font-bold">
+							{data?.brewTemperature}
+						</Text>
+					</View>
+					<View className="w-full border-t border-border">
+						<DataRow label="Preparation" value={data?.methodName} />
+					</View>
+				</View>
+			</View>
 
-				{/* Equipment */}
-				<View className="rounded-lg ">
-					<H4>Equipment</H4>
-					<DetailItem
+			{/* Equipment Card */}
+			<View className="bg-card rounded-xl mb-4 overflow-hidden shadow">
+				<View className="bg-purple-500 px-3 py-2">
+					<Text className="text-white font-bold text-base">Equipment</Text>
+				</View>
+				<View className="p-2">
+					<DataRow
 						label="Brewer"
 						value={data?.brewerId ? data?.brewerDetails?.name : data?.brewer}
 					/>
-					<DetailItem
+					<DataRow
 						label="Filter Paper"
 						value={
 							data?.filterPaperId
@@ -218,45 +290,53 @@ export default function PostDetailsPage() {
 								: data?.filterPaper
 						}
 					/>
-					<DetailItem label="Water" value={data?.brewingWater} />
-					<DetailItem
+					<DataRow label="Water" value={data?.brewingWater} />
+					<DataRow
 						label="Grinder"
 						value={data?.grinderId ? data?.grinderDetails?.name : data?.grinder}
 					/>
-					<DetailItem label="Grind Setting" value={data?.grindSetting} />
-					<DetailItem label="Other Tools" value={data?.otherTools} />
-				</View>
-
-				{/* Technical Details */}
-				<View className="rounded-lg ">
-					<H4>Technical Details</H4>
-					<DetailItem label="TDS" value={data?.tds?.toFixed(2)} />
-					<DetailItem label="Extraction Yield" value={data?.ey?.toFixed(2)} />
-					<DetailItem label="Bloom Time" value={data?.bloomTime} />
-					<DetailItem label="Total Time" value={data?.totalDrawdownTime} />
+					<DataRow label="Grind Setting" value={data?.grindSetting} />
+					<DataRow label="Other Tools" value={data?.otherTools} />
 				</View>
 			</View>
-			{/* Basic Info Section */}
+
+			{/* Technical Details Card */}
+			<View className="bg-card rounded-xl mb-4 overflow-hidden shadow">
+				<View className="bg-cyan-500 px-3 py-2">
+					<Text className="text-white font-bold text-base">
+						Technical Details
+					</Text>
+				</View>
+				<View className="p-2">
+					<DataRow label="TDS" value={data?.tds?.toFixed(2)} />
+					<DataRow label="Extraction Yield" value={data?.ey?.toFixed(2)} />
+					<DataRow label="Bloom Time" value={data?.bloomTime} />
+					<DataRow label="Total Time" value={data?.totalDrawdownTime} />
+				</View>
+			</View>
 
 			{/* Brewing Steps */}
 			{data?.recipeSteps && data.recipeSteps.length > 0 && (
-				<View className="rounded-lg p-4 ">
-					<H4>Brewing Steps</H4>
-					{data.recipeSteps.map((step, index) => (
-						<View key={index} className="py-2 border-b border-gray-200">
-							<Text className="font-medium">{step.timestamp}</Text>
-							<View className="flex-row justify-between">
-								<Text className="flex-1 text-gray-800 dark:text-gray-200">
-									{step.action}
-								</Text>
-								<Text className="ml-4 text-gray-800 dark:text-gray-200">
-									{step.value}(s)
-								</Text>
+				<View className="bg-card rounded-xl mb-4 overflow-hidden shadow">
+					<View className="bg-indigo-500 px-3 py-2">
+						<Text className="text-white font-bold text-base">
+							Brewing Steps
+						</Text>
+					</View>
+					<View className="p-2">
+						{data.recipeSteps.map((step, index) => (
+							<View key={index} className="py-2 border-b border-border">
+								<Text className="font-medium">{step.timestamp}</Text>
+								<View className="flex-row justify-between">
+									<Text className="flex-1">{step.action}</Text>
+									<Text className="ml-4">{step.value}(s)</Text>
+								</View>
 							</View>
-						</View>
-					))}
+						))}
+					</View>
 				</View>
 			)}
+
 			<ImageView
 				images={urls.map((e) => ({ uri: e! }))}
 				visible={visible}
@@ -275,7 +355,7 @@ export default function PostDetailsPage() {
 	);
 }
 
-const DetailItem = ({
+const DataRow = ({
 	label,
 	value,
 }: {
@@ -284,9 +364,9 @@ const DetailItem = ({
 }) => {
 	if (!value) return null;
 	return (
-		<View className="flex-row justify-between py-2 border-b border-gray-200">
-			<Text className="font-semibold mr-2">{label}</Text>
-			<Text className="flex-1 text-right">{value}</Text>
+		<View className="flex-row justify-between py-3 px-4 border-b border-border">
+			<Text className="text-muted-foreground">{label}</Text>
+			<Text className="font-medium">{value}</Text>
 		</View>
 	);
 };
