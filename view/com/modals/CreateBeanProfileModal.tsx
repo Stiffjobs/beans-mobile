@@ -16,10 +16,11 @@ import {
 	CountryPickerDialog,
 	useCountryPickerDialogControl,
 } from '~/components/CountryPickerDialog';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Country } from '~/lib/types';
-import { getFlagEmoji } from '~/lib/utils';
 import { t } from '@lingui/core/macro';
+import { formatDateToString } from '~/lib/utils';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 export const snapPoints = ['fullscreen'];
 
 export function Component() {
@@ -37,7 +38,8 @@ export function Component() {
 			elevation: '',
 			description: undefined,
 			finished: false,
-			country: undefined,
+			countryCode: undefined,
+			roastDate: undefined,
 		} as z.infer<typeof createBeanProfileSchema>,
 		validators: {
 			onMount: createBeanProfileSchema,
@@ -47,6 +49,20 @@ export function Component() {
 			await createBeanProfileMutation.mutateAsync({ ...value });
 		},
 	});
+	const [showDatePicker, setShowDatePicker] = useState(false);
+	const onOpenModal = useCallback(() => {
+		setShowDatePicker(true);
+	}, [setShowDatePicker]);
+	const onCancel = useCallback(() => {
+		setShowDatePicker(false);
+	}, [setShowDatePicker]);
+	const onConfirm = useCallback(
+		(date: Date) => {
+			form.setFieldValue('roastDate', formatDateToString(date));
+			onCancel();
+		},
+		[form.setFieldValue, onCancel],
+	);
 	return (
 		<>
 			<Header />
@@ -86,6 +102,26 @@ export function Component() {
 							</View>
 						</Pressable>
 					</View>
+					<form.Field name="roastDate">
+						{(field) => (
+							<View>
+								<Label>{t`Roast date`}</Label>
+								<Pressable onPressIn={onOpenModal}>
+									<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+										{field.state.value ? (
+											<Text className="native:text-lg text-sm text-foreground">
+												{field.state.value}
+											</Text>
+										) : (
+											<Text className="native:text-lg text-sm text-muted-foreground">
+												{t`Select roast date`}
+											</Text>
+										)}
+									</View>
+								</Pressable>
+							</View>
+						)}
+					</form.Field>
 					<form.Field name="roaster">
 						{(field) => (
 							<View className="gap-2">
@@ -228,9 +264,16 @@ export function Component() {
 					selected: selectedCountry,
 					onSelect: (country) => {
 						setSelectedCountry(country);
-						form.setFieldValue('country', country.code);
+						form.setFieldValue('countryCode', country.code);
 					},
 				}}
+			/>
+			<DateTimePickerModal
+				isVisible={showDatePicker}
+				mode="date"
+				pickerContainerStyleIOS={{ alignItems: 'center' }}
+				onConfirm={onConfirm}
+				onCancel={onCancel}
 			/>
 		</>
 	);

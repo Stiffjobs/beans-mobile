@@ -1,16 +1,17 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Button } from '~/components/ui/button';
-import { BeanProfileProps } from '~/lib/types';
+import { BeanProfileProps, Country } from '~/lib/types';
 import { StyledIcon } from '../icons/StyledIcons';
 import { useModalControls } from '~/state/modals';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import { useForm } from '@tanstack/react-form';
+import { useForm, useStore } from '@tanstack/react-form';
 import { editBeanProfileSchema } from '~/lib/schemas';
 import { Text } from '~/components/ui/text';
 import { z } from 'zod';
 import {
 	useDeleteBeanProfile,
 	useGetBeanProfileById,
+	useListCountries,
 	useUpdateBeanProfile,
 } from '~/state/queries/bean_profiles';
 import { Loader } from '~/components/Loader';
@@ -29,9 +30,15 @@ import {
 	DialogTrigger,
 } from '~/components/ui/dialog';
 import { PortalHost } from '@rn-primitives/portal';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Checkbox } from '~/components/ui/checkbox';
-
+import {
+	CountryPickerDialog,
+	useCountryPickerDialogControl,
+} from '~/components/CountryPickerDialog';
+import { t } from '@lingui/core/macro';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { formatDateToString } from '~/lib/utils';
 export const snapPoints = ['fullscreen'];
 const CUSTOM_PORTAL_HOST_NAME = 'edit-bean-profile-modal';
 
@@ -40,14 +47,20 @@ type EditBeanProfileModalProps = {
 };
 
 export function Component({ id }: EditBeanProfileModalProps) {
-	const fetchBeanProfileById = useGetBeanProfileById(id);
+	const [selectedCountry, setSelectedCountry] = useState<Country | undefined>();
+	const fetchBeanProfileById = useGetBeanProfileById({
+		id,
+		setCountry: setSelectedCountry,
+	});
 	const updateBeanProfile = useUpdateBeanProfile({ id });
 	const { closeModal } = useModalControls();
+	const [showDatePicker, setShowDatePicker] = useState(false);
 	const deleteMutation = useDeleteBeanProfile();
 	const handleDelete = useCallback(async () => {
 		await deleteMutation.mutateAsync(id);
 		closeModal();
 	}, [deleteMutation, closeModal]);
+	const control = useCountryPickerDialogControl();
 	const form = useForm({
 		defaultValues: {
 			origin: fetchBeanProfileById.data?.origin ?? '',
@@ -59,16 +72,32 @@ export function Component({ id }: EditBeanProfileModalProps) {
 			elevation: fetchBeanProfileById.data?.elevation ?? '',
 			description: fetchBeanProfileById.data?.description ?? '',
 			finished: fetchBeanProfileById.data?.finished ?? false,
+			countryCode: fetchBeanProfileById.data?.countryCode ?? undefined,
+			roastDate:
+				fetchBeanProfileById.data?.roastDate ?? formatDateToString(new Date()),
 		} as z.infer<typeof editBeanProfileSchema>,
 		validators: {
-			onMount: editBeanProfileSchema,
+			onSubmit: editBeanProfileSchema,
 		},
-		onSubmit: async data => {
+		onSubmit: async (data) => {
 			await updateBeanProfile.mutateAsync({ ...data.value });
 			closeModal();
 		},
 	});
-	if (fetchBeanProfileById.isLoading) {
+	const onOpenModal = useCallback(() => {
+		setShowDatePicker(true);
+	}, [setShowDatePicker]);
+	const onCancel = useCallback(() => {
+		setShowDatePicker(false);
+	}, [setShowDatePicker]);
+	const onConfirm = useCallback(
+		(date: Date) => {
+			form.setFieldValue('roastDate', formatDateToString(date));
+			onCancel();
+		},
+		[form.setFieldValue, onCancel],
+	);
+	if (fetchBeanProfileById.isLoading || fetchBeanProfileById.isPending) {
 		return <Loader />;
 	}
 	return (
@@ -77,9 +106,9 @@ export function Component({ id }: EditBeanProfileModalProps) {
 			<KeyboardAwareScrollView className="flex-1">
 				<View className="flex-1 px-4 gap-4">
 					<form.Field name="origin">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Origin</RequiredLabel>
+								<RequiredLabel>{t`Origin`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -87,26 +116,68 @@ export function Component({ id }: EditBeanProfileModalProps) {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
+					<View className="gap-2">
+						<Label>{t`Country`}</Label>
+						<Pressable onPressIn={() => control.open()}>
+							<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+								{selectedCountry ? (
+									<Text className="native:text-lg text-sm text-foreground">
+										{selectedCountry.details.name.common} (
+										{selectedCountry.code})
+									</Text>
+								) : (
+									<Text className="native:text-lg text-sm text-muted-foreground">
+										{t`Select a country`}
+									</Text>
+								)}
+							</View>
+						</Pressable>
+					</View>
+					<form.Field name="roastDate">
+						{(field) => (
+							<View>
+								<Label>{t`Roast date`}</Label>
+								<Pressable onPressIn={onOpenModal}>
+									<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+										{field.state.value ? (
+											<Text className="native:text-lg text-sm text-foreground">
+												{field.state.value}
+											</Text>
+										) : (
+											<Text className="native:text-lg text-sm text-muted-foreground">
+												{t`Select roast date`}
+											</Text>
+										)}
+									</View>
+								</Pressable>
+							</View>
+						)}
+					</form.Field>
 					<form.Field name="roaster">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Roaster</RequiredLabel>
+								<RequiredLabel>{t`Roaster`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
 									placeholder="e.g. SEY"
 								/>
+								<ErrorMessage
+									message={field.state.meta.errors
+										.map((e) => e?.message)
+										.join(', ')}
+								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="producer">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
 								<RequiredLabel>Producer</RequiredLabel>
 								<Input
@@ -116,16 +187,16 @@ export function Component({ id }: EditBeanProfileModalProps) {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="farm">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Farm</RequiredLabel>
+								<RequiredLabel>{t`Farm`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -133,16 +204,16 @@ export function Component({ id }: EditBeanProfileModalProps) {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="process">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Process</RequiredLabel>
+								<RequiredLabel>{t`Process`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -150,16 +221,16 @@ export function Component({ id }: EditBeanProfileModalProps) {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="variety">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Varietal</RequiredLabel>
+								<RequiredLabel>{t`Varietal`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -167,16 +238,16 @@ export function Component({ id }: EditBeanProfileModalProps) {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="elevation">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Elevation (masl)</RequiredLabel>
+								<RequiredLabel>{t`Elevation (masl)`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -184,16 +255,16 @@ export function Component({ id }: EditBeanProfileModalProps) {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="finished">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<Label>Finished</Label>
+								<Label>{t`Finished`}</Label>
 								<Checkbox
 									checked={field.state.value}
 									onCheckedChange={field.handleChange}
@@ -202,9 +273,9 @@ export function Component({ id }: EditBeanProfileModalProps) {
 						)}
 					</form.Field>
 					<form.Field name="description">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<Label>Description (Optional)</Label>
+								<Label>{t`Description (Optional)`}</Label>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -214,7 +285,7 @@ export function Component({ id }: EditBeanProfileModalProps) {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
@@ -225,7 +296,7 @@ export function Component({ id }: EditBeanProfileModalProps) {
 						<Dialog className="flex-1">
 							<DialogTrigger asChild>
 								<Button variant="destructive">
-									<Text>Delete</Text>
+									<Text>{t`Delete`}</Text>
 								</Button>
 							</DialogTrigger>
 							<DialogContent
@@ -241,17 +312,17 @@ export function Component({ id }: EditBeanProfileModalProps) {
 								<DialogFooter>
 									<DialogClose asChild>
 										<Button variant={'outline'}>
-											<Text>Cancel</Text>
+											<Text>{t`Cancel`}</Text>
 										</Button>
 									</DialogClose>
 									<Button onPress={handleDelete} variant="destructive">
-										<Text>Delete</Text>
+										<Text>{t`Delete`}</Text>
 									</Button>
 								</DialogFooter>
 							</DialogContent>
 						</Dialog>
 						<form.Subscribe
-							selector={state => [
+							selector={(state) => [
 								state.canSubmit,
 								state.isDirty,
 								state.isSubmitting,
@@ -269,6 +340,24 @@ export function Component({ id }: EditBeanProfileModalProps) {
 					</View>
 				</View>
 			</KeyboardAwareScrollView>
+			<DateTimePickerModal
+				isVisible={showDatePicker}
+				mode="date"
+				pickerContainerStyleIOS={{ alignItems: 'center' }}
+				onConfirm={onConfirm}
+				onCancel={onCancel}
+			/>
+			<CountryPickerDialog
+				control={control}
+				params={{
+					type: 'country-picker',
+					selected: selectedCountry,
+					onSelect: (country) => {
+						setSelectedCountry(country);
+						form.setFieldValue('countryCode', country.code);
+					},
+				}}
+			/>
 			<PortalHost name={CUSTOM_PORTAL_HOST_NAME} />
 		</>
 	);
