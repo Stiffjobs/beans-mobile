@@ -67,11 +67,20 @@ msgid "Calendar"
 msgstr "Calendar"
 
 #: view/com/modals/EditProfile.tsx:84
+#: view/com/modals/EditBeanProfileModal.tsx:315
 #: view/com/modals/CreatePostModal.tsx:185
 #: view/com/modals/CreatePostModal.tsx:748
 #: components/NotificationItem.tsx:87
 msgid "Cancel"
 msgstr "Cancel"
+
+#: components/CountryPickerDialog/index.tsx:70
+msgid "Choose country"
+msgstr "Choose country"
+
+#: components/CountryPickerDialog/index.tsx:93
+msgid "Clear"
+msgstr "Clear"
 
 #: view/com/modals/CreatePostModal.tsx:305
 msgid "Coffee in (g)"
@@ -83,7 +92,8 @@ msgstr "Coffee in (g)"
 msgid "Comments ({0})"
 msgstr "Comments ({0})"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:55
+#: view/com/modals/EditBeanProfileModal.tsx:126
+#: view/com/modals/CreateBeanProfileModal.tsx:89
 msgid "Country"
 msgstr "Country"
 
@@ -95,7 +105,13 @@ msgstr "Created on"
 msgid "Dark"
 msgstr "Dark"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:192
+#: view/com/modals/EditBeanProfileModal.tsx:299
+#: view/com/modals/EditBeanProfileModal.tsx:319
+msgid "Delete"
+msgstr "Delete"
+
+#: view/com/modals/EditBeanProfileModal.tsx:278
+#: view/com/modals/CreateBeanProfileModal.tsx:230
 msgid "Description (Optional)"
 msgstr "Description (Optional)"
 
@@ -120,7 +136,8 @@ msgstr "Display Name"
 msgid "Edit Profile"
 msgstr "Edit Profile"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:175
+#: view/com/modals/EditBeanProfileModal.tsx:250
+#: view/com/modals/CreateBeanProfileModal.tsx:213
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:156
 msgid "Elevation (masl)"
 msgstr "Elevation (masl)"
@@ -153,7 +170,8 @@ msgstr "Failed to get push token: {error}"
 msgid "Failed to update notification status"
 msgstr "Failed to update notification status"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:124
+#: view/com/modals/EditBeanProfileModal.tsx:199
+#: view/com/modals/CreateBeanProfileModal.tsx:162
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:144
 msgid "Farm"
 msgstr "Farm"
@@ -171,6 +189,7 @@ msgstr "Filter paper"
 msgid "Filter Paper"
 msgstr "Filter Paper"
 
+#: view/com/modals/EditBeanProfileModal.tsx:267
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:52
 msgid "Finished"
 msgstr "Finished"
@@ -249,7 +268,7 @@ msgid "No comments yet"
 msgstr "No comments yet"
 
 #: components/GearSelectDialog/index.tsx:32
-#: components/CountryPickerDialog/index.tsx:73
+#: components/CountryPickerDialog/index.tsx:103
 #: components/BeanProfileListDialog/index.tsx:91
 #: app/(app)/(stack)/(tabs)/notifications/index.tsx:47
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:95
@@ -261,7 +280,8 @@ msgstr "No data yet"
 msgid "Notifications"
 msgstr "Notifications"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:73
+#: view/com/modals/EditBeanProfileModal.tsx:111
+#: view/com/modals/CreateBeanProfileModal.tsx:74
 msgid "Origin"
 msgstr "Origin"
 
@@ -292,12 +312,13 @@ msgstr "Preparation"
 msgid "Prev"
 msgstr "Prev"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:141
+#: view/com/modals/EditBeanProfileModal.tsx:216
+#: view/com/modals/CreateBeanProfileModal.tsx:179
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:152
 msgid "Process"
 msgstr "Process"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:107
+#: view/com/modals/CreateBeanProfileModal.tsx:145
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:140
 msgid "Producer"
 msgstr "Producer"
@@ -322,11 +343,17 @@ msgstr "Push Notification Error:"
 msgid "Ratio"
 msgstr "Ratio"
 
+#: view/com/modals/EditBeanProfileModal.tsx:145
+#: view/com/modals/CreateBeanProfileModal.tsx:108
+msgid "Roast date"
+msgstr "Roast date"
+
 #: view/com/modals/CreatePostModal.tsx:263
 msgid "Roast level"
 msgstr "Roast level"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:90
+#: view/com/modals/EditBeanProfileModal.tsx:165
+#: view/com/modals/CreateBeanProfileModal.tsx:128
 msgid "Roaster"
 msgstr "Roaster"
 
@@ -334,15 +361,22 @@ msgstr "Roaster"
 msgid "Save"
 msgstr "Save"
 
+#: components/CountryPickerDialog/index.tsx:84
+msgid "Search countries..."
+msgstr "Search countries..."
+
 #: view/com/modals/CreatePostModal.tsx:242
 msgid "Select a bean profile"
 msgstr "Select a bean profile"
+
+#: view/com/modals/EditBeanProfileModal.tsx:136
+msgid "Select a country"
+msgstr "Select a country"
 
 #: view/com/modals/CreatePostModal.tsx:266
 msgid "Select a roast level"
 msgstr "Select a roast level"
 
-#: components/CountryPickerDialog/index.tsx:56
 #: components/BeanProfileListDialog/index.tsx:73
 msgid "Select Bean Profile"
 msgstr "Select Bean Profile"
@@ -350,6 +384,11 @@ msgstr "Select Bean Profile"
 #: view/com/modals/CreatePostModal.tsx:722
 msgid "Select Images"
 msgstr "Select Images"
+
+#: view/com/modals/EditBeanProfileModal.tsx:154
+#: view/com/modals/CreateBeanProfileModal.tsx:117
+msgid "Select roast date"
+msgstr "Select roast date"
 
 #: view/com/modals/CreatePostModal.tsx:434
 msgid "Select your brewers"
@@ -371,11 +410,11 @@ msgstr "Sign in"
 msgid "Sign In"
 msgstr "Sign In"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:216
+#: view/com/modals/CreateBeanProfileModal.tsx:254
 msgid "Submit"
 msgstr "Submit"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:216
+#: view/com/modals/CreateBeanProfileModal.tsx:254
 msgid "Submitting..."
 msgstr "Submitting..."
 
@@ -395,7 +434,8 @@ msgstr "Total drawdown time"
 msgid "Unfinished"
 msgstr "Unfinished"
 
-#: view/com/modals/CreateBeanProfileModal.tsx:158
+#: view/com/modals/EditBeanProfileModal.tsx:233
+#: view/com/modals/CreateBeanProfileModal.tsx:196
 #: app/(app)/(stack)/(tabs)/beans/index.tsx:148
 msgid "Varietal"
 msgstr "Varietal"
