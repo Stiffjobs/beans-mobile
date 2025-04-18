@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { Button } from '~/components/ui/button';
 import { Text } from '~/components/ui/text';
@@ -12,10 +12,20 @@ import { ErrorMessage } from '~/components/ErrorMessage';
 import { RequiredLabel } from '~/components/RequiredLabel';
 import { useCreateBeanProfile } from '~/state/queries/bean_profiles';
 import { X } from '~/lib/icons';
+import {
+	CountryPickerDialog,
+	useCountryPickerDialogControl,
+} from '~/components/CountryPickerDialog';
+import { useState } from 'react';
+import { Country } from '~/lib/types';
+import { getFlagEmoji } from '~/lib/utils';
+import { t } from '@lingui/core/macro';
 export const snapPoints = ['fullscreen'];
 
 export function Component() {
 	const createBeanProfileMutation = useCreateBeanProfile();
+	const control = useCountryPickerDialogControl();
+	const [selectedCountry, setSelectedCountry] = useState<Country | undefined>();
 	const form = useForm({
 		defaultValues: {
 			origin: '',
@@ -27,6 +37,7 @@ export function Component() {
 			elevation: '',
 			description: undefined,
 			finished: false,
+			country: undefined,
 		} as z.infer<typeof createBeanProfileSchema>,
 		validators: {
 			onMount: createBeanProfileSchema,
@@ -42,9 +53,9 @@ export function Component() {
 			<KeyboardAwareScrollView>
 				<View className="flex-1 px-10 gap-4">
 					<form.Field name="origin">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Origin</RequiredLabel>
+								<RequiredLabel>{t`Origin`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -52,16 +63,33 @@ export function Component() {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
+					<View className="gap-2">
+						<Label>{t`Country`}</Label>
+						<Pressable onPressIn={() => control.open()}>
+							<View className="flex flex-row h-10 native:h-12 items-center justify-between rounded-md border border-input bg-background px-3 py-2 ">
+								{selectedCountry ? (
+									<Text className="native:text-lg text-sm text-foreground">
+										{selectedCountry.details.name.common} (
+										{selectedCountry.code})
+									</Text>
+								) : (
+									<Text className="native:text-lg text-sm text-muted-foreground">
+										Select a country
+									</Text>
+								)}
+							</View>
+						</Pressable>
+					</View>
 					<form.Field name="roaster">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Roaster</RequiredLabel>
+								<RequiredLabel>{t`Roaster`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -69,16 +97,16 @@ export function Component() {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="producer">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Producer</RequiredLabel>
+								<RequiredLabel>{t`Producer`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -86,16 +114,16 @@ export function Component() {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="farm">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Farm</RequiredLabel>
+								<RequiredLabel>{t`Farm`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -103,16 +131,16 @@ export function Component() {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="process">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Process</RequiredLabel>
+								<RequiredLabel>{t`Process`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -120,16 +148,16 @@ export function Component() {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="variety">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Varietal</RequiredLabel>
+								<RequiredLabel>{t`Varietal`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -137,16 +165,16 @@ export function Component() {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="elevation">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<RequiredLabel>Elevation (masl)</RequiredLabel>
+								<RequiredLabel>{t`Elevation (masl)`}</RequiredLabel>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -154,16 +182,16 @@ export function Component() {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
 						)}
 					</form.Field>
 					<form.Field name="description">
-						{field => (
+						{(field) => (
 							<View className="gap-2">
-								<Label>Description (Optional)</Label>
+								<Label>{t`Description (Optional)`}</Label>
 								<Input
 									value={field.state.value}
 									onChangeText={field.handleChange}
@@ -173,7 +201,7 @@ export function Component() {
 								/>
 								<ErrorMessage
 									message={field.state.meta.errors
-										.map(e => e?.message)
+										.map((e) => e?.message)
 										.join(', ')}
 								/>
 							</View>
@@ -181,18 +209,29 @@ export function Component() {
 					</form.Field>
 
 					<form.Subscribe
-						selector={state => [state.canSubmit, state.isSubmitting]}
+						selector={(state) => [state.canSubmit, state.isSubmitting]}
 						children={([canSubmit, isSubmitting]) => (
 							<Button
 								onPress={form.handleSubmit}
 								disabled={!canSubmit || isSubmitting}
 							>
-								<Text>{isSubmitting ? 'Submitting...' : 'Submit'}</Text>
+								<Text>{isSubmitting ? t`Submitting...` : t`Submit`}</Text>
 							</Button>
 						)}
 					/>
 				</View>
 			</KeyboardAwareScrollView>
+			<CountryPickerDialog
+				control={control}
+				params={{
+					type: 'country-picker',
+					selected: selectedCountry,
+					onSelect: (country) => {
+						setSelectedCountry(country);
+						form.setFieldValue('country', country.code);
+					},
+				}}
+			/>
 		</>
 	);
 }
